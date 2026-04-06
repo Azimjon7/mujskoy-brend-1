@@ -1,0 +1,842 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mujskoy Brend Admin</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0b0b;
+      color: #fff;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #050505, #111111);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #141414;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .login-card h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      color: #d4af37;
+    }
+
+    .login-card p {
+      color: #bdbdbd;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ddd;
+      font-size: 14px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #0f0f0f;
+      color: #fff;
+      outline: none;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #d4af37;
+    }
+
+    .btn {
+      border: none;
+      outline: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .btn-dark {
+      background: #1b1b1b;
+      color: #fff;
+      border: 1px solid #333;
+    }
+
+    .btn-danger {
+      background: #a92727;
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #262626;
+      color: #fff;
+      border: 1px solid #444;
+    }
+
+    .login-card .btn {
+      width: 100%;
+      margin-top: 6px;
+    }
+
+    .error-text {
+      color: #ff6b6b;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .success-text {
+      color: #7dff9a;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .admin-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+    }
+
+    .sidebar {
+      background: #101010;
+      border-right: 1px solid #222;
+      padding: 24px 18px;
+    }
+
+    .brand {
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #222;
+    }
+
+    .brand h2 {
+      color: #d4af37;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .brand p {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .menu button {
+      width: 100%;
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #232323;
+      background: #151515;
+      color: #fff;
+      cursor: pointer;
+      font-size: 15px;
+      transition: 0.2s ease;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+      background: #d4af37;
+      color: #000;
+      border-color: #d4af37;
+    }
+
+    .main {
+      padding: 28px;
+      background: #0b0b0b;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+    }
+
+    .topbar p {
+      color: #aaa;
+      margin-top: 6px;
+    }
+
+    .panel {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .panel h3 {
+      margin-bottom: 16px;
+      color: #d4af37;
+      font-size: 22px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .product-card {
+      background: #111;
+      border: 1px solid #2b2b2b;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #0d0d0d;
+    }
+
+    .product-card-body {
+      padding: 16px;
+    }
+
+    .product-card h4 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: #b7b7b7;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .price {
+      color: #d4af37;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .orders-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .order-item {
+      background: #111;
+      border: 1px solid #262626;
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .order-item strong {
+      color: #d4af37;
+    }
+
+    .empty {
+      color: #999;
+      padding: 10px 0;
+    }
+
+    .preview-wrap {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .preview-wrap img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #0e0e0e;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #999;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 900px) {
+      .admin-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid #222;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .main {
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="loginPage" class="login-page">
+    <div class="login-card">
+      <h1>Admin Login</h1>
+      <p>Mujskoy Brend boshqaruv paneliga kirish uchun login va parolni kiriting.</p>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input id="username" type="text" placeholder="admin" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="12345678" />
+      </div>
+
+      <button class="btn btn-primary" onclick="login()">Kirish</button>
+      <div id="loginMessage" class="error-text"></div>
+    </div>
+  </div>
+
+  <div id="adminApp" class="admin-shell hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <h2>Mujskoy Brend</h2>
+        <p>Admin boshqaruv paneli</p>
+      </div>
+
+      <div class="menu">
+        <button id="menuAdd" class="active" onclick="openAddSection()">Mahsulot qoshish</button>
+        <button id="menuProducts" onclick="showSection('products')">Mahsulotlar</button>
+        <button id="menuOrders" onclick="showSection('orders')">Buyurtmalar</button>
+        <button onclick="goToSite()">Saytga qaytish</button>
+        <button onclick="logout()">Chiqish</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1 id="pageTitle">Mahsulot qooshish</h1>
+          <p id="pageDesc">Yangi mahsulotni qoshing va saytga chiqaring.</p>
+        </div>
+      </div>
+
+      <section id="sectionAdd" class="panel">
+        <h3>Yangi mahsulot</h3>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="productName">Mahsulot nomi</label>
+            <input id="productName" type="text" placeholder="Masalan: Premium futbolka" />
+          </div>
+
+          <div class="form-group">
+            <label for="productPrice">Narx</label>
+            <input id="productPrice" type="number" placeholder="130000" />
+          </div>
+
+          <div class="form-group">
+            <label for="productCategory">Kategoriya</label>
+            <select id="productCategory">
+              <option value="Futbolkalar">Futbolkalar</option>
+              <option value="Kostyumlar">Kostyumlar</option>
+              <option value="Ustki kiyimlar">Ustki kiyimlar</option>
+              <option value="Shimlar">Shimlar</option>
+              <option value="Oyoq kiyimlar">Oyoq kiyimlar</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="productOldPrice">Eski narx</label>
+            <input id="productOldPrice" type="number" placeholder="150000" />
+          </div>
+
+          <div class="form-group">
+            <label for="productSizes">Size lar</label>
+            <input id="productSizes" type="text" placeholder="Masalan: 40-44 yoki S-3XL yoki 30-35">
+
+          </div>
+
+          <div class="form-group">
+            <label for="productColors">Ranglar</label>
+            <input id="productColors" type="text" placeholder="Masalan: qora, oq, qizil">
+
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="productDesc">Qisqa description</label>
+          <textarea id="productDesc" placeholder="Qisqa va chiroyli tavsif yozing"></textarea>
+        </div>
+
+        <div class="form-group">
+  <label for="productImageFile">Rasmlar yuklash (bir nechta)</label>
+  <input id="productImageFile" type="file" accept="image/*" multiple />
+  <input id="existingImages" type="hidden" value="" />
+  <div class="small">Bir nechta rasm tanlashingiz mumkin.</div>
+  <div id="imagePreviewWrap" class="preview-wrap"></div>
+</div>
+
+        <div class="actions">
+          <button id="saveBtn" class="btn btn-primary" onclick="addProduct()">Saqlash</button>
+          <button id="cancelEditBtn" class="btn btn-dark hidden" onclick="cancelEdit()">Bekor qilish</button>
+          <button class="btn btn-secondary" onclick="resetForm()">Tozalash</button>
+        </div>
+
+        <div id="addMessage"></div>
+      </section>
+
+      <section id="sectionProducts" class="panel hidden">
+        <h3>Mening mahsulotlarim</h3>
+        <div id="productsList" class="product-list"></div>
+      </section>
+
+      <section id="sectionOrders" class="panel hidden">
+        <h3>Buyurtmalar</h3>
+        <div id="ordersList" class="orders-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const ADMIN_USERNAME = "admin";
+    const ADMIN_PASSWORD = "12345678";
+    let editingProductId = null;
+    let cachedProducts = [];
+
+    function setActiveMenu(activeId) {
+      document.querySelectorAll(".menu button").forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.getElementById(activeId);
+      if (activeBtn) activeBtn.classList.add("active");
+    }
+
+    function showSection(section) {
+      document.getElementById("sectionAdd").classList.add("hidden");
+      document.getElementById("sectionProducts").classList.add("hidden");
+      document.getElementById("sectionOrders").classList.add("hidden");
+
+      if (section === "add") {
+        document.getElementById("sectionAdd").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Mahsulot qoshish";
+        document.getElementById("pageDesc").innerText = "Yangi mahsulotni qoshing va saytga chiqaring.";
+        setActiveMenu("menuAdd");
+      }
+
+      if (section === "products") {
+        document.getElementById("sectionProducts").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Mahsulotlar";
+        document.getElementById("pageDesc").innerText = "Faqat ozingiz qoshgan mahsulotlar shu yerda chiqadi.";
+        setActiveMenu("menuProducts");
+        loadProducts();
+      }
+
+      if (section === "orders") {
+        document.getElementById("sectionOrders").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Buyurtmalar";
+        document.getElementById("pageDesc").innerText = "Saytdan tushgan buyurtmalar shu yerda korinadi.";
+        setActiveMenu("menuOrders");
+        loadOrders();
+      }
+    }
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const message = document.getElementById("loginMessage");
+
+      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+        localStorage.setItem("mb_admin_logged_in", "true");
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("adminApp").classList.remove("hidden");
+        showSection("add");
+        message.innerText = "";
+      } else {
+        message.innerText = "Username yoki password xato.";
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("mb_admin_logged_in");
+      location.reload();
+    }
+
+function goToSite() {
+  window.location.href = "/index.html";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+  const imageInput = document.getElementById("productImageFile");
+  const previewWrap = document.getElementById("imagePreviewWrap");
+
+  if (imageInput) {
+    imageInput.addEventListener("change", function () {
+      const files = Array.from(this.files || []);
+      previewWrap.innerHTML = "";
+
+      if (!files.length) return;
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.alt = "preview";
+          previewWrap.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  }
+});
+
+function resetForm() {
+  editingProductId = null;
+  document.getElementById("productName").value = "";
+  document.getElementById("productPrice").value = "";
+  document.getElementById("productCategory").value = "Futbolkalar";
+  document.getElementById("productOldPrice").value = "";
+  document.getElementById("productSizes").value = "";
+  document.getElementById("productColors").value = "";
+  document.getElementById("productDesc").value = "";
+  document.getElementById("productImageFile").value = "";
+  document.getElementById("existingImages").value = "";
+  document.getElementById("imagePreviewWrap").innerHTML = "";
+  document.getElementById("addMessage").innerHTML = "";
+  document.getElementById("saveBtn").textContent = "Saqlash";
+  document.getElementById("cancelEditBtn").classList.add("hidden");
+}
+
+function cancelEdit() {
+  resetForm();
+}
+
+function openAddSection() {
+  resetForm();
+  showSection("add");
+}
+
+function startEdit(productId) {
+  const product = cachedProducts.find((p) => String(p.id) === String(productId));
+  if (!product) return;
+
+  editingProductId = product.id;
+  document.getElementById("productName").value = product.name || "";
+  document.getElementById("productPrice").value = product.price || "";
+  document.getElementById("productCategory").value = product.category || "Futbolkalar";
+  document.getElementById("productOldPrice").value = product.oldPrice || "";
+  document.getElementById("productSizes").value = product.sizes || "";
+  document.getElementById("productColors").value = product.colors || "";
+  document.getElementById("productDesc").value = product.desc || "";
+  const images = (Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean);
+  document.getElementById("existingImages").value = images.join(",");
+  document.getElementById("productImageFile").value = "";
+
+  const previewWrap = document.getElementById("imagePreviewWrap");
+  previewWrap.innerHTML = "";
+  images.forEach((imgPath) => {
+    const img = document.createElement("img");
+    img.src = normalizeImage(imgPath);
+    img.alt = "preview";
+    previewWrap.appendChild(img);
+  });
+
+  document.getElementById("saveBtn").textContent = "Yangilash";
+  document.getElementById("cancelEditBtn").classList.remove("hidden");
+  document.getElementById("addMessage").innerHTML = '<div class="small">Tahrirlash rejimi yoqildi.</div>';
+  showSection("add");
+}
+
+async function addProduct() {
+  const name = document.getElementById("productName").value.trim();
+  const price = document.getElementById("productPrice").value.trim();
+  const category = document.getElementById("productCategory").value.trim();
+  const oldPrice = document.getElementById("productOldPrice").value.trim();
+  const sizes = document.getElementById("productSizes").value.trim();
+  const colors = document.getElementById("productColors").value.trim();
+  const desc = document.getElementById("productDesc").value.trim();
+
+  const imageFileInput = document.getElementById("productImageFile");
+  const imageFiles = imageFileInput ? Array.from(imageFileInput.files || []) : [];
+
+  const existingImagesEl = document.getElementById("existingImages");
+  const existingImages = existingImagesEl ? existingImagesEl.value.trim() : "";
+
+  const addMessage = document.getElementById("addMessage");
+  const missing = [];
+
+  if (!name) missing.push("Mahsulot nomi");
+  if (!price) missing.push("Narx");
+  if (!category) missing.push("Kategoriya");
+  if (!desc) missing.push("Qisqa description");
+  if (!imageFiles.length && !existingImages) missing.push("Rasm");
+
+  if (missing.length) {
+    addMessage.innerHTML =
+      '<div class="error-text">To‘ldirilmagan joylar: ' + missing.join(", ") + "</div>";
+    return;
+  }
+
+  const existingList = existingImages
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean);
+
+  const buildFormData = (legacyOnly = false) => {
+    const fd = new FormData();
+    fd.append("name", name);
+    fd.append("price", price);
+    fd.append("category", category);
+    fd.append("oldPrice", oldPrice);
+    fd.append("sizes", sizes);
+    fd.append("colors", colors);
+    fd.append("desc", desc);
+
+    // Legacy fields (old server.js)
+    fd.append("existingImage", existingList[0] || "");
+    if (imageFiles[0]) {
+      fd.append("imageFile", imageFiles[0]);
+    }
+
+    // New fields (multi-image server.js)
+    if (!legacyOnly) {
+      fd.append("existingImages", existingImages);
+      imageFiles.forEach((file) => fd.append("imageFiles", file));
+    }
+
+    return fd;
+  };
+
+  const makeRequest = async (method, endpoint, legacyOnly = false) => {
+    const res = await fetch(endpoint, { method, body: buildFormData(legacyOnly) });
+    const data = await res.json().catch(() => ({}));
+    return { res, data };
+  };
+
+  try {
+    let mode = editingProductId ? "PUT" : "POST";
+    let endpoint = editingProductId ? ("/api/products/" + editingProductId) : "/api/products";
+
+    let { res, data } = await makeRequest(mode, endpoint, false);
+
+    // If backend is old and rejects new field "imageFiles", retry with legacy payload.
+    const msg = String(data?.message || data?.error || "");
+    if (!res.ok && (msg.includes("Unexpected field") || msg.includes("LIMIT_UNEXPECTED_FILE"))) {
+      ({ res, data } = await makeRequest(mode, endpoint, true));
+    }
+
+    // If stale edit id failed, fallback to create as new product.
+    if (!res.ok && mode === "PUT" && res.status === 404) {
+      ({ res, data } = await makeRequest("POST", "/api/products", false));
+      const msg2 = String(data?.message || data?.error || "");
+      if (!res.ok && (msg2.includes("Unexpected field") || msg2.includes("LIMIT_UNEXPECTED_FILE"))) {
+        ({ res, data } = await makeRequest("POST", "/api/products", true));
+      }
+      mode = "POST";
+    }
+
+    if (!res.ok) {
+      throw new Error(data.message || "Mahsulot qo‘shishda xatolik bo‘ldi");
+    }
+
+    addMessage.innerHTML =
+      `<div class="success-text">${mode === "PUT" ? "Mahsulot yangilandi." : "Mahsulot muvaffaqiyatli qo‘shildi."}</div>`;
+    resetForm();
+    loadProducts();
+    showSection("products");
+  } catch (err) {
+    const msg = String(err && err.message ? err.message : "Mahsulot qo‘shishda xatolik bo‘ldi");
+    const extra = msg.includes("Unexpected field")
+      ? " (Serverni qayta ishga tushiring: node server.js)"
+      : "";
+    addMessage.innerHTML = '<div class="error-text">' + msg + extra + "</div>";
+    console.error(err);
+  }
+}
+
+    function loadProducts() {
+      fetch("/api/products")
+        .then(res => res.json())
+        .then(products => {
+          cachedProducts = Array.isArray(products) ? products : [];
+          const list = document.getElementById("productsList");
+
+          if (!cachedProducts.length) {
+            list.innerHTML = '<div class="empty">Hozircha mahsulot yoq.</div>';
+            return;
+          }
+
+          let html = "";
+
+          cachedProducts.forEach(product => {
+            const images = (Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean);
+            const coverImage = normalizeImage(images[0] || "");
+            html += `
+              <div class="product-card">
+                <img src="${coverImage}" alt="${product.name || "Mahsulot"}">
+                <div class="product-card-body">
+                  <h4>${product.name || ""}</h4>
+                  <div class="meta">Kategoriya: ${product.category || "-"}</div>
+                  <div class="meta">Description: ${product.desc || "-"}</div>
+                  <div class="meta">Size: ${product.sizes || "-"}</div>
+                  <div class="meta">Rang: ${product.colors || "-"}</div>
+                  <div class="meta">Rasmlar: ${images.length}</div>
+                  <div class="price">${product.price || 0} soвЂm ${product.oldPrice ? `<span style="color:#888;font-size:16px;text-decoration:line-through;margin-left:8px;">${product.oldPrice} soвЂm</span>` : ""}</div>
+                  <div class="actions">
+                    <button class="btn btn-secondary" onclick="startEdit('${product.id}')">O'zgartirish</button>
+                    <button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Ochirish</button>
+                  </div>
+                </div>
+              </div>
+            `;
+          });
+
+          list.innerHTML = html;
+        })
+        .catch(() => {
+          document.getElementById("productsList").innerHTML = '<div class="error-text">Mahsulotlarni yuklab bolmadi.</div>';
+        });
+    }
+
+    function deleteProduct(id) {
+      if (!confirm("Rostdan ham mahsulotni oвЂchirmoqchimisiz?")) return;
+
+      fetch("/api/products/" + id, {
+        method: "DELETE"
+      })
+      .then(res => res.json())
+      .then(() => {
+        loadProducts();
+      })
+      .catch(() => {
+        alert("Ochirishda xatolik bo'ldi.");
+      });
+    }
+
+    function loadOrders() {
+      fetch("/api/orders")
+        .then(res => res.json())
+        .then(orders => {
+          const list = document.getElementById("ordersList");
+
+          if (!orders.length) {
+            list.innerHTML = '<div class="empty">Hozircha buyurtmalar yoq.</div>';
+            return;
+          }
+
+          let html = "";
+
+          orders.forEach(order => {
+            html += `
+              <div class="order-item">
+                <div><strong>Ism:</strong> ${order.name || "-"}</div>
+                <div><strong>Telefon:</strong> ${order.phone || "-"}</div>
+                <div><strong>Manzil:</strong> ${order.address || "-"}</div>
+                <div><strong>Izoh:</strong> ${order.note || "-"}</div>
+                <div><strong>Jami:</strong> ${order.total || 0} soвЂm</div>
+              </div>
+            `;
+          });
+
+          list.innerHTML = html;
+        })
+        .catch(() => {
+          document.getElementById("ordersList").innerHTML = '<div class="error-text">Buyurtmalarni yuklab boвЂlmadi.</div>';
+        });
+    }
+function normalizeImage(image) {
+  if (!image) return "img/placeholders/product.svg";
+  return image;
+}
+    window.addEventListener("load", function() {
+      const loggedIn = localStorage.getItem("mb_admin_logged_in");
+
+      if (loggedIn === "true") {
+        document.getElementById("loginPage").classList.add("hidden");
+        document.getElementById("adminApp").classList.remove("hidden");
+        showSection("add");
+      }
+    });
+  </script>
+</body>
+</html>

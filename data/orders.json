@@ -1,0 +1,25 @@
+[
+  {
+    "id": "ord_1775325507435",
+    "name": "azimjon",
+    "phone": "902008747",
+    "address": "Andijan city 2-Mikrarion, apartment 49,",
+    "note": "kerak edi tezro",
+    "total": 650000,
+    "items": [
+      {
+        "id": "prd_1775323880022",
+        "name": "krasovka",
+        "price": 130000,
+        "oldPrice": 10000,
+        "image": "uploads/prd_1775323879937.jpg",
+        "category": "Futbolkalar",
+        "desc": "juda chiroyli",
+        "size": "",
+        "color": "oq",
+        "qty": 5
+      }
+    ],
+    "createdAt": "2026-04-04T17:58:27.436Z"
+  }
+]

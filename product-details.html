@@ -1,0 +1,544 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mahsulot batafsil</title>
+
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+  <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
+
+  <style>
+    body {
+      background: #050505;
+      color: #fff;
+    }
+
+    .product-detail-wrap {
+      padding: 60px 0;
+    }
+
+    .pd-image-box {
+      background: #0f0f0f;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+
+    .pd-image-box img {
+      width: 100%;
+      height: 720px;
+      object-fit: cover;
+      display: block;
+      background: #0c0c0c;
+    }
+
+    .pd-thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pd-thumb {
+      width: 86px;
+      height: 86px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #2e2e2e;
+      cursor: pointer;
+      background: #0c0c0c;
+      transition: 0.2s ease;
+    }
+
+    .pd-thumb.active {
+      border-color: #d4af37;
+    }
+
+    .pd-info-box {
+      background: #141414;
+      border: 1px solid rgba(212, 175, 55, 0.15);
+      border-radius: 24px;
+      padding: 34px;
+      height: 100%;
+    }
+
+    .pd-badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(212, 175, 55, 0.14);
+      color: #d4af37;
+      font-size: 13px;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    .pd-title {
+      font-size: 44px;
+      line-height: 1.15;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .pd-desc {
+      color: #b8b8b8;
+      font-size: 19px;
+      line-height: 1.7;
+      margin-bottom: 26px;
+    }
+
+    .pd-price-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+
+    .pd-price {
+      font-size: 42px;
+      font-weight: 800;
+      color: #d4af37;
+    }
+
+    .pd-old-price {
+      font-size: 28px;
+      color: #777;
+      text-decoration: line-through;
+    }
+
+    .pd-label {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      color: #fff;
+    }
+
+    .pd-options {
+      margin-bottom: 26px;
+    }
+
+    .pd-option-list {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pd-chip {
+      border: 1px solid #3b3b3b;
+      background: #0f0f0f;
+      color: #fff;
+      border-radius: 999px;
+      padding: 11px 18px;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-weight: 600;
+      min-width: 64px;
+      text-align: center;
+    }
+
+    .pd-chip:hover,
+    .pd-chip.active {
+      background: #d4af37;
+      color: #000;
+      border-color: #d4af37;
+    }
+
+    .pd-qty-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 26px;
+      flex-wrap: wrap;
+    }
+
+    .pd-qty-input {
+      width: 110px;
+      height: 52px;
+      border-radius: 14px;
+      border: 1px solid #343434;
+      background: #0b0b0b;
+      color: #fff;
+      padding: 0 14px;
+      font-size: 18px;
+      outline: none;
+    }
+
+    .pd-meta {
+      margin-bottom: 28px;
+      padding-top: 10px;
+      border-top: 1px solid #242424;
+    }
+
+    .pd-meta div {
+      color: #bcbcbc;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .pd-meta strong {
+      color: #fff;
+      min-width: 90px;
+      display: inline-block;
+    }
+
+    .pd-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .pd-btn {
+      border: none;
+      outline: none;
+      border-radius: 14px;
+      padding: 15px 24px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .pd-btn-primary {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .pd-btn-dark {
+      background: #1b1b1b;
+      color: #fff;
+      border: 1px solid #313131;
+    }
+
+    .pd-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .pd-message {
+      margin-top: 18px;
+      font-size: 15px;
+      color: #7dff9a;
+    }
+
+    .pd-error {
+      padding: 80px 20px;
+      text-align: center;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .pd-error a {
+      color: #d4af37;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 991px) {
+      .pd-image-box img {
+        height: 460px;
+      }
+
+      .pd-title {
+        font-size: 34px;
+      }
+
+      .pd-price {
+        font-size: 34px;
+      }
+
+      .pd-old-price {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="product-detail-wrap">
+    <div class="container">
+      <div id="productDetailApp">
+        <div class="pd-error">Yuklanmoqda...</div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function getQueryParam(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    function parseOptions(value, type = "default") {
+  const text = String(value || "").trim();
+  if (!text) return [];
+
+  const sizeOrder = ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"];
+
+  // Ranglar uchun: vergul ham, tire ham bo‘lsa bo‘lib tashlaydi
+  if (type === "color") {
+    return text
+      .split(/[,-]/)
+      .map(v => v.trim())
+      .filter(Boolean);
+  }
+
+  // Oddiy ro‘yxat: S, M, L yoki Qora, Oq
+  if (text.includes(",")) {
+    return text
+      .split(",")
+      .map(v => v.trim())
+      .filter(Boolean);
+  }
+
+  // Size range: 40-44, 30-35, S-3XL
+  if (text.includes("-")) {
+    const parts = text.split("-").map(v => v.trim()).filter(Boolean);
+
+    if (parts.length === 2) {
+      const start = parts[0];
+      const end = parts[1];
+
+      // Raqamli range
+      if (!isNaN(start) && !isNaN(end)) {
+        const a = Number(start);
+        const b = Number(end);
+        const result = [];
+        for (let i = a; i <= b; i++) {
+          result.push(String(i));
+        }
+        return result;
+      }
+
+      // Harfli size range
+      const startIndex = sizeOrder.indexOf(start.toUpperCase());
+      const endIndex = sizeOrder.indexOf(end.toUpperCase());
+
+      if (startIndex !== -1 && endIndex !== -1 && startIndex <= endIndex) {
+        return sizeOrder.slice(startIndex, endIndex + 1);
+      }
+    }
+  }
+
+  return [text];
+}
+
+  // Bitta qiymat boвЂlsa
+
+    function formatPrice(value) {
+      if (value === null || value === undefined || value === "") return "0 soвЂm";
+      return Number(value).toLocaleString("uz-UZ") + " soвЂm";
+    }
+
+    function makeChips(items, group) {
+  const list = items.length ? items : ["Standart"];
+  return `
+    <div class="pd-option-list">
+      ${list.map((item, index) => `
+        <button type="button" class="pd-chip ${index === 0 ? "active" : ""}" data-group="${group}">
+          ${item}
+        </button>
+      `).join("")}
+    </div>
+  `;
+}
+
+function createChipList(items, group) {
+  return makeChips(items, group);
+}
+
+    function attachChipEvents() {
+      document.querySelectorAll(".pd-chip").forEach(chip => {
+        chip.addEventListener("click", function () {
+          const group = this.getAttribute("data-group");
+          if (!group) return;
+
+          document.querySelectorAll(`.pd-chip[data-group="${group}"]`).forEach(btn => {
+            btn.classList.remove("active");
+          });
+
+          this.classList.add("active");
+        });
+      });
+    }
+
+    function getActiveChipText(group) {
+      const active = document.querySelector(`.pd-chip[data-group="${group}"].active`);
+      return active ? active.textContent.trim() : "";
+    }
+
+    function addToCart(product) {
+      const qty = parseInt(document.getElementById("qtyInput").value) || 1;
+      const selectedSize = getActiveChipText("size");
+      const selectedColor = getActiveChipText("color");
+
+      const cartItem = {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        oldPrice: product.oldPrice || "",
+        image: product.image || "",
+        category: product.category || "",
+        desc: product.desc || "",
+        size: selectedSize || "",
+        color: selectedColor || "",
+        qty: qty
+      };
+
+      let cart = JSON.parse(localStorage.getItem("mb_cart") || "[]");
+
+      const existingIndex = cart.findIndex(item =>
+        item.id === cartItem.id &&
+        item.size === cartItem.size &&
+        item.color === cartItem.color
+      );
+
+      if (existingIndex !== -1) {
+        cart[existingIndex].qty += qty;
+      } else {
+        cart.push(cartItem);
+      }
+
+      localStorage.setItem("mb_cart", JSON.stringify(cart));
+      document.getElementById("pdMessage").textContent = "Mahsulot savatga qoвЂshildi.";
+    }
+
+    function buyNow(product) {
+      addToCart(product);
+      window.location.href = "shop-cart.html";
+    }
+
+    function renderProduct(product) {
+      const sizes = parseOptions(product.sizes, "size");
+      const colors = parseOptions(product.colors);
+      const productImages = Array.isArray(product.images) && product.images.length
+        ? product.images
+        : (product.image ? [product.image] : ["img/product/product-1.jpg"]);
+
+      const html = `
+        <div class="row">
+          <div class="col-lg-6 mb-4">
+            <div class="pd-image-box">
+              <img id="pdMainImage" src="${productImages[0]}" alt="${product.name || "Mahsulot"}">
+            </div>
+            <div class="pd-thumbs">
+              ${productImages.map((img, index) => `<img src="${img}" alt="thumb" class="pd-thumb ${index === 0 ? "active" : ""}" data-image="${img}">`).join("")}
+            </div>
+          </div>
+
+          <div class="col-lg-6 mb-4">
+            <div class="pd-info-box">
+              <div class="pd-badge">${product.category || "Mahsulot"}</div>
+
+              <h1 class="pd-title">${product.name || ""}</h1>
+
+              <p class="pd-desc">${product.desc || "Qisqa tavsif mavjud emas."}</p>
+
+              <div class="pd-price-wrap">
+                <div class="pd-price">${formatPrice(product.price)}</div>
+                ${product.oldPrice ? `<div class="pd-old-price">${formatPrice(product.oldPrice)}</div>` : ""}
+              </div>
+
+              <div class="pd-options">
+                <div class="pd-label">Size</div>
+                ${createChipList(sizes, "size")}
+              </div>
+
+              <div class="pd-options">
+                <div class="pd-label">Rang</div>
+                ${createChipList(colors, "color")}
+              </div>
+
+              <div class="pd-qty-wrap">
+                <div class="pd-label" style="margin:0;">Soni</div>
+                <input id="qtyInput" class="pd-qty-input" type="number" min="1" value="1">
+              </div>
+
+              <div class="pd-meta">
+                <div><strong>Kategoriya:</strong> ${product.category || "-"}</div>
+                <div><strong>Kargo:</strong> 7+ kun ichida yetkazib berish</div>
+                <div><strong>ToвЂlov:</strong> Buyurtma asosida</div>
+              </div>
+
+              <div class="pd-actions">
+                <button class="pd-btn pd-btn-primary" id="addToCartBtn">Savatga qoвЂshish</button>
+                <button class="pd-btn pd-btn-dark" id="buyNowBtn">Hozir olish</button>
+              </div>
+
+              <div id="pdMessage" class="pd-message"></div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("productDetailApp").innerHTML = html;
+      attachChipEvents();
+
+      document.querySelectorAll(".pd-thumb").forEach((thumb) => {
+        thumb.addEventListener("click", function () {
+          document.getElementById("pdMainImage").src = this.dataset.image;
+          document.querySelectorAll(".pd-thumb").forEach((x) => x.classList.remove("active"));
+          this.classList.add("active");
+        });
+      });
+
+      document.getElementById("addToCartBtn").addEventListener("click", function () {
+        addToCart(product);
+      });
+
+      document.getElementById("buyNowBtn").addEventListener("click", function () {
+        buyNow(product);
+      });
+    }
+
+    function renderNotFound() {
+      document.getElementById("productDetailApp").innerHTML = `
+        <div class="pd-error">
+          Mahsulot topilmadi.<br><br>
+          <a href="shop.html">DoвЂkonga qaytish</a>
+        </div>
+      `;
+    }
+
+    async function loadProductById(productId) {
+  try {
+    const byIdRes = await fetch("/api/products/" + encodeURIComponent(productId));
+    if (byIdRes.ok) {
+      return await byIdRes.json();
+    }
+  } catch {}
+
+  try {
+    const listRes = await fetch("/api/products");
+    if (!listRes.ok) return null;
+    const products = await listRes.json();
+    return (products || []).find((item) => String(item.id) === String(productId)) || null;
+  } catch {
+    return null;
+  }
+}
+
+(async function initPage() {
+  const productId = getQueryParam("id");
+  if (!productId) {
+    renderNotFound();
+    return;
+  }
+
+  const product = await loadProductById(productId);
+  if (!product) {
+    document.getElementById("productDetailApp").innerHTML = `
+      <div class="pd-error">
+        Mahsulotni yuklashda xatolik bo'ldi.<br><br>
+        <a href="shop.html">Do'konga qaytish</a>
+      </div>
+    `;
+    return;
+  }
+
+  renderProduct(product);
+})();
+</script>
+</body>
+</html>

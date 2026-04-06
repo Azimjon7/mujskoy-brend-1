@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mujskoy Brend | Checkout</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
+  <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+<body>
+  <div id="preloder"><div class="loader"></div></div>
+  <div class="offcanvas-menu-overlay"></div>
+  <div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <div class="offcanvas__logo"><a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo" /></a></div>
+    <div id="mobile-menu-wrap"></div>
+  </div>
+
+  <header class="header header--dark">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-xl-3 col-lg-3 col-8">
+          <div class="header__logo header__logo--custom">
+            <a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo" /><span>Mujskoy Brend</span></a>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6">
+          <nav class="header__menu">
+            <ul>
+              <li><a href="index.html">Bosh sahifa</a></li>
+              <li><a href="shop.html">Do'kon</a></li>
+              <li><a href="shop-cart.html">Savat</a></li>
+              <li class="active"><a href="checkout.html">Buyurtma</a></li>
+              <li><a href="contact.html">Bog'lanish</a></li>
+              <li><a href="admin.html">Admin</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-4 text-right">
+          <ul class="header__right__widget header__right__widget--simple">
+            <li>
+              <a href="shop-cart.html"><span class="icon_bag_alt"></span><div class="tip js-cart-count">0</div></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="canvas__open"><i class="fa fa-bars"></i></div>
+    </div>
+  </header>
+
+  <section class="breadcrumb-custom">
+    <div class="container">
+      <h2>Checkout</h2>
+      <p>Buyurtma ma'lumotlarini kiriting</p>
+    </div>
+  </section>
+
+  <section class="checkout spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-7">
+          <div class="checkout__form--custom">
+            <h5>Buyurtma formasi</h5>
+            <input id="name" type="text" placeholder="Ismingiz" />
+            <input id="phone" type="text" placeholder="Telefon raqam" />
+            <input id="address" type="text" placeholder="Manzil" />
+            <textarea id="note" placeholder="Izoh (ixtiyoriy)"></textarea>
+            <button class="site-btn" type="button" onclick="submitOrder()">Buyurtma berish</button>
+            <a class="site-btn site-btn--ghost" href="shop-cart.html">Savatga qaytish</a>
+            <div id="checkoutMessage" class="form-message"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="checkout__order--custom">
+            <h5>Savat xulosasi</h5>
+            <div id="checkoutSummary"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.slicknav.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    let checkoutItems = [];
+    let checkoutTotal = 0;
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
+    }
+
+    async function initCheckout() {
+      const summary = document.getElementById("checkoutSummary");
+      const cart = MBStore.getCart();
+
+      if (!cart.length) {
+        summary.innerHTML = `<p>Savat bo'sh. <a href="shop.html" style="color:#c7a44c;">Do'konga o'tish</a></p>`;
+        return;
+      }
+
+      const products = await fetch("/api/products").then((r) => r.json());
+      checkoutItems = cart.map((item) => {
+        const product = products.find((p) => String(p.id) === String(item.productId)) || {};
+        const price = Number(product.price || 0);
+        const qty = Math.max(1, Number(item.qty || 1));
+        return {
+          productId: item.productId,
+          name: product.name || "Mahsulot",
+          size: item.size || "",
+          color: item.color || "",
+          qty,
+          price,
+          lineTotal: price * qty,
+        };
+      });
+
+      checkoutTotal = checkoutItems.reduce((sum, item) => sum + item.lineTotal, 0);
+      const qtyTotal = checkoutItems.reduce((sum, item) => sum + item.qty, 0);
+
+      summary.innerHTML = `
+        <p>Jami mahsulot: <strong>${qtyTotal}</strong></p>
+        <div class="total-line"><span>Umumiy summa</span><span>${formatMoney(checkoutTotal)}</span></div>
+      `;
+    }
+
+    async function submitOrder() {
+      if (!checkoutItems.length) {
+        document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Savat bo'sh.</span>`;
+        return;
+      }
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        note: document.getElementById("note").value.trim(),
+        total: checkoutTotal,
+        items: checkoutItems,
+      };
+
+      if (!payload.name || !payload.phone || !payload.address) {
+        document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Ism, telefon va manzil majburiy.</span>`;
+        return;
+      }
+
+      fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            MBStore.clearCart();
+            document.getElementById("checkoutMessage").innerHTML = `<span style="color:#8cff9b;">Buyurtma qabul qilindi.</span>`;
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 1200);
+          } else {
+            document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Buyurtma yuborilmadi.</span>`;
+          }
+        })
+        .catch(() => {
+          document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Xatolik yuz berdi.</span>`;
+        });
+    }
+
+    initCheckout();
+  </script>
+</body>
+</html>

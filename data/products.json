@@ -1,0 +1,14 @@
+[
+  {
+    "id": "prd_1775323880022",
+    "name": "krasovka",
+    "price": 222000,
+    "oldPrice": 333000,
+    "category": "Futbolkalar",
+    "desc": "updated",
+    "image": "uploads/prd_1775323879937.jpg",
+    "sizes": "40,41",
+    "colors": "qora,oq",
+    "createdAt": "2026-04-04T17:31:20.022Z"
+  }
+]
