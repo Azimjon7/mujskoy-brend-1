@@ -4217,6 +4217,38 @@ body.checkout-clean .checkout-msg--success {
   }
 }
 
+@media (max-width: 767px) {
+  body.checkout-clean .checkout-radio-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  body.checkout-clean .checkout-radio {
+    min-height: 40px;
+    padding: 7px 10px;
+    border: 1px solid #e4e4e4;
+    border-radius: 999px;
+    justify-content: flex-start;
+    gap: 8px;
+    margin: 0;
+  }
+
+  body.checkout-clean .checkout-radio input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  body.checkout-clean .checkout-radio span {
+    display: inline-block;
+    line-height: 1.1;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+}
+
 /*====================================
 HOME LUXE THEME (index.html only)
 ====================================*/
