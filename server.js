@@ -4,7 +4,7 @@ const path = require("path");
 const multer = require("multer");
 
 const app = express();
-const PORT = 5000;
+const PORT = 5003;
 
 const DATA_DIR = path.join(__dirname, "data");
 const UPLOADS_DIR = path.join(__dirname, "uploads");
@@ -13,6 +13,14 @@ const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 
 app.use(express.json({ limit: "1000mb" }));
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  next();
+});
+
 app.use(express.static(__dirname));
 
 function ensureDir(dirPath) {
@@ -39,10 +47,12 @@ function writeJson(filePath, data) {
 }
 
 function parseList(value) {
-  if (Array.isArray(value)) return value.map((v) => String(v || "").trim()).filter(Boolean);
+  if (Array.isArray(value)) {
+    return [...new Set(value.map((v) => String(v || "").trim()).filter(Boolean))];
+  }
   const text = String(value || "").trim();
   if (!text) return [];
-  return text.split(",").map((v) => v.trim()).filter(Boolean);
+  return [...new Set(text.split(",").map((v) => v.trim()).filter(Boolean))];
 }
 
 function collectUploadedPaths(files) {
@@ -72,9 +82,20 @@ function collectUploadedPaths(files) {
 }
 
 function getProductImages(product) {
-  const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
+  const images = Array.isArray(product.images) ? [...new Set(product.images.filter(Boolean))] : [];
   if (images.length) return images;
   return product.image ? [product.image] : [];
+}
+
+function deleteUploadFiles(paths) {
+  paths.forEach((img) => {
+    if (!String(img).startsWith("uploads/")) return;
+    const filePath = path.join(__dirname, img);
+    if (!fs.existsSync(filePath)) return;
+    try {
+      fs.unlinkSync(filePath);
+    } catch {}
+  });
 }
 
 ensureDir(UPLOADS_DIR);
@@ -95,7 +116,8 @@ const productUpload = upload.any();
 function normalizeProduct(body, uploadedFiles) {
   const existingImages = parseList(body.existingImages || body.existingImage);
   const uploadedPaths = collectUploadedPaths(uploadedFiles);
-  const images = [...existingImages, ...uploadedPaths].filter(Boolean);
+  // Keep newly uploaded images first so home/shop immediately reflect updates.
+  const images = [...new Set([...uploadedPaths, ...existingImages].filter(Boolean))];
 
   return {
     id: body.id || `prd_${Date.now()}`,
@@ -151,16 +173,26 @@ app.put("/api/products/:id", productUpload, (req, res) => {
   }
 
   const current = products[index];
+  const currentImages = getProductImages(current);
+  const uploadedPaths = collectUploadedPaths(req.files);
+  const requestedExisting = parseList(req.body.existingImages || req.body.existingImage);
   const updated = normalizeProduct(
     {
       ...current,
       ...req.body,
       id: current.id,
       createdAt: current.createdAt,
-      existingImages: getProductImages(current).join(","),
+      // Respect client-side per-image removals; if new files are uploaded, replace with new set.
+      existingImages: uploadedPaths.length
+        ? ""
+        : (requestedExisting.length ? requestedExisting.join(",") : currentImages.join(",")),
     },
     req.files
   );
+
+  // Remove files that are no longer referenced after update.
+  const removedImages = currentImages.filter((img) => !updated.images.includes(img));
+  deleteUploadFiles(removedImages);
 
   products[index] = updated;
   writeJson(PRODUCTS_FILE, products);
@@ -173,14 +205,7 @@ app.delete("/api/products/:id", (req, res) => {
   const target = products.find((p) => String(p.id) === String(req.params.id));
 
   const imagePaths = target ? getProductImages(target) : [];
-  imagePaths.forEach((img) => {
-    if (!String(img).startsWith("uploads/")) return;
-    const filePath = path.join(__dirname, img);
-    if (!fs.existsSync(filePath)) return;
-    try {
-      fs.unlinkSync(filePath);
-    } catch {}
-  });
+  deleteUploadFiles(imagePaths);
 
   const filtered = products.filter((p) => String(p.id) !== String(req.params.id));
   writeJson(PRODUCTS_FILE, filtered);
@@ -193,8 +218,45 @@ app.get("/api/orders", (req, res) => {
   res.json(orders);
 });
 
-app.post("/api/orders", (req, res) => {
+const orderUpload = upload.single("paymentScreenshot");
+
+app.post("/api/orders", orderUpload, (req, res) => {
   const orders = readJson(ORDERS_FILE);
+  const paymentType = String(req.body.paymentType || "naqd").trim().toLowerCase();
+
+  let parsedItems = [];
+  const parseItemsField = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) return value;
+    if (typeof value === "string") {
+      try {
+        const decoded = JSON.parse(value);
+        return Array.isArray(decoded) ? decoded : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  };
+
+  parsedItems = parseItemsField(req.body.items);
+  if (!parsedItems.length) parsedItems = parseItemsField(req.body.itemsJson);
+
+  // Fallback for bracket-style multipart fields: items[0][productId], items[0][qty], ...
+  if (!parsedItems.length && req.body && typeof req.body === "object") {
+    const map = {};
+    Object.keys(req.body).forEach((key) => {
+      const m = key.match(/^items\[(\d+)\]\[(\w+)\]$/);
+      if (!m) return;
+      const idx = Number(m[1]);
+      const field = m[2];
+      if (!map[idx]) map[idx] = {};
+      map[idx][field] = req.body[key];
+    });
+    parsedItems = Object.keys(map)
+      .sort((a, b) => Number(a) - Number(b))
+      .map((k) => map[k]);
+  }
 
   const order = {
     id: `ord_${Date.now()}`,
@@ -203,9 +265,15 @@ app.post("/api/orders", (req, res) => {
     address: String(req.body.address || "").trim(),
     note: String(req.body.note || "").trim(),
     total: Number(req.body.total || 0),
-    items: Array.isArray(req.body.items) ? req.body.items : [],
+    items: parsedItems,
+    paymentType: paymentType === "karta" ? "karta" : "naqd",
+    paymentScreenshot: req.file ? `uploads/${req.file.filename}` : "",
     createdAt: new Date().toISOString(),
   };
+
+  if (order.paymentType === "karta" && !order.paymentScreenshot) {
+    return res.status(400).json({ message: "Karta to'lovi uchun skrinshot majburiy" });
+  }
 
   if (!order.name || !order.phone || !order.address || !order.items.length) {
     return res.status(400).json({ message: "Buyurtma uchun malumot yetarli emas" });
@@ -222,5 +290,5 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT} - server.js:225`);
+  console.log(`Server running on http://localhost:${PORT} - server.js:293`);
 });

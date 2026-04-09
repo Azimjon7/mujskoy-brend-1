@@ -1,31 +1,203 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mujskoy Brend | Bog‘lanish</title>
+  <title>Mujskoy Brend | Bog'lanish</title>
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="css/elegant-icons.css" type="text/css">
   <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
   <link rel="stylesheet" href="css/style.css" type="text/css">
+  <style>
+    .contact-page {
+      background: linear-gradient(180deg, #f7f8fa 0%, #ffffff 100%);
+    }
+
+    .contact-card {
+      height: 100%;
+      background: #fff;
+      border: 1px solid #ececf2;
+      border-radius: 14px;
+      padding: 28px 22px;
+      box-shadow: 0 10px 24px rgba(20, 22, 34, 0.07);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 30px rgba(20, 22, 34, 0.12);
+    }
+
+    .contact-card__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #1d1d1f;
+      color: #fff;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .contact-card h5 {
+      margin-bottom: 12px;
+    }
+
+    .contact-card a,
+    .contact-card p {
+      display: block;
+      color: #4a4a52;
+      margin-bottom: 8px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .contact-card a:hover {
+      color: #111;
+      text-decoration: underline;
+    }
+
+    .contact-map-box {
+      margin-top: 10px;
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #ececf2;
+      overflow: hidden;
+      box-shadow: 0 10px 24px rgba(20, 22, 34, 0.07);
+    }
+
+    .contact-map-top {
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid #f0f1f5;
+    }
+
+    .contact-map-top h5 {
+      margin: 0;
+    }
+
+    .contact-map-link {
+      font-size: 13px;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      color: #111;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .contact-map-link:hover {
+      text-decoration: underline;
+    }
+
+    .contact-map-frame {
+      width: 100%;
+      height: 380px;
+      border: 0;
+      display: block;
+    }
+
+    @media (max-width: 767px) {
+      .contact-map-frame {
+        height: 320px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div id="preloder"><div class="loader"></div></div>
   <div class="offcanvas-menu-overlay"></div>
-  <div class="offcanvas-menu-wrapper"><div class="offcanvas__close">+</div><div class="offcanvas__logo"><a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo"></a></div><div id="mobile-menu-wrap"></div></div>
+  <div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <div class="offcanvas__logo"><a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo"></a></div>
+    <div id="mobile-menu-wrap"></div>
+  </div>
+
   <header class="header header--dark">
-    <div class="container-fluid"><div class="row align-items-center"><div class="col-xl-3 col-lg-3 col-8"><div class="header__logo header__logo--custom"><a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo"><span>Mujskoy Brend</span></a></div></div><div class="col-xl-6 col-lg-6"><nav class="header__menu"><ul><li><a href="index.html">Bosh sahifa</a></li><li><a href="shop.html">Do‘kon</a></li><li><a href="shop-cart.html">Savat</a></li><li><a href="checkout.html">Buyurtma</a></li><li class="active"><a href="contact.html">Bog‘lanish</a></li><li><a href="admin.html">Admin</a></li></ul></nav></div><div class="col-xl-3 col-lg-3 col-4 text-right"><ul class="header__right__widget header__right__widget--simple"><li><a href="shop-cart.html"><span class="icon_bag_alt"></span><div class="tip js-cart-count">0</div></a></li></ul></div></div><div class="canvas__open"><i class="fa fa-bars"></i></div></div>
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-xl-3 col-lg-3 col-8">
+          <div class="header__logo header__logo--custom">
+            <a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo"><span>Mujskoy Brend</span></a>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6">
+          <nav class="header__menu">
+            <ul>
+              <li><a href="index.html">Bosh sahifa</a></li>
+              <li><a href="shop.html">Do'kon</a></li>
+              <li><a href="shop-cart.html">Savat</a></li>
+              <li><a href="checkout.html">Buyurtma</a></li>
+              <li class="active"><a href="contact.html">Bog'lanish</a></li>
+              <li><a href="admin.html">Admin</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-4 text-right">
+          <ul class="header__right__widget header__right__widget--simple">
+            <li><a href="shop-cart.html"><span class="icon_bag_alt"></span><div class="tip js-cart-count">0</div></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="canvas__open"><i class="fa fa-bars"></i></div>
+    </div>
   </header>
 
-  <section class="breadcrumb-custom"><div class="container"><h2>Bog‘lanish</h2><p>Aloqa ma’lumotlarini keyin o‘zingiz tahrirlaysiz.</p></div></section>
+  <section class="breadcrumb-custom">
+    <div class="container">
+      <h2>Bog'lanish</h2>
+      <p>Savol yoki buyurtma uchun biz bilan qulay usulda bog'laning.</p>
+    </div>
+  </section>
 
-  <section class="contact spad">
+  <section class="contact spad contact-page">
     <div class="container">
       <div class="row">
-        <div class="col-lg-4"><div class="contact__content"><div class="contact__address"><h5>Telefon</h5><ul><li>+998 90 000 00 00</li><li>+998 90 111 11 11</li></ul></div></div></div>
-        <div class="col-lg-4"><div class="contact__content"><div class="contact__address"><h5>Ijtimoiy tarmoqlar</h5><ul><li>Telegram: @mujskoybrend</li><li>Instagram: @mujskoybrend</li></ul></div></div></div>
-        <div class="col-lg-4"><div class="contact__content"><div class="contact__address"><h5>Manzil</h5><ul><li>Toshkent, O‘zbekiston</li><li>Yetkazib berish: O‘zbekiston bo‘ylab</li></ul></div></div></div>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="contact-card">
+            <div class="contact-card__icon"><i class="fa fa-phone"></i></div>
+            <h5>Telefon</h5>
+            <a href="tel:+998905383733">+998 90 538 37 33</a>
+            <a href="tel:+998901111111">+998 90 111 11 11</a>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="contact-card">
+            <div class="contact-card__icon"><i class="fa fa-paper-plane"></i></div>
+            <h5>Ijtimoiy tarmoqlar</h5>
+            <a href="https://t.me/Mujskoybrend_admini" target="_blank" rel="noopener noreferrer">Telegram: @Mujskoybrend_admini</a>
+            <a href="https://www.instagram.com/mujskoy.brends/" target="_blank" rel="noopener noreferrer">Instagram: @mujskoy.brends</a>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 mb-4">
+          <div class="contact-card">
+            <div class="contact-card__icon"><i class="fa fa-map-marker"></i></div>
+            <h5>Manzil</h5>
+            <p>Jizzax, O'zbekiston</p>
+            <a href="https://maps.google.com/maps?q=40.093696,67.835332&amp;ll=40.093696,67.835332&amp;z=16" target="_blank" rel="noopener noreferrer">Google Maps orqali ochish</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="contact-map-box">
+        <div class="contact-map-top">
+          <h5>Lokatsiya xaritada</h5>
+          <a class="contact-map-link" href="https://maps.google.com/maps?q=40.093696,67.835332&amp;ll=40.093696,67.835332&amp;z=16" target="_blank" rel="noopener noreferrer">Google Maps'da ochish</a>
+        </div>
+        <iframe
+          class="contact-map-frame"
+          src="https://maps.google.com/maps?q=40.093696,67.835332&amp;z=16&amp;output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen
+        ></iframe>
       </div>
     </div>
   </section>

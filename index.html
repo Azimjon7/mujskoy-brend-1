@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Mujskoy Brend - premium erkaklar kiyimi va oyoq kiyimlar do‘koni">
+  <meta name="description" content="Mujskoy Brend - premium erkaklar kiyimi va oyoq kiyimlari do'koni">
   <title>Mujskoy Brend | Bosh sahifa</title>
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
   <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/slicknav.min.css" type="text/css">
   <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
-<body>
+<body class="home-luxe">
   <div id="preloder"><div class="loader"></div></div>
   <div class="offcanvas-menu-overlay"></div>
   <div class="offcanvas-menu-wrapper">
@@ -20,7 +20,7 @@
     <div id="mobile-menu-wrap"></div>
   </div>
 
-  <header class="header header--dark">
+  <header class="header header--dark header--luxe">
     <div class="container-fluid">
       <div class="row align-items-center">
         <div class="col-xl-3 col-lg-3 col-8">
@@ -35,10 +35,10 @@
           <nav class="header__menu">
             <ul>
               <li class="active"><a href="index.html">Bosh sahifa</a></li>
-              <li><a href="shop.html">Do‘kon</a></li>
+              <li><a href="shop.html">Do'kon</a></li>
               <li><a href="shop-cart.html">Savat</a></li>
               <li><a href="checkout.html">Buyurtma</a></li>
-              <li><a href="contact.html">Bog‘lanish</a></li>
+              <li><a href="contact.html">Bog'lanish</a></li>
               <li><a href="admin.html">Admin</a></li>
             </ul>
           </nav>
@@ -55,80 +55,178 @@
     </div>
   </header>
 
-  <section class="hero hero--custom" style="background-image:url('img/placeholders/hero.svg')">
+  <section class="luxe-hero">
+    <div class="luxe-hero__glow luxe-hero__glow--left"></div>
+    <div class="luxe-hero__glow luxe-hero__glow--right"></div>
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-lg-7">
-          <div class="hero__text">
-            <span>Premium erkaklar fashion store</span>
-            <h1>Mujskoy Brend</h1>
-            <p>Eski mahsulotlar va rasmlar olib tashlandi. Endi yangi mahsulotlar, rasmlar, narx va descriptionlarni admin paneldan o‘zingiz yuklaysiz.</p>
-            <a href="shop.html" class="site-btn">Katalogni ko‘rish</a>
-            <a href="admin.html" class="site-btn site-btn--ghost">Admin panel</a>
+        <div class="col-lg-6">
+          <div class="luxe-copy luxe-reveal">
+            <span class="luxe-kicker">Premium erkaklar kolleksiyasi</span>
+            <h1>Sifatli uslub, zamonaviy ko'rinish va toza premium dizayn</h1>
+            <p>
+              Mujskoy Brendda kundalik va klassik stil uchun eng yaxshi erkaklar kiyimlari jamlangan.
+              Har bir model real mahsulot rasmlari bilan yangilanadi va bir necha soniyada savatga qo'shiladi.
+            </p>
+            <div class="luxe-actions">
+              <a href="shop.html" class="site-btn">Do'konga kirish</a>
+              <a href="#new-arrivals" class="site-btn site-btn--ghost">Yangi mahsulotlar</a>
+            </div>
+            <div class="luxe-stats">
+              <div class="luxe-stat"><strong>100%</strong><span>Sifat nazorati</span></div>
+              <div class="luxe-stat"><strong>6+</strong><span>Kategoriya turi</span></div>
+              <div class="luxe-stat"><strong>7 kun</strong><span>Tez yetkazish</span></div>
+            </div>
           </div>
         </div>
-        <div class="col-lg-5">
-          <div class="hero__card">
-            <h4>Asosiy bo‘limlar</h4>
-            <ul>
-              <li>Futbolkalar</li>
-              <li>Kostyumlar</li>
-              <li>Ustki kiyimlar</li>
-              <li>Shimlar</li>
-              <li>Oyoq kiyimlar</li>
-            </ul>
-            <p>Telefon orqali ham admin sahifaga kirib, mahsulot qo‘shish mumkin.</p>
+        <div class="col-lg-6">
+          <div class="luxe-collage luxe-reveal">
+            <div class="luxe-collage__main luxe-float">
+              <img src="uploads/prd_1775589998750_108273.jpg" alt="Premium sport krossovka">
+            </div>
+            <div class="luxe-collage__sub luxe-float" style="--delay:.2s;">
+              <img src="uploads/prd_1775593656009_459074.jpg" alt="Premium polo">
+            </div>
+            <div class="luxe-collage__sub luxe-float" style="--delay:.4s;">
+              <img src="uploads/prd_1775593906045_601035.jpg" alt="Premium ko'ylak">
+            </div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="categories categories--custom spad">
+  <section class="luxe-categories spad">
     <div class="container">
-      <div class="section-title"><h4>Kategoriyalar</h4></div>
+      <div class="section-title section-title--luxe luxe-reveal">
+        <h4>Kategoriyalar</h4>
+      </div>
       <div class="row">
-        <div class="col-lg-4 col-md-6"><div class="cat-card"><img src="img/placeholders/category.svg" alt="Futbolkalar"><h5>Futbolkalar</h5><p>Kundalik va premium modellar</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="cat-card"><img src="img/placeholders/category.svg" alt="Kostyumlar"><h5>Kostyumlar</h5><p>Klassik va zamonaviy ko‘rinish</p></div></div>
-        <div class="col-lg-4 col-md-6"><div class="cat-card"><img src="img/placeholders/category.svg" alt="Ustki kiyimlar"><h5>Ustki kiyimlar</h5><p>Kurtka, palto, hudi va sviterlar</p></div></div>
-        <div class="col-lg-6 col-md-6"><div class="cat-card"><img src="img/placeholders/category.svg" alt="Shimlar"><h5>Shimlar</h5><p>Casual va klassik modellari</p></div></div>
-        <div class="col-lg-6 col-md-6"><div class="cat-card"><img src="img/placeholders/category.svg" alt="Oyoq kiyimlar"><h5>Oyoq kiyimlar</h5><p>Tufli, krasovka, botinka va boshqalar</p></div></div>
+        <div class="col-lg-4 col-md-6">
+          <a class="luxe-cat luxe-reveal" href="shop.html?category=Futbolkalar">
+            <img src="uploads/prd_1775593656009_459074.jpg" alt="Futbolkalar">
+            <div class="luxe-cat__overlay">
+              <h5>Futbolkalar</h5>
+              <p>Kundalik va premium polo uslublar</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <a class="luxe-cat luxe-reveal" href="shop.html?category=Aksesuarlar">
+            <img src="uploads/prd_1775677900785_959253.jpg" alt="Aksesuarlar">
+            <div class="luxe-cat__overlay">
+              <h5>Aksesuarlar</h5>
+              <p>Uchrashuv va tadbirlar uchun klassik variant</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <a class="luxe-cat luxe-reveal" href="shop.html?category=Ustki kiyimlar">
+            <img src="uploads/prd_1775594121632_636445.jpg" alt="Ustki kiyimlar">
+            <div class="luxe-cat__overlay">
+              <h5>Ustki kiyimlar</h5>
+              <p>Sezon uchun zamonaviy ustki kiyimlar</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <a class="luxe-cat luxe-reveal" href="shop.html?category=Shimlar">
+            <img src="uploads/prd_1775593429902_583185.jpg" alt="Shimlar">
+            <div class="luxe-cat__overlay">
+              <h5>Shimlar</h5>
+              <p>Qulay va trend slim fit kolleksiya</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <a class="luxe-cat luxe-reveal" href="shop.html?category=Oyoq kiyimlar">
+            <img src="uploads/prd_1775589998774_997475.jpg" alt="Oyoq kiyimlar">
+            <div class="luxe-cat__overlay">
+              <h5>Oyoq kiyimlar</h5>
+              <p>Krossovka, tufli va premium sport modeli</p>
+            </div>
+          </a>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <a class="luxe-cat luxe-reveal" href="shop.html?category=Bosh kiyimlar">
+            <img src="uploads/prd_1775680295531_67599.jpg" alt="Bosh kiyimlar">
+            <div class="luxe-cat__overlay">
+              <h5>Bosh kiyimlar</h5>
+              <p>Kepka va mavsumiy bosh kiyim variantlari</p>
+            </div>
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="product spad bg-light-custom">
+  <section class="luxe-benefits">
     <div class="container">
-      <div class="section-title"><h4>Yangi mahsulotlar</h4></div>
+      <div class="row">
+        <div class="col-lg-4 col-md-6">
+          <div class="luxe-benefit luxe-reveal">
+            <i class="fa fa-star-o"></i>
+            <h6>Premium tanlov</h6>
+            <p>Sifatli material va zamonaviy fasonlar bilan shakllangan kolleksiya.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="luxe-benefit luxe-reveal">
+            <i class="fa fa-bolt"></i>
+            <h6>Tez buyurtma</h6>
+            <p>Savat, checkout va to'lov jarayoni soddalashtirilgan tizimda ishlaydi.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+          <div class="luxe-benefit luxe-reveal">
+            <i class="fa fa-truck"></i>
+            <h6>Butun O'zbekiston bo'ylab</h6>
+            <p>Buyurtmalar qisqa muddatda yetkaziladi va statusi admin panelda ko'rinadi.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="product spad bg-light-custom" id="new-arrivals">
+    <div class="container">
+      <div class="section-title section-title--luxe luxe-reveal"><h4>Yangi mahsulotlar</h4></div>
       <div class="row" id="new-products"></div>
     </div>
   </section>
 
-  <section class="product spad">
-    <div class="container">
-      <div class="section-title"><h4>Ko‘p sotiladiganlar</h4></div>
-      <div class="row" id="featured-products"></div>
-    </div>
-  </section>
-
-  <section class="promo-strip spad-small">
-    <div class="container">
-      <div class="promo-strip__box">
-        <div>
-          <h3>Rasm va ma’lumotlarni keyin o‘zingiz yuklaysiz</h3>
-          <p>Hozir saytdagi eski demo rasmlar va mahsulotlar tozalandi. Barchasi admin panelga ulandi.</p>
-        </div>
-        <a href="admin.html" class="site-btn">Admin sahifaga o‘tish</a>
-      </div>
-    </div>
-  </section>
-
-  <footer class="footer footer--dark spad-small">
+  <footer class="footer footer--dark footer--luxe spad-small">
     <div class="container">
       <div class="row">
-        <div class="col-lg-5"><div class="footer__about"><div class="header__logo header__logo--custom"><a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo"><span>Mujskoy Brend</span></a></div><p>Premium erkaklar kiyimi va oyoq kiyimlari do‘koni.</p></div></div>
-        <div class="col-lg-3"><div class="footer__widget"><h6>Sahifalar</h6><ul><li><a href="shop.html">Do‘kon</a></li><li><a href="shop-cart.html">Savat</a></li><li><a href="checkout.html">Buyurtma</a></li><li><a href="admin.html">Admin</a></li></ul></div></div>
-        <div class="col-lg-4"><div class="footer__widget"><h6>Bog‘lanish</h6><ul><li><a href="tel:+998900000000">+998 90 000 00 00</a></li><li><a href="#">Telegram va Instagram keyin qo‘shiladi</a></li><li><a href="contact.html">Manzil va aloqa ma’lumoti</a></li></ul></div></div>
+        <div class="col-lg-5">
+          <div class="footer__about">
+            <div class="header__logo header__logo--custom">
+              <a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo"><span>Mujskoy Brend</span></a>
+            </div>
+            <p>Premium erkaklar kiyimi va oyoq kiyimlari uchun zamonaviy onlayn platforma.</p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="footer__widget">
+            <h6>Asosiy sahifalar</h6>
+            <ul>
+              <li><a href="shop.html">Do'kon</a></li>
+              <li><a href="shop-cart.html">Savat</a></li>
+              <li><a href="checkout.html">Buyurtma</a></li>
+              <li><a href="contact.html">Bog'lanish</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="footer__widget">
+            <h6>Aloqa</h6>
+            <ul>
+              <li><a href="tel:+998900000000">+998 90 000 00 00</a></li>
+              <li><a href="admin.html">Admin panelga kirish</a></li>
+              <li><a href="contact.html">Manzil va aloqa ma'lumoti</a></li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </footer>
@@ -139,5 +237,6 @@
   <script src="js/main.js"></script>
   <script src="js/store.js"></script>
   <script src="js/index-products.js"></script>
+  <script src="js/home-luxe.js"></script>
 </body>
 </html>

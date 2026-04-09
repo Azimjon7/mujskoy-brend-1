@@ -1,14 +1,621 @@
 [
   {
-    "id": "prd_1775323880022",
-    "name": "krasovka",
-    "price": 222000,
-    "oldPrice": 333000,
+    "id": "prd_1775681573066",
+    "name": "🔥 Premium slim-fit erkaklar ko‘ylagi",
+    "price": 199000,
+    "oldPrice": 300000,
+    "category": "Shimlar",
+    "desc": "✔️ Original model\r\n✔️ Kachestvinniy material\r\n✔️ Stretch – maksimal qulaylik\r\n✔️ Ajin tushmaydi\r\n👔 Mos keladi:\r\n• Ofis / ishga\r\n• To‘y va uchrashuvlarga\r\n• Kundalik kiyishga\r\n👕 Kombinatsiya:\r\n• Klassik shim + tufli\r\n• Jeans + krossovka",
+    "image": "uploads/prd_1775681573052_610122.jpg",
+    "images": [
+      "uploads/prd_1775681573052_610122.jpg",
+      "uploads/prd_1775681573056_806014.jpg",
+      "uploads/prd_1775681573058_279109.jpg"
+    ],
+    "sizes": "M-4XL",
+    "colors": "yashil, qora, oq",
+    "createdAt": "2026-04-08T20:52:53.067Z"
+  },
+  {
+    "id": "prd_1775681243067",
+    "name": "👟 Yoz uchun TOP тапочка 🔥",
+    "price": 205000,
+    "oldPrice": 350000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ EVA material – juda yengil\r\n✔️ Anti-slip (sirpanmaydi)\r\n✨ Qayerda kiyiladi?\r\n• Uyda 🏠\r\n• Ko‘chada 🌆\r\n• Plyaj / sayr 🏖\r\n• Har kuni 👌\r\n💥 Afzalliklari:\r\n• Oyog‘ingizni siqmaydi\r\n• Juda qulay va yumshoq\r\n• Terlatmaydi 🌬\r\n• Zamonaviy dizayn 🔥",
+    "image": "uploads/prd_1775681243058_175615.jpg",
+    "images": [
+      "uploads/prd_1775681243058_175615.jpg",
+      "uploads/prd_1775681243061_561080.jpg"
+    ],
+    "sizes": "36-45",
+    "colors": "oq, qora, bejeviy",
+    "createdAt": "2026-04-08T20:47:23.068Z"
+  },
+  {
+    "id": "prd_1775681127600",
+    "name": "👟 Adidas style тапочка",
+    "price": 210000,
+    "oldPrice": 350000,
     "category": "Futbolkalar",
-    "desc": "updated",
-    "image": "uploads/prd_1775323879937.jpg",
-    "sizes": "40,41",
-    "colors": "qora,oq",
+    "desc": "✔️ Original model\r\n✔️ EVA material\r\n✔️ Yengil va mustahkam\r\n\r\n💯 Afzalliklari:\r\n• Terlatmaydi 🌬\r\n• Yumshoq va qulay\r\n• Sirpanmaydi\r\n\r\n✨ Mos keladi:\r\n• Ko‘cha • Sayr • Plyaj 🔥",
+    "image": "uploads/prd_1775681127590_850346.jpg",
+    "images": [
+      "uploads/prd_1775681127590_850346.jpg",
+      "uploads/prd_1775681127591_856279.jpg",
+      "uploads/prd_1775681127592_735247.jpg",
+      "uploads/prd_1775681127595_529617.jpg"
+    ],
+    "sizes": "36-45",
+    "colors": "oq/purpule, oq/qora, qora/purpule, qora/orange",
+    "createdAt": "2026-04-08T20:45:27.600Z"
+  },
+  {
+    "id": "prd_1775681008960",
+    "name": "👟 AirMax Fire",
+    "price": 445000,
+    "oldPrice": 550000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Air cushion\r\n✔️ Yengil va zamonaviy\r\n\r\n💯 Afzalliklari:\r\n• Oyoqni charchatmaydi\r\n• Nafas oladi 🌬\r\n• Sirpanmaydi\r\n\r\n✨ Mos keladi:\r\n• Sport • Kundalik • Sayr 😎",
+    "image": "uploads/prd_1775681008955_780246.jpg",
+    "images": [
+      "uploads/prd_1775681008955_780246.jpg",
+      "uploads/prd_1775681008956_392301.jpg"
+    ],
+    "sizes": "36-45",
+    "colors": "qora, oq, qora-oq, qora-orange, jigarrang",
+    "createdAt": "2026-04-08T20:43:28.960Z"
+  },
+  {
+    "id": "prd_1775680863850",
+    "name": "👞 Yoz uchun eng chiroyli erkaklar tuflisi 🔥",
+    "price": 330000,
+    "oldPrice": 450000,
+    "category": "Futbolkalar",
+    "desc": "✔️ Premium dizayn\r\n✔️ Juda qulay\r\n✔️ Har qanday kiyim bilan mos 😎\r\n💥 Qayerda kiyiladi:\r\n• Ishga 💼\r\n• Uchrashuvga ❤️\r\n• Kundalik style 👌\r\n✨ Afzalliklari:\r\n• Nafas oladigan material 🌬\r\n• Zamonaviy dizayn 🔥\r\n• Sifatli ko‘rinish 👍",
+    "image": "uploads/prd_1775680863839_39845.jpg",
+    "images": [
+      "uploads/prd_1775680863839_39845.jpg",
+      "uploads/prd_1775680863842_762823.jpg"
+    ],
+    "sizes": "38,46",
+    "colors": "qora, jigarrang",
+    "createdAt": "2026-04-08T20:41:03.850Z"
+  },
+  {
+    "id": "prd_1775680755409",
+    "name": "Erkaklar uchun zamonaviy sport set 🔥",
+    "price": 280000,
+    "oldPrice": 350000,
+    "category": "Bosh kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Yuqori sifat\r\n✔️ Lux style 😎\r\n\r\n💯 Afzalliklari:\r\n• Yengil va qulay\r\n• Chiroyli fason\r\n• Premium ko‘rinish 💎\r\n\r\n✨ Mos keladi:\r\n• Uchrashuv • Bayram • Kundalik",
+    "image": "uploads/prd_1775680755340_204712.jpg",
+    "images": [
+      "uploads/prd_1775680755340_204712.jpg",
+      "uploads/prd_1775680755341_211893.jpg",
+      "uploads/prd_1775680755342_105156.jpg",
+      "uploads/prd_1775680755348_939529.jpg"
+    ],
+    "sizes": "M-3XL",
+    "colors": "qora, oq",
+    "createdAt": "2026-04-08T20:39:15.409Z"
+  },
+  {
+    "id": "prd_1775680656769",
+    "name": "Erkaklar uchun premium komplekt 🔥",
+    "price": 380000,
+    "oldPrice": 450000,
+    "category": "Ustki kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Yuqori sifat\r\n✔️ Lux style 😎\r\n\r\n💯 Afzalliklari:\r\n• Yengil va qulay\r\n• Chiroyli fason\r\n• Premium ko‘rinish 💎\r\n\r\n✨ Mos keladi:\r\n• Uchrashuv • Bayram • Kundalik",
+    "image": "uploads/prd_1775680656754_479424.jpg",
+    "images": [
+      "uploads/prd_1775680656754_479424.jpg",
+      "uploads/prd_1775680656760_54469.jpg",
+      "uploads/prd_1775680656764_609156.jpg"
+    ],
+    "sizes": "S-2XL",
+    "colors": "",
+    "createdAt": "2026-04-08T20:37:36.769Z"
+  },
+  {
+    "id": "prd_1775680560111",
+    "name": "Erkaklar uchun trend krossovka 🔥",
+    "price": 230000,
+    "oldPrice": 350000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Yuqori sifat\r\n✔️ Qulay va zamonaviy\r\n\r\n💯 Afzalliklari:\r\n• Yengil va yumshoq\r\n• Nafas oladi\r\n• Sirpanmaydi\r\n\r\n✨ Mos keladi:\r\n• Kundalik • Sport • Sayr 🔥",
+    "image": "uploads/prd_1775680560091_36506.jpg",
+    "images": [
+      "uploads/prd_1775680560091_36506.jpg",
+      "uploads/prd_1775680560094_188647.jpg",
+      "uploads/prd_1775680560097_53587.jpg",
+      "uploads/prd_1775680560099_387018.jpg",
+      "uploads/prd_1775680560102_30774.jpg"
+    ],
+    "sizes": "39-44",
+    "colors": "",
+    "createdAt": "2026-04-08T20:36:00.114Z"
+  },
+  {
+    "id": "prd_1775680459241",
+    "name": "🔥 Erkaklar uchun 3 talik sport komplekt 🔥",
+    "price": 290000,
+    "oldPrice": 390000,
+    "category": "Ustki kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Yuqori sifat\r\n✔️ Qulay va universal\r\n\r\n💥 Komplekt:\r\n• Futbolka • Short • Shim\r\n\r\n🔥 3 xil style\r\n\r\n💯 Afzalliklari:\r\n• Nafas oladi\r\n• Terlatmaydi\r\n• Sport + kundalik uchun ideal",
+    "image": "uploads/prd_1775680459237_530747.jpg",
+    "images": [
+      "uploads/prd_1775680459237_530747.jpg",
+      "uploads/prd_1775680459237_699971.jpg",
+      "uploads/prd_1775680459238_836089.jpg"
+    ],
+    "sizes": "M-5XL",
+    "colors": "qora, oq, kok, kulrang, yashil",
+    "createdAt": "2026-04-08T20:34:19.241Z"
+  },
+  {
+    "id": "prd_1775680295547",
+    "name": "🧢 Trend kepka 😎",
+    "price": 80000,
+    "oldPrice": 180000,
+    "category": "Bosh kiyimlar",
+    "desc": "✔️ Universal model\r\n✔️ Juda yengil\r\n✔️ Quyoshdan himoya qiladi ☀️\r\n💥 Qayerda kiyiladi:\r\n• Ko‘chada 🚶‍♂️\r\n• Sayrda 🌿\r\n• Sportda 🏃‍♂️\r\n✨ Afzalliklari:\r\n• Minimal dizayn 🔥\r\n• Arzon narx 💸\r\n• Har kimga mos 👌",
+    "image": "uploads/prd_1775680295531_67599.jpg",
+    "images": [
+      "uploads/prd_1775680295531_67599.jpg",
+      "uploads/prd_1775680295533_915994.jpg",
+      "uploads/prd_1775680295534_983834.jpg",
+      "uploads/prd_1775680295537_797424.jpg"
+    ],
+    "sizes": "Universal",
+    "colors": "qora, oq, yashil, bejeviy, pushti",
+    "createdAt": "2026-04-08T20:31:35.547Z"
+  },
+  {
+    "id": "prd_1775680181383",
+    "name": "🔥 Erkaklar uchun yozgi tapochka 😎",
+    "price": 175000,
+    "oldPrice": 250000,
+    "category": "Futbolkalar",
+    "desc": "✔️ Yengil va qulay\r\n✔️ Sirpanmaydi\r\n\r\n✨ Mos keladi:\r\n• Uy 🏠 • Ko‘cha 🚶‍♂️\r\n\r\n💯 Afzalliklari:\r\n• Arzon 💸\r\n• Komfort 👌",
+    "image": "uploads/prd_1775680181369_559519.jpg",
+    "images": [
+      "uploads/prd_1775680181369_559519.jpg",
+      "uploads/prd_1775680181371_442210.jpg",
+      "uploads/prd_1775680181372_689688.jpg",
+      "uploads/prd_1775680181374_36432.jpg"
+    ],
+    "sizes": "40-45",
+    "colors": "qora, oq, kulrang",
+    "createdAt": "2026-04-08T20:29:41.383Z"
+  },
+  {
+    "id": "prd_1775680102372",
+    "name": "🧢 Yoz uchun ideal kepka 😎",
+    "price": 80000,
+    "oldPrice": 100000,
+    "category": "Bosh kiyimlar",
+    "desc": "✔️ Setkali dizayn – bosh qizimaydi 🌬\r\n✔️ Juda yengil\r\n✔️ Har kimga mos 👌\r\n💥 Qayerda kiyiladi:\r\n• Ko‘chada 🚶‍♂️\r\n• Sayrda 🌿\r\n• Sportda 🏃‍♂️\r\n✨ Afzalliklari:\r\n• Trend model 🔥\r\n• Arzon narx 💸\r\n• Qulay va chiroyli 👍",
+    "image": "uploads/prd_1775680102317_191899.jpg",
+    "images": [
+      "uploads/prd_1775680102317_191899.jpg",
+      "uploads/prd_1775680102320_983506.jpg",
+      "uploads/prd_1775680102321_813240.jpg",
+      "uploads/prd_1775680102322_588111.jpg",
+      "uploads/prd_1775680102323_699652.jpg",
+      "uploads/prd_1775680102324_472806.jpg",
+      "uploads/prd_1775680102329_937796.jpg"
+    ],
+    "sizes": "universal",
+    "colors": "qora, oq, qizil, kulrang, jigarrang",
+    "createdAt": "2026-04-08T20:28:22.372Z"
+  },
+  {
+    "id": "prd_1775679537305",
+    "name": "🔥 Eng ko‘p sotilayotgan komplekt 🔥",
+    "price": 250000,
+    "oldPrice": 350000,
+    "category": "Ustki kiyimlar",
+    "desc": "✔️ Kapyushonli dizayn 😎\r\n✔️ Juda yengil va qulay ☁️\r\n✔️ Trend model 2025\r\n💎 Komplekt:\r\n• Zipli futbolka\r\n• Shim\r\n✨ Afzalliklari:\r\n• Terlatmaydi ❌\r\n• Salqin material ❄️\r\n• Har kuni kiyishga zo‘r 👌",
+    "image": "uploads/prd_1775679537299_28202.jpg",
+    "images": [
+      "uploads/prd_1775679537299_28202.jpg",
+      "uploads/prd_1775679537299_58274.jpg",
+      "uploads/prd_1775679537300_605479.jpg",
+      "uploads/prd_1775679537300_607063.jpg"
+    ],
+    "sizes": "M-5XL",
+    "colors": "oq, qora",
+    "createdAt": "2026-04-08T20:18:57.305Z"
+  },
+  {
+    "id": "prd_1775679392956",
+    "name": "💎 PREMIUM MODEL 💎",
+    "price": 290000,
+    "oldPrice": 390000,
+    "category": "Ustki kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Sifatli material\r\n✔️ Slim fit\r\n\r\n✨ Mos keladi:\r\n• Ofis • Uchrashuv • Kundalik\r\n\r\n💯 Afzalliklari:\r\n• Qomatni chiroyli ko‘rsatadi\r\n• Yengil va qulay",
+    "image": "uploads/prd_1775679392945_691918.jpg",
+    "images": [
+      "uploads/prd_1775679392945_691918.jpg",
+      "uploads/prd_1775679392947_555654.jpg",
+      "uploads/prd_1775679392947_667846.jpg",
+      "uploads/prd_1775679392951_790956.jpg"
+    ],
+    "sizes": "M-4XL",
+    "colors": "yashil, qora, bejiviy",
+    "createdAt": "2026-04-08T20:16:32.956Z"
+  },
+  {
+    "id": "prd_1775679045031",
+    "name": "🔥 PREMIUM SPORT SHIM 🔥",
+    "price": 210000,
+    "oldPrice": 310000,
+    "category": "Shimlar",
+    "desc": "✔️ Slim fit dizayn\r\n✔️ Juda qulay va yengil\r\n✔️ Strech material\r\n✔️ Har kunlik + sport uchun ideal",
+    "image": "uploads/prd_1775679045021_689370.jpg",
+    "images": [
+      "uploads/prd_1775679045021_689370.jpg",
+      "uploads/prd_1775679045023_830444.jpg",
+      "uploads/prd_1775679045024_348629.jpg"
+    ],
+    "sizes": "29-38",
+    "colors": "qora, oq",
+    "createdAt": "2026-04-08T20:10:45.031Z"
+  },
+  {
+    "id": "prd_1775678950419",
+    "name": "👟 RETRO STYLE KROSSOVKA 🔥",
+    "price": 310000,
+    "oldPrice": 460000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Yengil va qulay\r\n✔️ Nafas oluvchi material\r\n✔️ Soft taglik\r\n✔️ Kundalik va chiqish uchun ideal",
+    "image": "uploads/prd_1775678950412_498004.jpg",
+    "images": [
+      "uploads/prd_1775678950412_498004.jpg",
+      "uploads/prd_1775678950412_761964.jpg",
+      "uploads/prd_1775678950414_664969.jpg",
+      "uploads/prd_1775678950414_278370.jpg"
+    ],
+    "sizes": "38-44",
+    "colors": "oq, qora, kulrang",
+    "createdAt": "2026-04-08T20:09:10.419Z"
+  },
+  {
+    "id": "prd_1775678833025",
+    "name": "👔 PREMIUM CLASSIC KO‘YLAK 🔥",
+    "price": 230000,
+    "oldPrice": 350000,
+    "category": "Futbolkalar",
+    "desc": "✔️ Original model\r\n✔️ Kachestvenniy mato\r\n✔️ Yengil va nafas oluvchi\r\n✔️ Qomatga chiroyli tushadi\r\n\r\n✨ Qayerda kiyish mumkin:\r\n• Ish / ofis\r\n• Uchrashuvlar\r\n• Kundalik yurish",
+    "image": "uploads/prd_1775678833021_580745.jpg",
+    "images": [
+      "uploads/prd_1775678833021_580745.jpg",
+      "uploads/prd_1775678833022_599685.jpg"
+    ],
+    "sizes": "M-4XL",
+    "colors": "jigarrang, oq",
+    "createdAt": "2026-04-08T20:07:13.025Z"
+  },
+  {
+    "id": "prd_1775678749977",
+    "name": "Premium Koylak",
+    "price": 199000,
+    "oldPrice": 299000,
+    "category": "Futbolkalar",
+    "desc": "✔️ Original model\r\n✔️ Sifatli material\r\n✔️ Slim fit\r\n\r\n✨ Mos keladi:\r\n• Ofis • Uchrashuv • Kundalik\r\n\r\n💯 Afzalliklari:\r\n• Qomatni chiroyli ko‘rsatadi\r\n• Yengil va qulay",
+    "image": "uploads/prd_1775678749973_840108.jpg",
+    "images": [
+      "uploads/prd_1775678749973_840108.jpg",
+      "uploads/prd_1775678749973_980966.jpg",
+      "uploads/prd_1775678749974_842927.jpg"
+    ],
+    "sizes": "M-4XL",
+    "colors": "qora, oq",
+    "createdAt": "2026-04-08T20:05:49.977Z"
+  },
+  {
+    "id": "prd_1775678645319",
+    "name": "👔 PREMIUM ERKAKLAR KO‘YLAK 🔥",
+    "price": 199000,
+    "oldPrice": 299000,
+    "category": "Futbolkalar",
+    "desc": "✔️ Original model\r\n✔️ Sifatli material\r\n✔️ Slim fit\r\n\r\n✨ Mos keladi:\r\n• Ofis • Uchrashuv • Kundalik\r\n\r\n💯 Afzalliklari:\r\n• Qomatni chiroyli ko‘rsatadi\r\n• Yengil va qulay",
+    "image": "uploads/prd_1775678645310_83825.jpg",
+    "images": [
+      "uploads/prd_1775678645310_83825.jpg",
+      "uploads/prd_1775678645312_325404.jpg",
+      "uploads/prd_1775678645314_276761.jpg",
+      "uploads/prd_1775678645315_808200.jpg"
+    ],
+    "sizes": "M-4XL",
+    "colors": "qora, oq, qizil",
+    "createdAt": "2026-04-08T20:04:05.319Z"
+  },
+  {
+    "id": "prd_1775678548013",
+    "name": "👟 TREND KROSSOVKA 🔥",
+    "price": 340000,
+    "oldPrice": 450000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Yengil va qulay\r\n\r\n✨ Mos keladi:\r\n• Kundalik • Sayr • Ish\r\n\r\n💯 Afzalliklari:\r\n• Soft taglik\r\n• Uzoq yurishga mos\r\n• Qulay va universal",
+    "image": "uploads/prd_1775678547997_890093.jpg",
+    "images": [
+      "uploads/prd_1775678547997_890093.jpg",
+      "uploads/prd_1775678548001_142624.jpg",
+      "uploads/prd_1775678548003_853439.jpg",
+      "uploads/prd_1775678548009_842948.jpg"
+    ],
+    "sizes": "36-45",
+    "colors": "oq, kulrang, yashil",
+    "createdAt": "2026-04-08T20:02:28.013Z"
+  },
+  {
+    "id": "prd_1775678420506",
+    "name": "Trend Sport Shim",
+    "price": 150000,
+    "oldPrice": 250000,
+    "category": "Shimlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Elastik va qulay\r\n\r\n✨ Mos keladi:\r\n• Sport • Kundalik • Street\r\n\r\n💯 Afzalliklari:\r\n• Terlatmaydi\r\n• Erkin harakat\r\n• Trend dizayn",
+    "image": "uploads/prd_1775678420497_40511.jpg",
+    "images": [
+      "uploads/prd_1775678420497_40511.jpg",
+      "uploads/prd_1775678420498_871869.jpg",
+      "uploads/prd_1775678420500_667051.jpg",
+      "uploads/prd_1775678420503_436186.jpg"
+    ],
+    "sizes": "M-3XL",
+    "colors": "oq+rangli, qora",
+    "createdAt": "2026-04-08T20:00:20.506Z"
+  },
+  {
+    "id": "prd_1775678323862",
+    "name": "Trend Sport Shim",
+    "price": 150000,
+    "oldPrice": 250000,
+    "category": "Shimlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Elastik va qulay\r\n\r\n✨ Mos keladi:\r\n• Sport • Kundalik • Street\r\n\r\n💯 Afzalliklari:\r\n• Terlatmaydi\r\n• Erkin harakat\r\n• Trend dizayn",
+    "image": "uploads/prd_1775678323854_263956.jpg",
+    "images": [
+      "uploads/prd_1775678323854_263956.jpg",
+      "uploads/prd_1775678323856_564444.jpg",
+      "uploads/prd_1775678323857_608899.jpg"
+    ],
+    "sizes": "M-3XL",
+    "colors": "qora",
+    "createdAt": "2026-04-08T19:58:43.862Z"
+  },
+  {
+    "id": "prd_1775678176548",
+    "name": "Trend Krasovka",
+    "price": 299000,
+    "oldPrice": 399000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Yengil va qulay\r\n\r\n✨ Mos keladi:\r\n• Kundalik • Ish • Sayr\r\n\r\n💯 Afzalliklari:\r\n• Oyog‘ni charchatmaydi\r\n• Yumshoq va yengil\r\n• Har qanday stilga mos",
+    "image": "uploads/prd_1775678176543_533829.jpg",
+    "images": [
+      "uploads/prd_1775678176543_533829.jpg",
+      "uploads/prd_1775678176544_523725.jpg",
+      "uploads/prd_1775678176544_753314.jpg"
+    ],
+    "sizes": "38-44",
+    "colors": "oq, qora",
+    "createdAt": "2026-04-08T19:56:16.548Z"
+  },
+  {
+    "id": "prd_1775677968638",
+    "name": "Premium Ko'z oynak",
+    "price": 115000,
+    "oldPrice": 199000,
+    "category": "Aksesuarlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Yengil va qulay\r\n\r\n✨ Mos keladi:\r\n• Mashina 🚗 • Quyosh ☀️ • Kundalik 👔\r\n\r\n💯 Afzalliklari:\r\n• Ko‘zlarni himoya qiladi\r\n• Yorug‘likni kamaytiradi\r\n• Ko‘z charchamaydi\r\n• Har qanday stilga mos 😎",
+    "image": "uploads/prd_1775677968634_187452.jpg",
+    "images": [
+      "uploads/prd_1775677968634_187452.jpg",
+      "uploads/prd_1775677968635_630546.jpg"
+    ],
+    "sizes": "Standart",
+    "colors": "qora",
+    "createdAt": "2026-04-08T19:52:48.638Z"
+  },
+  {
+    "id": "prd_1775677900792",
+    "name": "Gucci ko'z oynagi",
+    "price": 115000,
+    "oldPrice": 255000,
+    "category": "Aksesuarlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Yengil va qulay\r\n\r\n✨ Mos keladi:\r\n• Mashina 🚗 • Quyosh ☀️ • Kundalik 👔\r\n\r\n💯 Afzalliklari:\r\n• Ko‘zlarni himoya qiladi\r\n• Yorug‘likni kamaytiradi\r\n• Ko‘z charchamaydi\r\n• Har qanday stilga mos 😎",
+    "image": "uploads/prd_1775677900785_959253.jpg",
+    "images": [
+      "uploads/prd_1775677900785_959253.jpg",
+      "uploads/prd_1775677900786_52412.jpg",
+      "uploads/prd_1775677900786_240201.jpg",
+      "uploads/prd_1775677900786_226171.jpg"
+    ],
+    "sizes": "Standart",
+    "colors": "qora, sariq, kok",
+    "createdAt": "2026-04-08T19:51:40.792Z"
+  },
+  {
+    "id": "prd_1775677711390",
+    "name": "PREMIUM MINIMAL KO‘Z OYNAGI 🔥",
+    "price": 115000,
+    "oldPrice": 215000,
+    "category": "Aksesuarlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Yengil va qulay\r\n\r\n✨ Mos keladi:\r\n• Mashina 🚗 • Quyosh ☀️ • Kundalik 👔\r\n\r\n💯 Afzalliklari:\r\n• Ko‘zlarni himoya qiladi\r\n• Yorug‘likni kamaytiradi\r\n• Ko‘z charchamaydi\r\n• Har qanday stilga mos 😎",
+    "image": "uploads/prd_1775677711379_540054.jpg",
+    "images": [
+      "uploads/prd_1775677711379_540054.jpg",
+      "uploads/prd_1775677711381_635627.jpg",
+      "uploads/prd_1775677711385_158475.jpg"
+    ],
+    "sizes": "Standart",
+    "colors": "qora, oq",
+    "createdAt": "2026-04-08T19:48:31.390Z"
+  },
+  {
+    "id": "prd_1775677572941",
+    "name": "⌚️ KELWEI SPORT SOAT 🔥",
+    "price": 199000,
+    "oldPrice": 299000,
+    "category": "Aksesuarlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Sovg‘a uchun ideal 🎁\r\n\r\n✨ Mos keladi:\r\n• Ofis 👔 • Uchrashuv 🕴 • Kundalik 😎\r\n\r\n💯 Afzalliklari:\r\n• Soat + braslet\r\n• Charm remeshok\r\n• Sana ko‘rsatadi 📅\r\n• Premium dizayn",
+    "image": "uploads/prd_1775677572926_440352.jpg",
+    "images": [
+      "uploads/prd_1775677572926_440352.jpg",
+      "uploads/prd_1775677572929_235350.jpg",
+      "uploads/prd_1775677572932_575654.jpg",
+      "uploads/prd_1775677572934_344716.jpg",
+      "uploads/prd_1775677572936_381465.jpg"
+    ],
+    "sizes": "Standart",
+    "colors": "qora, kok, brown, silver",
+    "createdAt": "2026-04-08T19:46:12.941Z"
+  },
+  {
+    "id": "prd_1775677299512",
+    "name": "⌚️ POEDAGAR KLASSIK SOAT 🔥",
+    "price": 199000,
+    "oldPrice": 299000,
+    "category": "Aksesuarlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Sovg‘a uchun ideal 🎁\r\n✨ Mos keladi:\r\n• Ofis 👔 • Uchrashuv 🕴 • Kundalik 😎\r\n💯 Afzalliklari:\r\n• Soat + braslet\r\n• Charm remeshok\r\n• Sana ko‘rsatadi 📅\r\n• Premium dizayn",
+    "image": "uploads/prd_1775677299474_507814.jpg",
+    "images": [
+      "uploads/prd_1775677299474_507814.jpg",
+      "uploads/prd_1775677299489_964757.jpg",
+      "uploads/prd_1775677299495_689637.jpg",
+      "uploads/prd_1775677299498_941918.jpg",
+      "uploads/prd_1775677299505_665399.jpg"
+    ],
+    "sizes": "standart",
+    "colors": "kok, qora, kulrang",
+    "createdAt": "2026-04-08T19:41:39.512Z"
+  },
+  {
+    "id": "prd_1775677121266",
+    "name": "Soat + braslet",
+    "price": 210000,
+    "oldPrice": 310000,
+    "category": "Aksesuarlar",
+    "desc": "✔️ Original model\r\n✔️ Premium sifat\r\n✔️ Sovg‘a uchun ideal 🎁\r\n✨ Mos keladi:\r\n• Ofis 👔 • Uchrashuv 🕴 • Kundalik 😎\r\n💯 Afzalliklari:\r\n• Soat + braslet\r\n• Charm remeshok\r\n• Sana ko‘rsatadi 📅\r\n• Premium dizayn",
+    "image": "uploads/prd_1775677121235_863958.jpg",
+    "images": [
+      "uploads/prd_1775677121235_863958.jpg",
+      "uploads/prd_1775677121257_236180.jpg"
+    ],
+    "sizes": "Standart",
+    "colors": "qora, kok",
+    "createdAt": "2026-04-08T19:38:41.267Z"
+  },
+  {
+    "id": "prd_1775594121710",
+    "name": "🏀 Basketbol style komplekt 🔥",
+    "price": 199000,
+    "oldPrice": 399000,
+    "category": "Ustki kiyimlar",
+    "desc": "Basketbol style komplekt — yoz uchun yengil va qulay kiyim. Nafas oladigan materiali tanaga komfort beradi, faol harakat uchun juda mos.\r\nSport, kundalik yurish va street style uchun ideal tanlov. Zamonaviy dizayni bilan stilniy ko‘rinish yaratadi.\r\nTez quriydigan, qulay va bir nechta ranglarda mavjud.",
+    "image": "uploads/prd_1775594121632_636445.jpg",
+    "images": [
+      "uploads/prd_1775594121632_636445.jpg",
+      "uploads/prd_1775594121653_73793.jpg",
+      "uploads/prd_1775594121658_272629.jpg",
+      "uploads/prd_1775594121664_532796.jpg"
+    ],
+    "sizes": "S-3XL",
+    "colors": "oq+qora, oq+yashil, qora, ko‘k",
+    "createdAt": "2026-04-07T20:35:21.711Z"
+  },
+  {
+    "id": "prd_1775593906083",
+    "name": "Zamonaviy Koylak",
+    "price": 280000,
+    "oldPrice": 180000,
+    "category": "Ustki kiyimlar",
+    "desc": "Oversize fason kiyim — zamonaviy va erkin uslubni yoqtiradiganlar uchun ideal. Yengil materiali kun davomida qulaylik beradi, chiroyli dizayni esa har qanday outfit bilan mos keladi.\r\n\r\nKo‘chaga, uchrashuvlarga va kundalik foydalanish uchun mos. Trend model bo‘lib, sifat va qulaylikni birlashtiradi.\r\n\r\nArzon narxda zamonaviy va sifatli tanlov.",
+    "image": "uploads/prd_1775593906045_601035.jpg",
+    "images": [
+      "uploads/prd_1775593906045_601035.jpg",
+      "uploads/prd_1775593906057_539065.jpg",
+      "uploads/prd_1775593906063_531230.jpg",
+      "uploads/prd_1775593906066_588741.jpg"
+    ],
+    "sizes": "M-4XL",
+    "colors": "qora, oq, sariq",
+    "createdAt": "2026-04-07T20:31:46.084Z"
+  },
+  {
+    "id": "prd_1775593656071",
+    "name": "polo футболка 😎",
+    "price": 180000,
+    "oldPrice": 280000,
+    "category": "Futbolkalar",
+    "desc": "Erkaklar uchun polo futbolka — zamonaviy va universal kiyim. Yengil va qulay materiali tanaga yaxshi o‘tiradi, kun davomida komfort beradi.\r\n\r\nOfis va kundalik uslub uchun mos, har qanday outfit bilan oson kombinatsiya qilinadi. Style va qulaylikni birlashtirgan model.\r\n\r\nArzon narxda sifatli va chiroyli tanlov.",
+    "image": "uploads/prd_1775593656009_459074.jpg",
+    "images": [
+      "uploads/prd_1775593656009_459074.jpg",
+      "uploads/prd_1775593656035_905465.jpg",
+      "uploads/prd_1775593656052_219077.jpg",
+      "uploads/prd_1775593656058_134689.jpg"
+    ],
+    "sizes": "S-4XL",
+    "colors": "qora, oq, yashil",
+    "createdAt": "2026-04-07T20:27:36.072Z"
+  },
+  {
+    "id": "prd_1775593429949",
+    "name": "trend shim",
+    "price": 270000,
+    "oldPrice": 170000,
+    "category": "Shimlar",
+    "desc": "Erkaklar uchun slim fit shim — zamonaviy va qulay kiyim. Qomatni chiroyli ko‘rsatadi, yengil materiali esa kun bo‘yi komfort beradi.\r\nHar qanday outfit bilan oson moslashadi, kundalik kiyish uchun ideal tanlov. Style va qulaylikni birlashtirgan model.\r\nArzon narxda sifatli va chiroyli variant.",
+    "image": "uploads/prd_1775593429902_583185.jpg",
+    "images": [
+      "uploads/prd_1775593429902_583185.jpg",
+      "uploads/prd_1775593429916_505396.jpg",
+      "uploads/prd_1775593429926_510835.jpg",
+      "uploads/prd_1775593429932_429283.jpg",
+      "uploads/prd_1775593429938_132997.jpg"
+    ],
+    "sizes": "S-3XL",
+    "colors": "oq, qora",
+    "createdAt": "2026-04-07T20:23:49.950Z"
+  },
+  {
+    "id": "prd_1775593213533",
+    "name": "💀 Viral tapochka 😅🔥",
+    "price": 205000,
+    "oldPrice": 305000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Yengil | Sirpanmaydi | Trend 😎\r\n\r\n💥 Kimlar uchun: Style sevuvchilar, trenddagilar 🔥\r\n\r\n✨ Afzalliklari: Arzon 💸 | Qulay 😌 | Ajralib turadi 🔥",
+    "image": "uploads/prd_1775593213419_726945.jpg",
+    "images": [
+      "uploads/prd_1775593213419_726945.jpg",
+      "uploads/prd_1775593213451_49258.jpg",
+      "uploads/prd_1775593213488_765509.jpg",
+      "uploads/prd_1775593213495_770761.jpg"
+    ],
+    "sizes": "34-49",
+    "colors": "oq, qora, kulrang",
+    "createdAt": "2026-04-07T20:20:13.533Z"
+  },
+  {
+    "id": "prd_1775323880022",
+    "name": "Krasovka",
+    "price": 420000,
+    "oldPrice": 620000,
+    "category": "Oyoq kiyimlar",
+    "desc": "✔️ Yengil va nafas oladi 🪶🌬\r\n✔️ Yugurish va kundalik uchun mos\r\n• Aktiv odamlar 🏃‍♂️ • Qulaylikni sevuvchilar\r\n✨ Afzalliklari:\r\n• Oyoq charchamaydi 💯\r\n• Trend dizayn 🔥 • Mustahkam va sifatli",
+    "image": "uploads/prd_1775589998750_108273.jpg",
+    "images": [
+      "uploads/prd_1775589998750_108273.jpg",
+      "uploads/prd_1775589998773_933812.jpg",
+      "uploads/prd_1775589998774_997475.jpg",
+      "uploads/prd_1775589998775_329644.jpg",
+      "uploads/prd_1775589998780_122000.jpg",
+      "uploads/prd_1775589998781_553907.jpg"
+    ],
+    "sizes": "36-46",
+    "colors": "qora,oq,kulrang, qora-kulrang, oq-qizil",
     "createdAt": "2026-04-04T17:31:20.022Z"
   }
 ]

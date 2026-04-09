@@ -1,4 +1,22 @@
 ﻿window.MBHelpers = {
+  normalizeCategory(value) {
+    const raw = String(value || "")
+      .toLowerCase()
+      .replace(/[’`']/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const map = {
+      futbolkalar: "Futbolkalar",
+      Aksesuarlar: "Aksesuarlar",
+      "ustki kiyimlar": "Ustki kiyimlar",
+      shimlar: "Shimlar",
+      "oyoq kiyimlar": "Oyoq kiyimlar",
+      "bosh kiyimlar": "Bosh kiyimlar",
+    };
+
+    return map[raw] || (value || "");
+  },
   toList(value) {
     if (Array.isArray(value)) return value;
     if (typeof value === "string") {
@@ -53,6 +71,7 @@
 
     return {
       ...product,
+      category: this.normalizeCategory(product.category),
       image: product.image || images[0] || "img/placeholders/product.svg",
       images: images.length ? images : ["img/placeholders/product.svg"],
       description: product.description || product.desc || "",
@@ -64,10 +83,12 @@
     const num = Number(value || 0);
     return num.toLocaleString("uz-UZ") + " so'm";
   },
-  productCard(product) {
+  productCard(product, options = {}) {
     const normalized = this.normalizeProduct(product);
+    const showDescription = options.showDescription !== false;
     const image = normalized.images[0];
     const oldPrice = Number(normalized.oldPrice) > 0 ? `<span class="product__oldprice">${this.currency(normalized.oldPrice)}</span>` : "";
+    const descriptionHtml = showDescription ? `<p>${normalized.description}</p>` : "";
 
     return `
       <div class="col-lg-3 col-md-4 col-sm-6">
@@ -77,7 +98,7 @@
           </a>
           <div class="product__item__text">
             <h6><a href="product-details.html?id=${normalized.id}">${normalized.name || "Mahsulot"}</a></h6>
-            <p>${normalized.description}</p>
+            ${descriptionHtml}
             <div class="product__price">${this.currency(normalized.price)} ${oldPrice}</div>
             <div class="product__links">
               <a class="link-btn js-add-card" href="#" data-id="${normalized.id}">Savatga qo'shish</a>

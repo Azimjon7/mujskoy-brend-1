@@ -1,5 +1,89 @@
 [
   {
+    "id": "ord_1775639797384",
+    "name": "AZIMJON",
+    "phone": "+998902008747",
+    "address": "Mikrarion2",
+    "note": "yetkazib berish",
+    "total": 205000,
+    "items": [
+      {
+        "productId": "prd_1775593213533",
+        "name": "💀 Viral tapochka 😅🔥",
+        "size": "34",
+        "color": "oq",
+        "qty": 1,
+        "price": 205000,
+        "lineTotal": 205000
+      }
+    ],
+    "paymentType": "naqd",
+    "paymentScreenshot": "",
+    "createdAt": "2026-04-08T09:16:37.385Z"
+  },
+  {
+    "id": "ord_1775592414678",
+    "name": "Azimjon Gulomov",
+    "phone": "902008747",
+    "address": "Mikrarion2",
+    "note": "aaaaaaaaaaaaaaaa",
+    "total": 420000,
+    "items": [
+      {
+        "productId": "prd_1775323880022",
+        "name": "👟 ADIZERO EVO SL – sport uchun TOP model 🔥",
+        "size": "36",
+        "color": "qora",
+        "qty": 1,
+        "price": 420000,
+        "lineTotal": 420000
+      }
+    ],
+    "paymentType": "karta",
+    "paymentScreenshot": "uploads/prd_1775592414668_450849.jpg",
+    "createdAt": "2026-04-07T20:06:54.678Z"
+  },
+  {
+    "id": "ord_1775591977923",
+    "name": "Azimjon Gulomov",
+    "phone": "902008747",
+    "address": "Mikrarion22",
+    "note": "kere",
+    "total": 420000,
+    "items": [
+      {
+        "productId": "prd_1775323880022",
+        "name": "👟 ADIZERO EVO SL – sport uchun TOP model 🔥",
+        "size": "36",
+        "color": "qora",
+        "qty": 1,
+        "price": 420000,
+        "lineTotal": 420000
+      }
+    ],
+    "createdAt": "2026-04-07T19:59:37.924Z"
+  },
+  {
+    "id": "ord_1775588201420",
+    "name": "Azimjon Gulomov",
+    "phone": "902008747",
+    "address": "Mikrarion2",
+    "note": "11",
+    "total": 0,
+    "items": [
+      {
+        "productId": "prd_1775126299278",
+        "name": "Mahsulot",
+        "size": "S – 5XL",
+        "color": "oq",
+        "qty": 1,
+        "price": 0,
+        "lineTotal": 0
+      }
+    ],
+    "createdAt": "2026-04-07T18:56:41.421Z"
+  },
+  {
     "id": "ord_1775325507435",
     "name": "azimjon",
     "phone": "902008747",

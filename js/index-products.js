@@ -1,7 +1,7 @@
 ﻿(async function () {
   const rootNew = document.getElementById("new-products");
   const rootFeatured = document.getElementById("featured-products");
-  if (!rootNew || !rootFeatured) return;
+  if (!rootNew) return;
 
   if (!window.MBHelpers) {
     const s = document.createElement("script");
@@ -10,19 +10,27 @@
     await new Promise((r) => (s.onload = r));
   }
 
-  const res = await fetch("/api/products");
+  const res = await fetch("/api/products", { cache: "no-store" });
   const products = await res.json();
   const list = (Array.isArray(products) ? products : []).map((p) => MBHelpers.normalizeProduct(p));
 
   if (!list.length) {
     const empty = MBHelpers.emptyState("Admin paneldan birinchi mahsulotni qo'shing.");
     rootNew.innerHTML = empty;
-    rootFeatured.innerHTML = empty;
+    if (rootFeatured) rootFeatured.innerHTML = empty;
     return;
   }
 
-  rootNew.innerHTML = list.slice(0, 4).map((p) => MBHelpers.productCard(p)).join("");
-  rootFeatured.innerHTML = list.slice(0, 8).map((p) => MBHelpers.productCard(p)).join("");
+  rootNew.innerHTML = list
+    .slice(0, 8)
+    .map((p) => MBHelpers.productCard(p, { showDescription: false }))
+    .join("");
+  if (rootFeatured) {
+    rootFeatured.innerHTML = list
+      .slice(0, 8)
+      .map((p) => MBHelpers.productCard(p, { showDescription: false }))
+      .join("");
+  }
   bindQuickAdd(list);
 })();
 

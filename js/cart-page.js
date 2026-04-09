@@ -16,7 +16,7 @@
         <tbody>
           ${enriched.map(item => `
             <tr>
-              <td><div class="admin-product-left"><img class="cart-item-img" src="${item.product.image || (item.product.images && item.product.images[0]) || 'img/placeholders/product.svg'}" alt=""><div><strong>${item.product.name || 'Mahsulot'}</strong><div>${item.product.description || item.product.desc || ''}</div></div></div></td>
+              <td><div class="admin-product-left"><img class="cart-item-img" src="${item.product.image || (item.product.images && item.product.images[0]) || 'img/placeholders/product.svg'}" alt=""><div><strong>${item.product.name || 'Mahsulot'}</strong></div></div></td>
               <td>${item.size || '-'} / ${item.color || '-'}</td>
               <td>${Number(item.product.price || 0).toLocaleString('uz-UZ')} so‘m</td>
               <td><input type="number" min="1" value="${item.qty}" data-index="${item.index}" class="cart-qty-input"></td>

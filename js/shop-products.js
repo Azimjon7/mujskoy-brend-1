@@ -1,6 +1,7 @@
 ﻿(async function () {
   const grid = document.getElementById("shop-grid");
   if (!grid) return;
+
   if (!window.MBHelpers) {
     const s = document.createElement("script");
     s.src = "js/helpers.js";
@@ -10,11 +11,16 @@
 
   let allProducts = [];
 
+  function normalizedCategory(value) {
+    return MBHelpers.normalizeCategory(value || "");
+  }
+
   async function load() {
-    const res = await fetch("/api/products");
+    const res = await fetch("/api/products", { cache: "no-store" });
     const data = await res.json();
     allProducts = (Array.isArray(data) ? data : []).map((p) => MBHelpers.normalizeProduct(p));
-    render(allProducts);
+    applyInitialCategoryFromUrl();
+    applyFilter();
   }
 
   function render(items) {
@@ -23,7 +29,7 @@
       return;
     }
 
-    grid.innerHTML = items.map((p) => MBHelpers.productCard(p)).join("");
+    grid.innerHTML = items.map((p) => MBHelpers.productCard(p, { showDescription: false })).join("");
     document.querySelectorAll(".js-add-card").forEach((btn) =>
       btn.addEventListener("click", function (e) {
         e.preventDefault();
@@ -43,16 +49,31 @@
 
   function applyFilter() {
     const active = document.querySelector(".filter-btn.active");
-    const category = active ? active.dataset.category : "";
+    const selectedCategory = active ? normalizedCategory(active.dataset.category) : "";
     const q = (document.getElementById("shop-search").value || "").toLowerCase();
 
-    const filtered = allProducts.filter(
-      (p) =>
-        (!category || p.category === category) &&
-        (!q || [p.name, p.description, p.category, p.subcategory].join(" ").toLowerCase().includes(q))
-    );
+    const filtered = allProducts.filter((p) => {
+      const pCategory = normalizedCategory(p.category);
+      const categoryOk = !selectedCategory || pCategory === selectedCategory;
+      const textOk =
+        !q || [p.name, p.description, p.category, p.subcategory].join(" ").toLowerCase().includes(q);
+      return categoryOk && textOk;
+    });
 
     render(filtered);
+  }
+
+  function applyInitialCategoryFromUrl() {
+    const urlCategory = new URLSearchParams(window.location.search).get("category");
+    if (!urlCategory) return;
+
+    const normalizedUrlCategory = normalizedCategory(urlCategory);
+    const buttons = Array.from(document.querySelectorAll(".filter-btn"));
+    const targetBtn = buttons.find((btn) => normalizedCategory(btn.dataset.category) === normalizedUrlCategory);
+    if (!targetBtn) return;
+
+    buttons.forEach((b) => b.classList.remove("active"));
+    targetBtn.classList.add("active");
   }
 
   document.querySelectorAll(".filter-btn").forEach((btn) => {

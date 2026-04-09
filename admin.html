@@ -331,6 +331,20 @@
       background: #0e0e0e;
     }
 
+    .preview-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    .preview-item .btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      min-width: auto;
+    }
+
     .small {
       font-size: 13px;
       color: #999;
@@ -353,6 +367,126 @@
 
       .main {
         padding: 18px;
+      }
+    }
+
+    /* Light premium theme override (home page ranglariga mos) */
+    :root {
+      --ap-bg: radial-gradient(1100px 620px at 12% 2%, #e3efff 0%, transparent 55%),
+        radial-gradient(950px 540px at 92% 8%, #f5e8d6 0%, transparent 58%),
+        radial-gradient(950px 540px at 50% 100%, #e3f0e7 0%, transparent 56%),
+        #eef2f6;
+      --ap-surface: #ffffff;
+      --ap-surface-2: #f8fafc;
+      --ap-border: #d5dde8;
+      --ap-text: #1f2a37;
+      --ap-muted: #5f6b7c;
+      --ap-accent: #b98a54;
+    }
+
+    body {
+      background: var(--ap-bg);
+      color: var(--ap-text);
+    }
+
+    .login-page {
+      background: var(--ap-bg);
+    }
+
+    .login-card,
+    .panel,
+    .product-card,
+    .order-item {
+      background: var(--ap-surface);
+      border-color: var(--ap-border);
+      box-shadow: 0 14px 40px rgba(41, 53, 73, 0.08);
+    }
+
+    .login-card h1,
+    .panel h3,
+    .brand h2,
+    .price,
+    .order-item strong {
+      color: #9a6a36;
+    }
+
+    .login-card p,
+    .form-group label,
+    .brand p,
+    .topbar p,
+    .meta,
+    .empty,
+    .small {
+      color: var(--ap-muted);
+    }
+
+    input,
+    textarea,
+    select {
+      background: var(--ap-surface-2);
+      border-color: var(--ap-border);
+      color: var(--ap-text);
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--ap-accent);
+      box-shadow: 0 0 0 3px rgba(185, 138, 84, 0.14);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #d7b07d, #b98a54);
+      color: #1b1713;
+    }
+
+    .btn-dark,
+    .btn-secondary {
+      background: var(--ap-surface-2);
+      color: var(--ap-text);
+      border: 1px solid var(--ap-border);
+    }
+
+    .btn-danger {
+      background: #b43a3a;
+      color: #fff;
+    }
+
+    .sidebar {
+      background: rgba(255, 255, 255, 0.74);
+      border-right: 1px solid var(--ap-border);
+      backdrop-filter: blur(6px);
+    }
+
+    .brand {
+      border-bottom-color: var(--ap-border);
+    }
+
+    .menu button {
+      background: var(--ap-surface);
+      color: var(--ap-text);
+      border-color: var(--ap-border);
+    }
+
+    .menu button:hover,
+    .menu button.active {
+      background: #f3f7fb;
+      color: var(--ap-text);
+      border-color: #c6d4e5;
+    }
+
+    .main {
+      background: transparent;
+    }
+
+    .preview-wrap img {
+      border-color: var(--ap-border);
+      background: var(--ap-surface-2);
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        border-bottom: 1px solid var(--ap-border);
       }
     }
   </style>
@@ -420,10 +554,11 @@
             <label for="productCategory">Kategoriya</label>
             <select id="productCategory">
               <option value="Futbolkalar">Futbolkalar</option>
-              <option value="Kostyumlar">Kostyumlar</option>
+              <option value="Aksesuarlar">Aksesuarlar</option>
               <option value="Ustki kiyimlar">Ustki kiyimlar</option>
               <option value="Shimlar">Shimlar</option>
               <option value="Oyoq kiyimlar">Oyoq kiyimlar</option>
+              <option value="Bosh kiyimlar">Bosh kiyimlar</option>
             </select>
           </div>
 
@@ -434,7 +569,7 @@
 
           <div class="form-group">
             <label for="productSizes">Size lar</label>
-            <input id="productSizes" type="text" placeholder="Masalan: 40-44 yoki S-3XL yoki 30-35">
+            <input id="productSizes" type="text" placeholder="Masalan: 40-44 yoki S-4XL yoki 30-35">
 
           </div>
 
@@ -461,7 +596,6 @@
         <div class="actions">
           <button id="saveBtn" class="btn btn-primary" onclick="addProduct()">Saqlash</button>
           <button id="cancelEditBtn" class="btn btn-dark hidden" onclick="cancelEdit()">Bekor qilish</button>
-          <button class="btn btn-secondary" onclick="resetForm()">Tozalash</button>
         </div>
 
         <div id="addMessage"></div>
@@ -484,6 +618,8 @@
     const ADMIN_PASSWORD = "12345678";
     let editingProductId = null;
     let cachedProducts = [];
+    let existingImageList = [];
+    let newImageFiles = [];
 
     function setActiveMenu(activeId) {
       document.querySelectorAll(".menu button").forEach(btn => btn.classList.remove("active"));
@@ -547,31 +683,90 @@ function goToSite() {
 
 document.addEventListener("DOMContentLoaded", function () {
   const imageInput = document.getElementById("productImageFile");
-  const previewWrap = document.getElementById("imagePreviewWrap");
 
   if (imageInput) {
     imageInput.addEventListener("change", function () {
       const files = Array.from(this.files || []);
-      previewWrap.innerHTML = "";
-
       if (!files.length) return;
-
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = document.createElement("img");
-          img.src = e.target.result;
-          img.alt = "preview";
-          previewWrap.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
+      newImageFiles = [...newImageFiles, ...files];
+      syncSelectedFilesInput();
+      renderImagePreviews();
     });
   }
 });
 
+function syncSelectedFilesInput() {
+  const imageInput = document.getElementById("productImageFile");
+  const dt = new DataTransfer();
+  newImageFiles.forEach((file) => dt.items.add(file));
+  imageInput.files = dt.files;
+}
+
+function syncExistingImagesHidden() {
+  existingImageList = [...new Set(existingImageList.filter(Boolean))];
+  document.getElementById("existingImages").value = existingImageList.join(",");
+}
+
+function removeExistingImage(index) {
+  existingImageList.splice(index, 1);
+  syncExistingImagesHidden();
+  renderImagePreviews();
+}
+
+function removeNewImage(index) {
+  newImageFiles.splice(index, 1);
+  syncSelectedFilesInput();
+  renderImagePreviews();
+}
+
+function renderImagePreviews() {
+  const previewWrap = document.getElementById("imagePreviewWrap");
+  previewWrap.innerHTML = "";
+
+  existingImageList.forEach((imgPath, index) => {
+    const item = document.createElement("div");
+    item.className = "preview-item";
+
+    const img = document.createElement("img");
+    img.src = normalizeImage(imgPath);
+    img.alt = "preview";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-danger";
+    btn.textContent = "Remove";
+    btn.addEventListener("click", () => removeExistingImage(index));
+
+    item.appendChild(img);
+    item.appendChild(btn);
+    previewWrap.appendChild(item);
+  });
+
+  newImageFiles.forEach((file, index) => {
+    const item = document.createElement("div");
+    item.className = "preview-item";
+
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.alt = "preview";
+    img.onload = () => URL.revokeObjectURL(img.src);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn btn-danger";
+    btn.textContent = "Remove";
+    btn.addEventListener("click", () => removeNewImage(index));
+
+    item.appendChild(img);
+    item.appendChild(btn);
+    previewWrap.appendChild(item);
+  });
+}
+
 function resetForm() {
   editingProductId = null;
+  existingImageList = [];
+  newImageFiles = [];
   document.getElementById("productName").value = "";
   document.getElementById("productPrice").value = "";
   document.getElementById("productCategory").value = "Futbolkalar";
@@ -579,9 +774,9 @@ function resetForm() {
   document.getElementById("productSizes").value = "";
   document.getElementById("productColors").value = "";
   document.getElementById("productDesc").value = "";
-  document.getElementById("productImageFile").value = "";
-  document.getElementById("existingImages").value = "";
-  document.getElementById("imagePreviewWrap").innerHTML = "";
+  syncSelectedFilesInput();
+  syncExistingImagesHidden();
+  renderImagePreviews();
   document.getElementById("addMessage").innerHTML = "";
   document.getElementById("saveBtn").textContent = "Saqlash";
   document.getElementById("cancelEditBtn").classList.add("hidden");
@@ -608,18 +803,11 @@ function startEdit(productId) {
   document.getElementById("productSizes").value = product.sizes || "";
   document.getElementById("productColors").value = product.colors || "";
   document.getElementById("productDesc").value = product.desc || "";
-  const images = (Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean);
-  document.getElementById("existingImages").value = images.join(",");
-  document.getElementById("productImageFile").value = "";
-
-  const previewWrap = document.getElementById("imagePreviewWrap");
-  previewWrap.innerHTML = "";
-  images.forEach((imgPath) => {
-    const img = document.createElement("img");
-    img.src = normalizeImage(imgPath);
-    img.alt = "preview";
-    previewWrap.appendChild(img);
-  });
+  existingImageList = [...new Set((Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean))];
+  newImageFiles = [];
+  syncExistingImagesHidden();
+  syncSelectedFilesInput();
+  renderImagePreviews();
 
   document.getElementById("saveBtn").textContent = "Yangilash";
   document.getElementById("cancelEditBtn").classList.remove("hidden");
@@ -636,11 +824,8 @@ async function addProduct() {
   const colors = document.getElementById("productColors").value.trim();
   const desc = document.getElementById("productDesc").value.trim();
 
-  const imageFileInput = document.getElementById("productImageFile");
-  const imageFiles = imageFileInput ? Array.from(imageFileInput.files || []) : [];
-
-  const existingImagesEl = document.getElementById("existingImages");
-  const existingImages = existingImagesEl ? existingImagesEl.value.trim() : "";
+  const imageFiles = [...newImageFiles];
+  const existingImages = existingImageList.join(",");
 
   const addMessage = document.getElementById("addMessage");
   const missing = [];
@@ -689,7 +874,13 @@ async function addProduct() {
 
   const makeRequest = async (method, endpoint, legacyOnly = false) => {
     const res = await fetch(endpoint, { method, body: buildFormData(legacyOnly) });
-    const data = await res.json().catch(() => ({}));
+    const raw = await res.text().catch(() => "");
+    let data = {};
+    try {
+      data = raw ? JSON.parse(raw) : {};
+    } catch {
+      data = { message: raw };
+    }
     return { res, data };
   };
 
@@ -699,19 +890,15 @@ async function addProduct() {
 
     let { res, data } = await makeRequest(mode, endpoint, false);
 
-    // If backend is old and rejects new field "imageFiles", retry with legacy payload.
-    const msg = String(data?.message || data?.error || "");
-    if (!res.ok && (msg.includes("Unexpected field") || msg.includes("LIMIT_UNEXPECTED_FILE"))) {
+    // Old backend may return HTML error page for unexpected file field; always retry once in legacy mode.
+    if (!res.ok) {
       ({ res, data } = await makeRequest(mode, endpoint, true));
     }
 
     // If stale edit id failed, fallback to create as new product.
     if (!res.ok && mode === "PUT" && res.status === 404) {
       ({ res, data } = await makeRequest("POST", "/api/products", false));
-      const msg2 = String(data?.message || data?.error || "");
-      if (!res.ok && (msg2.includes("Unexpected field") || msg2.includes("LIMIT_UNEXPECTED_FILE"))) {
-        ({ res, data } = await makeRequest("POST", "/api/products", true));
-      }
+      if (!res.ok) ({ res, data } = await makeRequest("POST", "/api/products", true));
       mode = "POST";
     }
 
@@ -726,7 +913,7 @@ async function addProduct() {
     showSection("products");
   } catch (err) {
     const msg = String(err && err.message ? err.message : "Mahsulot qo‘shishda xatolik bo‘ldi");
-    const extra = msg.includes("Unexpected field")
+    const extra = msg.includes("MulterError") || msg.includes("Unexpected field")
       ? " (Serverni qayta ishga tushiring: node server.js)"
       : "";
     addMessage.innerHTML = '<div class="error-text">' + msg + extra + "</div>";
@@ -761,7 +948,7 @@ async function addProduct() {
                   <div class="meta">Size: ${product.sizes || "-"}</div>
                   <div class="meta">Rang: ${product.colors || "-"}</div>
                   <div class="meta">Rasmlar: ${images.length}</div>
-                  <div class="price">${product.price || 0} soвЂm ${product.oldPrice ? `<span style="color:#888;font-size:16px;text-decoration:line-through;margin-left:8px;">${product.oldPrice} soвЂm</span>` : ""}</div>
+                  <div class="price">${product.price || 0} som ${product.oldPrice ? `<span style="color:#888;font-size:16px;text-decoration:line-through;margin-left:8px;">${product.oldPrice} som</span>` : ""}</div>
                   <div class="actions">
                     <button class="btn btn-secondary" onclick="startEdit('${product.id}')">O'zgartirish</button>
                     <button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Ochirish</button>
@@ -813,7 +1000,16 @@ async function addProduct() {
                 <div><strong>Telefon:</strong> ${order.phone || "-"}</div>
                 <div><strong>Manzil:</strong> ${order.address || "-"}</div>
                 <div><strong>Izoh:</strong> ${order.note || "-"}</div>
-                <div><strong>Jami:</strong> ${order.total || 0} soвЂm</div>
+                <div><strong>To'lov turi:</strong> ${order.paymentType === "karta" ? "Karta" : "Naqd"}</div>
+                <div><strong>Jami:</strong> ${order.total || 0} som</div>
+                ${order.paymentScreenshot ? `
+                  <div style="margin-top:10px;">
+                    <strong>To'lov skrinshoti:</strong><br>
+                    <a href="${order.paymentScreenshot}" target="_blank" style="display:inline-block; margin-top:6px;">
+                      <img src="${order.paymentScreenshot}" alt="payment screenshot" style="max-width:180px; border-radius:10px; border:1px solid #333;">
+                    </a>
+                  </div>
+                ` : ""}
               </div>
             `;
           });

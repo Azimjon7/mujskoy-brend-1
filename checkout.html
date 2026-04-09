@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mujskoy Brend | Checkout</title>
+  <title>Mujskoy Brend | Buyurtma</title>
   <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
   <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
   <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
   <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
   <link rel="stylesheet" href="css/style.css" type="text/css" />
 </head>
-<body>
+<body class="checkout-clean">
   <div id="preloder"><div class="loader"></div></div>
   <div class="offcanvas-menu-overlay"></div>
   <div class="offcanvas-menu-wrapper">
@@ -53,30 +53,66 @@
 
   <section class="breadcrumb-custom">
     <div class="container">
-      <h2>Checkout</h2>
-      <p>Buyurtma ma'lumotlarini kiriting</p>
+      <h2>Buyurtma rasmiylashtirish</h2>
+      <p>Ma'lumotlarni to'ldiring va buyurtmangizni tasdiqlang.</p>
     </div>
   </section>
 
   <section class="checkout spad">
     <div class="container">
       <div class="row">
-        <div class="col-lg-7">
+        <div class="col-lg-8">
           <div class="checkout__form--custom">
-            <h5>Buyurtma formasi</h5>
-            <input id="name" type="text" placeholder="Ismingiz" />
-            <input id="phone" type="text" placeholder="Telefon raqam" />
-            <input id="address" type="text" placeholder="Manzil" />
-            <textarea id="note" placeholder="Izoh (ixtiyoriy)"></textarea>
-            <button class="site-btn" type="button" onclick="submitOrder()">Buyurtma berish</button>
-            <a class="site-btn site-btn--ghost" href="shop-cart.html">Savatga qaytish</a>
+            <h5>Buyurtma ma'lumotlari</h5>
+
+            <div class="row">
+              <div class="col-md-6">
+                <label class="checkout-label" for="name">Ism familiya <span>*</span></label>
+                <input id="name" type="text" placeholder="Masalan: Azizjon G'ulomov" />
+              </div>
+              <div class="col-md-6">
+                <label class="checkout-label" for="phone">Telefon raqam <span>*</span></label>
+                <input id="phone" type="text" placeholder="+998 90 123 45 67" />
+              </div>
+            </div>
+
+            <label class="checkout-label" for="address">Yetkazib berish manzili <span>*</span></label>
+            <input id="address" type="text" placeholder="Shahar, tuman, ko'cha, uy" />
+
+            <label class="checkout-label" for="note">Qo'shimcha izoh</label>
+            <textarea id="note" placeholder="Masalan: qo'ng'iroq qilmasdan yetkazib bering"></textarea>
+
+            <div class="checkout-payment">
+              <h6>To'lov turi</h6>
+              <div class="checkout-radio-group">
+                <label class="checkout-radio">
+                  <input type="radio" name="paymentType" value="naqd" checked />
+                  <span>Naqd</span>
+                </label>
+                <label class="checkout-radio">
+                  <input type="radio" name="paymentType" value="karta" />
+                  <span>Karta</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="paymentScreenshotWrap" class="checkout-upload" style="display:none;">
+              <label class="checkout-label" for="paymentScreenshot">To'lov skrinshoti <span>*</span></label>
+              <input id="paymentScreenshot" type="file" accept="image/*" />
+              <p class="checkout-help">Karta tanlansa, skrinshot yuklash majburiy.</p>
+            </div>
+
+            <div class="checkout-actions">
+              <button class="site-btn" type="button" onclick="submitOrder()">Buyurtma berish</button>
+              <a class="site-btn site-btn--ghost" href="shop-cart.html">Savatga qaytish</a>
+            </div>
             <div id="checkoutMessage" class="form-message"></div>
           </div>
         </div>
 
-        <div class="col-lg-5">
+        <div class="col-lg-4">
           <div class="checkout__order--custom">
-            <h5>Savat xulosasi</h5>
+            <h5>Buyurtma xulosasi</h5>
             <div id="checkoutSummary"></div>
           </div>
         </div>
@@ -97,16 +133,44 @@
       return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
     }
 
+    function setCheckoutMessage(text, type) {
+      const msg = document.getElementById("checkoutMessage");
+      msg.innerHTML = '<span class="checkout-msg checkout-msg--' + type + '">' + text + "</span>";
+    }
+
+    function getSelectedPaymentType() {
+      const picked = document.querySelector('input[name="paymentType"]:checked');
+      return picked ? picked.value : "naqd";
+    }
+
+    function syncPaymentUI() {
+      const wrap = document.getElementById("paymentScreenshotWrap");
+      if (getSelectedPaymentType() === "karta") {
+        wrap.style.display = "block";
+      } else {
+        wrap.style.display = "none";
+        document.getElementById("paymentScreenshot").value = "";
+      }
+    }
+
+    function buildItemMeta(item) {
+      const parts = [];
+      if (item.size) parts.push("O'lcham: " + item.size);
+      if (item.color) parts.push("Rang: " + item.color);
+      if (!parts.length) return "";
+      return '<small class="checkout-item-meta">' + parts.join(" | ") + "</small>";
+    }
+
     async function initCheckout() {
       const summary = document.getElementById("checkoutSummary");
       const cart = MBStore.getCart();
 
       if (!cart.length) {
-        summary.innerHTML = `<p>Savat bo'sh. <a href="shop.html" style="color:#c7a44c;">Do'konga o'tish</a></p>`;
+        summary.innerHTML = '<p class="checkout-empty">Savatingiz bo\'sh. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
         return;
       }
 
-      const products = await fetch("/api/products").then((r) => r.json());
+      const products = await fetch("/api/products", { cache: "no-store" }).then((r) => r.json());
       checkoutItems = cart.map((item) => {
         const product = products.find((p) => String(p.id) === String(item.productId)) || {};
         const price = Number(product.price || 0);
@@ -125,17 +189,48 @@
       checkoutTotal = checkoutItems.reduce((sum, item) => sum + item.lineTotal, 0);
       const qtyTotal = checkoutItems.reduce((sum, item) => sum + item.qty, 0);
 
-      summary.innerHTML = `
-        <p>Jami mahsulot: <strong>${qtyTotal}</strong></p>
-        <div class="total-line"><span>Umumiy summa</span><span>${formatMoney(checkoutTotal)}</span></div>
-      `;
+      const itemsHtml = checkoutItems
+        .map(
+          (item, index) =>
+            '<div class="checkout-summary-row">' +
+            '<div>' +
+            '<p>' +
+            (index + 1) +
+            ". " +
+            item.name +
+            " x " +
+            item.qty +
+            "</p>" +
+            buildItemMeta(item) +
+            "</div>" +
+            "<strong>" +
+            formatMoney(item.lineTotal) +
+            "</strong>" +
+            "</div>"
+        )
+        .join("");
+
+      summary.innerHTML =
+        '<div class="checkout-summary-head"><span>Mahsulot</span><span>Narx</span></div>' +
+        '<div class="checkout-summary-list">' +
+        itemsHtml +
+        "</div>" +
+        '<div class="checkout-total-row"><span>Jami mahsulot</span><strong>' +
+        qtyTotal +
+        " ta</strong></div>" +
+        '<div class="checkout-total-row checkout-grand-total"><span>Umumiy summa</span><strong>' +
+        formatMoney(checkoutTotal) +
+        "</strong></div>";
     }
 
     async function submitOrder() {
       if (!checkoutItems.length) {
-        document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Savat bo'sh.</span>`;
+        setCheckoutMessage("Savatingiz bo'sh.", "error");
         return;
       }
+
+      const paymentType = getSelectedPaymentType();
+      const screenshotFile = document.getElementById("paymentScreenshot").files[0];
 
       const payload = {
         name: document.getElementById("name").value.trim(),
@@ -144,35 +239,76 @@
         note: document.getElementById("note").value.trim(),
         total: checkoutTotal,
         items: checkoutItems,
+        paymentType,
       };
 
       if (!payload.name || !payload.phone || !payload.address) {
-        document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Ism, telefon va manzil majburiy.</span>`;
+        setCheckoutMessage("Ism, telefon va manzil majburiy.", "error");
         return;
       }
 
-      fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) {
+      if (paymentType === "karta" && !screenshotFile) {
+        setCheckoutMessage("Karta to'lovi uchun skrinshot yuklang.", "error");
+        return;
+      }
+
+      const requestOptions = { method: "POST" };
+
+      if (paymentType === "karta") {
+        const formData = new FormData();
+        formData.append("name", payload.name);
+        formData.append("phone", payload.phone);
+        formData.append("address", payload.address);
+        formData.append("note", payload.note);
+        formData.append("total", String(payload.total));
+        formData.append("paymentType", paymentType);
+        formData.append("items", JSON.stringify(checkoutItems));
+        formData.append("itemsJson", JSON.stringify(checkoutItems));
+        checkoutItems.forEach((item, index) => {
+          Object.keys(item).forEach((key) => {
+            formData.append("items[" + index + "][" + key + "]", String(item[key] ?? ""));
+          });
+        });
+        if (screenshotFile) {
+          formData.append("paymentScreenshot", screenshotFile);
+        }
+        requestOptions.body = formData;
+      } else {
+        requestOptions.headers = { "Content-Type": "application/json" };
+        requestOptions.body = JSON.stringify({
+          ...payload,
+          paymentType: "naqd",
+          items: checkoutItems,
+        });
+      }
+
+      fetch("/api/orders", requestOptions)
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}));
+          return { ok: res.ok, data };
+        })
+        .then(({ ok, data }) => {
+          if (ok && data.success) {
             MBStore.clearCart();
-            document.getElementById("checkoutMessage").innerHTML = `<span style="color:#8cff9b;">Buyurtma qabul qilindi.</span>`;
+            setCheckoutMessage("Buyurtmangiz qabul qilindi.", "success");
             setTimeout(() => {
               window.location.href = "index.html";
             }, 1200);
           } else {
-            document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Buyurtma yuborilmadi.</span>`;
+            const msg = data.message || "Buyurtma yuborilmadi.";
+            setCheckoutMessage(msg, "error");
           }
         })
         .catch(() => {
-          document.getElementById("checkoutMessage").innerHTML = `<span style="color:#ff7f7f;">Xatolik yuz berdi.</span>`;
+          setCheckoutMessage("Xatolik yuz berdi. Qayta urinib ko'ring.", "error");
         });
     }
 
+    document.querySelectorAll('input[name="paymentType"]').forEach((el) => {
+      el.addEventListener("change", syncPaymentUI);
+    });
+
+    syncPaymentUI();
     initCheckout();
   </script>
 </body>

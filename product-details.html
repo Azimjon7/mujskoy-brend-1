@@ -20,11 +20,36 @@
       padding: 60px 0;
     }
 
+    .pd-page-top {
+      margin-bottom: 18px;
+    }
+
+    .pd-back-btn {
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 0, 0, 0.55);
+      color: #d4af37;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      transition: 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pd-back-btn:hover {
+      background: rgba(212, 175, 55, 0.18);
+      border-color: #d4af37;
+    }
+
     .pd-image-box {
       background: #0f0f0f;
       border: 1px solid rgba(212, 175, 55, 0.15);
       border-radius: 24px;
       overflow: hidden;
+      position: relative;
     }
 
     .pd-image-box img {
@@ -33,6 +58,40 @@
       object-fit: cover;
       display: block;
       background: #0c0c0c;
+    }
+
+    .pd-image-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      background: rgba(0, 0, 0, 0.55);
+      color: #d4af37;
+      font-size: 26px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s ease;
+      z-index: 2;
+      user-select: none;
+    }
+
+    .pd-image-nav:hover {
+      background: rgba(212, 175, 55, 0.18);
+      border-color: #d4af37;
+    }
+
+    .pd-image-nav.prev {
+      left: 14px;
+    }
+
+    .pd-image-nav.next {
+      right: 14px;
     }
 
     .pd-thumbs {
@@ -241,6 +300,12 @@
         height: 460px;
       }
 
+      .pd-image-nav {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+
       .pd-title {
         font-size: 34px;
       }
@@ -258,17 +323,50 @@
 <body>
   <section class="product-detail-wrap">
     <div class="container">
+      <div class="pd-page-top">
+        <button type="button" class="pd-back-btn" id="pdBackBtn">&#8592; Saytga qaytish</button>
+      </div>
       <div id="productDetailApp">
         <div class="pd-error">Yuklanmoqda...</div>
       </div>
     </div>
   </section>
 
+  <script src="js/store.js"></script>
   <script>
     function getQueryParam(name) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(name);
     }
+
+    function goBackToSite() {
+      if (window.history.length > 1) {
+        window.history.back();
+        return;
+      }
+
+      let fallback = "index.html";
+      if (document.referrer) {
+        try {
+          const refUrl = new URL(document.referrer);
+          if (refUrl.origin === window.location.origin) {
+            fallback = refUrl.href;
+          }
+        } catch (e) {}
+      }
+      window.location.href = fallback;
+    }
+
+    function initBackButton() {
+      const backBtn = document.getElementById("pdBackBtn");
+      if (!backBtn) return;
+
+      backBtn.addEventListener("click", function () {
+        goBackToSite();
+      });
+    }
+
+    initBackButton();
 
     function parseOptions(value, type = "default") {
   const text = String(value || "").trim();
@@ -298,6 +396,7 @@
 
     if (parts.length === 2) {
       const start = parts[0];
+      
       const end = parts[1];
 
       // Raqamli range
@@ -327,8 +426,8 @@
   // Bitta qiymat boвЂlsa
 
     function formatPrice(value) {
-      if (value === null || value === undefined || value === "") return "0 soвЂm";
-      return Number(value).toLocaleString("uz-UZ") + " soвЂm";
+      if (value === null || value === undefined || value === "") return "0 som";
+      return Number(value).toLocaleString("uz-UZ") + " som";
     }
 
     function makeChips(items, group) {
@@ -373,40 +472,39 @@ function createChipList(items, group) {
       const selectedSize = getActiveChipText("size");
       const selectedColor = getActiveChipText("color");
 
+      const safeQty = Math.max(1, Number(qty) || 1);
       const cartItem = {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        oldPrice: product.oldPrice || "",
-        image: product.image || "",
-        category: product.category || "",
-        desc: product.desc || "",
+        productId: product.id,
+        qty: safeQty,
         size: selectedSize || "",
-        color: selectedColor || "",
-        qty: qty
+        color: selectedColor || ""
       };
 
-      let cart = JSON.parse(localStorage.getItem("mb_cart") || "[]");
-
-      const existingIndex = cart.findIndex(item =>
-        item.id === cartItem.id &&
-        item.size === cartItem.size &&
-        item.color === cartItem.color
-      );
-
-      if (existingIndex !== -1) {
-        cart[existingIndex].qty += qty;
+      if (window.MBStore && typeof window.MBStore.addToCart === "function") {
+        window.MBStore.addToCart(cartItem);
       } else {
-        cart.push(cartItem);
+        const key = "mujskoy_cart";
+        const cart = JSON.parse(localStorage.getItem(key) || "[]");
+        const existingIndex = cart.findIndex((item) =>
+          String(item.productId) === String(cartItem.productId) &&
+          String(item.size || "") === String(cartItem.size || "") &&
+          String(item.color || "") === String(cartItem.color || "")
+        );
+
+        if (existingIndex !== -1) {
+          cart[existingIndex].qty = Math.max(1, Number(cart[existingIndex].qty || 1) + safeQty);
+        } else {
+          cart.push(cartItem);
+        }
+        localStorage.setItem(key, JSON.stringify(cart));
       }
 
-      localStorage.setItem("mb_cart", JSON.stringify(cart));
-      document.getElementById("pdMessage").textContent = "Mahsulot savatga qoвЂshildi.";
+      document.getElementById("pdMessage").textContent = "Mahsulot savatga qo'shildi.";
     }
 
     function buyNow(product) {
       addToCart(product);
-      window.location.href = "shop-cart.html";
+      window.location.href = "checkout.html";
     }
 
     function renderProduct(product) {
@@ -420,7 +518,9 @@ function createChipList(items, group) {
         <div class="row">
           <div class="col-lg-6 mb-4">
             <div class="pd-image-box">
+              <button type="button" class="pd-image-nav prev" id="pdPrevImage" aria-label="Oldingi rasm">&lt;</button>
               <img id="pdMainImage" src="${productImages[0]}" alt="${product.name || "Mahsulot"}">
+              <button type="button" class="pd-image-nav next" id="pdNextImage" aria-label="Keyingi rasm">&gt;</button>
             </div>
             <div class="pd-thumbs">
               ${productImages.map((img, index) => `<img src="${img}" alt="thumb" class="pd-thumb ${index === 0 ? "active" : ""}" data-image="${img}">`).join("")}
@@ -458,11 +558,11 @@ function createChipList(items, group) {
               <div class="pd-meta">
                 <div><strong>Kategoriya:</strong> ${product.category || "-"}</div>
                 <div><strong>Kargo:</strong> 7+ kun ichida yetkazib berish</div>
-                <div><strong>ToвЂlov:</strong> Buyurtma asosida</div>
+                <div><strong>Tolov:</strong> Buyurtma asosida</div>
               </div>
 
               <div class="pd-actions">
-                <button class="pd-btn pd-btn-primary" id="addToCartBtn">Savatga qoвЂshish</button>
+                <button class="pd-btn pd-btn-primary" id="addToCartBtn">Savatga qoshish</button>
                 <button class="pd-btn pd-btn-dark" id="buyNowBtn">Hozir olish</button>
               </div>
 
@@ -475,13 +575,45 @@ function createChipList(items, group) {
       document.getElementById("productDetailApp").innerHTML = html;
       attachChipEvents();
 
-      document.querySelectorAll(".pd-thumb").forEach((thumb) => {
+      const mainImage = document.getElementById("pdMainImage");
+      const thumbs = Array.from(document.querySelectorAll(".pd-thumb"));
+      let currentImageIndex = 0;
+
+      function setActiveImage(index) {
+        if (!thumbs.length) return;
+        const total = thumbs.length;
+        const safeIndex = ((index % total) + total) % total;
+        currentImageIndex = safeIndex;
+
+        mainImage.src = thumbs[safeIndex].dataset.image;
+        thumbs.forEach((thumb, i) => {
+          thumb.classList.toggle("active", i === safeIndex);
+        });
+      }
+
+      thumbs.forEach((thumb, i) => {
         thumb.addEventListener("click", function () {
-          document.getElementById("pdMainImage").src = this.dataset.image;
-          document.querySelectorAll(".pd-thumb").forEach((x) => x.classList.remove("active"));
-          this.classList.add("active");
+          setActiveImage(i);
         });
       });
+
+      const prevBtn = document.getElementById("pdPrevImage");
+      const nextBtn = document.getElementById("pdNextImage");
+
+      if (prevBtn && nextBtn) {
+        prevBtn.addEventListener("click", function () {
+          setActiveImage(currentImageIndex - 1);
+        });
+
+        nextBtn.addEventListener("click", function () {
+          setActiveImage(currentImageIndex + 1);
+        });
+
+        if (thumbs.length <= 1) {
+          prevBtn.style.display = "none";
+          nextBtn.style.display = "none";
+        }
+      }
 
       document.getElementById("addToCartBtn").addEventListener("click", function () {
         addToCart(product);
@@ -496,7 +628,7 @@ function createChipList(items, group) {
       document.getElementById("productDetailApp").innerHTML = `
         <div class="pd-error">
           Mahsulot topilmadi.<br><br>
-          <a href="shop.html">DoвЂkonga qaytish</a>
+          <a href="shop.html">Dokonga qaytish</a>
         </div>
       `;
     }
