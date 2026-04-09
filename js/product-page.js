@@ -15,13 +15,11 @@
     return;
   }
 
-  const res = await fetch("/api/products/" + id);
-  if (!res.ok) {
+  const p = await MBHelpers.loadProductById(id);
+  if (!p) {
     root.innerHTML = '<div class="empty-state"><h5>Mahsulot topilmadi</h5></div>';
     return;
   }
-
-  const p = MBHelpers.normalizeProduct(await res.json());
   const images = p.images.length ? p.images : ["img/placeholders/product.svg"];
   const sizesList = p.sizes.length ? p.sizes : ["Standart"];
   const colorsList = p.colors.length ? p.colors : ["Standart"];

@@ -1,12 +1,18 @@
 (async function () {
   const root = document.getElementById('cart-root');
   if (!root) return;
+  if (!window.MBHelpers) {
+    const s = document.createElement("script");
+    s.src = "js/helpers.js";
+    document.body.appendChild(s);
+    await new Promise((r) => (s.onload = r));
+  }
   const cart = MBStore.getCart();
   if (!cart.length) {
     root.innerHTML = '<div class="empty-state"><h5>Savat bo‘sh</h5><p>Mahsulot tanlab qo‘shing.</p><a href="shop.html" class="site-btn">Do‘konga o‘tish</a></div>';
     return;
   }
-  const products = await fetch('/api/products').then(r => r.json());
+  const products = await MBHelpers.loadProducts({ forceRefresh: true });
   const enriched = cart.map((item, index) => ({ ...item, index, product: products.find(p => p.id === item.productId) || {} }));
   const total = enriched.reduce((sum, item) => sum + (Number(item.product.price) || 0) * item.qty, 0);
   root.innerHTML = `

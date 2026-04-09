@@ -124,6 +124,7 @@
   <script src="js/bootstrap.min.js"></script>
   <script src="js/jquery.slicknav.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/helpers.js"></script>
   <script src="js/store.js"></script>
   <script>
     let checkoutItems = [];
@@ -170,7 +171,10 @@
         return;
       }
 
-      const products = await fetch("/api/products", { cache: "no-store" }).then((r) => r.json());
+      const products =
+        window.MBHelpers && typeof window.MBHelpers.loadProducts === "function"
+          ? await window.MBHelpers.loadProducts({ forceRefresh: true })
+          : await fetch("data/products.json", { cache: "no-store" }).then((r) => r.json());
       checkoutItems = cart.map((item) => {
         const product = products.find((p) => String(p.id) === String(item.productId)) || {};
         const price = Number(product.price || 0);

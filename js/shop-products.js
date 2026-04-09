@@ -16,9 +16,7 @@
   }
 
   async function load() {
-    const res = await fetch("/api/products", { cache: "no-store" });
-    const data = await res.json();
-    allProducts = (Array.isArray(data) ? data : []).map((p) => MBHelpers.normalizeProduct(p));
+    allProducts = await MBHelpers.loadProducts({ forceRefresh: true });
     applyInitialCategoryFromUrl();
     applyFilter();
   }

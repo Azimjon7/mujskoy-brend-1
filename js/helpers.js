@@ -1,4 +1,6 @@
-﻿window.MBHelpers = {
+window.MBHelpers = {
+  _productsCache: null,
+  _productsPromise: null,
   normalizeCategory(value) {
     const raw = String(value || "")
       .toLowerCase()
@@ -8,7 +10,7 @@
 
     const map = {
       futbolkalar: "Futbolkalar",
-      Aksesuarlar: "Aksesuarlar",
+      aksesuarlar: "Aksesuarlar",
       "ustki kiyimlar": "Ustki kiyimlar",
       shimlar: "Shimlar",
       "oyoq kiyimlar": "Oyoq kiyimlar",
@@ -65,15 +67,91 @@
     }
     return [];
   },
+  isGithubPages() {
+    return /\.github\.io$/i.test(window.location.hostname);
+  },
+  apiUrl(path) {
+    const rawPath = String(path || "");
+    const normalizedPath = rawPath.startsWith("/") ? rawPath : `/${rawPath}`;
+    const base = String(window.MB_API_BASE || "").trim().replace(/\/+$/, "");
+    if (!base) return normalizedPath;
+    return `${base}${normalizedPath}`;
+  },
+  async fetchJson(url, options = {}) {
+    const res = await fetch(url, { cache: "no-store", ...options });
+    if (!res.ok) throw new Error(`Request failed: ${url} (${res.status})`);
+    return res.json();
+  },
+  resolveImagePath(value) {
+    const path = String(value || "").trim();
+    if (!path) return "img/placeholders/product.svg";
+    if (/^(https?:)?\/\//i.test(path) || path.startsWith("data:") || path.startsWith("blob:")) return path;
+    if (path.startsWith("/")) return path;
+
+    const assetsBase = String(window.MB_ASSET_BASE || window.MB_API_BASE || "").trim().replace(/\/+$/, "");
+    if (assetsBase && path.startsWith("uploads/")) return `${assetsBase}/${path}`;
+    return path;
+  },
+  async loadProducts(options = {}) {
+    const forceRefresh = Boolean(options.forceRefresh);
+    if (!forceRefresh && Array.isArray(this._productsCache)) return this._productsCache;
+    if (!forceRefresh && this._productsPromise) return this._productsPromise;
+
+    const loadTask = (async () => {
+      const sources = [];
+      const apiProductsUrl = this.apiUrl("/api/products");
+
+      if (window.MB_API_BASE || !this.isGithubPages()) {
+        sources.push(apiProductsUrl);
+      } else {
+        sources.push(apiProductsUrl, "data/products.json");
+      }
+
+      if (!sources.includes("data/products.json")) {
+        sources.push("data/products.json");
+      }
+
+      for (const url of sources) {
+        try {
+          const data = await this.fetchJson(url);
+          const list = (Array.isArray(data) ? data : []).map((product) => this.normalizeProduct(product));
+          this._productsCache = list;
+          return list;
+        } catch (error) {}
+      }
+
+      this._productsCache = [];
+      return [];
+    })();
+
+    this._productsPromise = loadTask.finally(() => {
+      this._productsPromise = null;
+    });
+    return this._productsPromise;
+  },
+  async loadProductById(productId) {
+    const id = String(productId || "").trim();
+    if (!id) return null;
+
+    const apiProductUrl = this.apiUrl(`/api/products/${encodeURIComponent(id)}`);
+    try {
+      const item = await this.fetchJson(apiProductUrl);
+      if (item && typeof item === "object") return this.normalizeProduct(item);
+    } catch (error) {}
+
+    const list = await this.loadProducts();
+    return list.find((item) => String(item.id) === id) || null;
+  },
   normalizeProduct(product) {
-    const images = this.toList(product.images);
-    if (product.image) images.unshift(product.image);
+    const images = this.toList(product.images).map((img) => this.resolveImagePath(img));
+    if (product.image) images.unshift(this.resolveImagePath(product.image));
+    const uniqueImages = [...new Set(images.filter(Boolean))];
 
     return {
       ...product,
       category: this.normalizeCategory(product.category),
-      image: product.image || images[0] || "img/placeholders/product.svg",
-      images: images.length ? images : ["img/placeholders/product.svg"],
+      image: uniqueImages[0] || "img/placeholders/product.svg",
+      images: uniqueImages.length ? uniqueImages : ["img/placeholders/product.svg"],
       description: product.description || product.desc || "",
       sizes: this.toList(product.sizes),
       colors: this.toList(product.colors),
@@ -87,7 +165,8 @@
     const normalized = this.normalizeProduct(product);
     const showDescription = options.showDescription !== false;
     const image = normalized.images[0];
-    const oldPrice = Number(normalized.oldPrice) > 0 ? `<span class="product__oldprice">${this.currency(normalized.oldPrice)}</span>` : "";
+    const oldPrice =
+      Number(normalized.oldPrice) > 0 ? `<span class="product__oldprice">${this.currency(normalized.oldPrice)}</span>` : "";
     const descriptionHtml = showDescription ? `<p>${normalized.description}</p>` : "";
 
     return `
@@ -109,5 +188,5 @@
   },
   emptyState(message) {
     return `<div class="col-12"><div class="empty-state"><img src="img/placeholders/product.svg" alt="placeholder"><h5>Hozircha mahsulot yo'q</h5><p>${message}</p></div></div>`;
-  }
+  },
 };

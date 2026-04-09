@@ -4,7 +4,7 @@ const path = require("path");
 const multer = require("multer");
 
 const app = express();
-const PORT = 5003;
+const PORT = process.env.PORT || 5003;
 
 const DATA_DIR = path.join(__dirname, "data");
 const UPLOADS_DIR = path.join(__dirname, "uploads");

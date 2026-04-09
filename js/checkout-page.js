@@ -3,13 +3,19 @@
   const form = document.getElementById('checkout-form');
   const msg = document.getElementById('checkout-message');
   if (!summary || !form) return;
+  if (!window.MBHelpers) {
+    const s = document.createElement("script");
+    s.src = "js/helpers.js";
+    document.body.appendChild(s);
+    await new Promise((r) => (s.onload = r));
+  }
   const cart = MBStore.getCart();
   if (!cart.length) {
     summary.innerHTML = '<p>Savat bo‘sh.</p><a href="shop.html" class="site-btn">Mahsulot tanlash</a>';
     form.style.display = 'none';
     return;
   }
-  const products = await fetch('/api/products').then(r => r.json());
+  const products = await MBHelpers.loadProducts({ forceRefresh: true });
   const items = cart.map(item => ({ ...item, product: products.find(p => p.id === item.productId) || {} }));
   const total = items.reduce((sum, item) => sum + (Number(item.product.price) || 0) * item.qty, 0);
   summary.innerHTML = items.map(item => `

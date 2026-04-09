@@ -332,6 +332,7 @@
     </div>
   </section>
 
+  <script src="js/helpers.js"></script>
   <script src="js/store.js"></script>
   <script>
     function getQueryParam(name) {
@@ -634,22 +635,21 @@ function createChipList(items, group) {
     }
 
     async function loadProductById(productId) {
-  try {
-    const byIdRes = await fetch("/api/products/" + encodeURIComponent(productId));
-    if (byIdRes.ok) {
-      return await byIdRes.json();
-    }
-  } catch {}
+      try {
+        if (window.MBHelpers && typeof window.MBHelpers.loadProductById === "function") {
+          return await window.MBHelpers.loadProductById(productId);
+        }
+      } catch (error) {}
 
-  try {
-    const listRes = await fetch("/api/products");
-    if (!listRes.ok) return null;
-    const products = await listRes.json();
-    return (products || []).find((item) => String(item.id) === String(productId)) || null;
-  } catch {
-    return null;
-  }
-}
+      try {
+        const listRes = await fetch("data/products.json", { cache: "no-store" });
+        if (!listRes.ok) return null;
+        const products = await listRes.json();
+        return (products || []).find((item) => String(item.id) === String(productId)) || null;
+      } catch (error) {
+        return null;
+      }
+    }
 
 (async function initPage() {
   const productId = getQueryParam("id");
@@ -658,7 +658,10 @@ function createChipList(items, group) {
     return;
   }
 
-  const product = await loadProductById(productId);
+  let product = await loadProductById(productId);
+  if (product && window.MBHelpers && typeof window.MBHelpers.normalizeProduct === "function") {
+    product = window.MBHelpers.normalizeProduct(product);
+  }
   if (!product) {
     document.getElementById("productDetailApp").innerHTML = `
       <div class="pd-error">

@@ -10,9 +10,7 @@
     await new Promise((r) => (s.onload = r));
   }
 
-  const res = await fetch("/api/products", { cache: "no-store" });
-  const products = await res.json();
-  const list = (Array.isArray(products) ? products : []).map((p) => MBHelpers.normalizeProduct(p));
+  const list = await MBHelpers.loadProducts({ forceRefresh: true });
 
   if (!list.length) {
     const empty = MBHelpers.emptyState("Admin paneldan birinchi mahsulotni qo'shing.");
