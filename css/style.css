@@ -5243,13 +5243,53 @@ PHONE READABILITY FIX (all pages)
   span,
   li,
   strong {
-    overflow-wrap: anywhere;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+
+  .cart-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .cart-table table {
+    min-width: 640px;
   }
 
   .cart-table th,
   .cart-table td {
     padding: 10px 6px;
     font-size: 12px;
+    white-space: normal;
+  }
+
+  .cart-table .admin-product-left {
+    min-width: 200px;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cart-table .admin-product-left > div {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .cart-table .admin-product-left strong {
+    display: block;
+    font-size: 13px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .cart-table .link-btn {
+    white-space: nowrap;
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .cart-table .cart-qty-input {
+    min-width: 64px;
+    width: 74px;
   }
 
   .cart-item-img {
@@ -5290,8 +5330,20 @@ PHONE READABILITY FIX (all pages)
     padding: 12px;
   }
 
+  .cart-table table {
+    min-width: 560px;
+  }
+
   .cart-table th,
   .cart-table td {
     font-size: 11px;
+  }
+
+  .cart-table .admin-product-left {
+    min-width: 180px;
+  }
+
+  .cart-table .admin-product-left strong {
+    font-size: 12px;
   }
 }
