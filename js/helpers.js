@@ -170,7 +170,7 @@ window.MBHelpers = {
     const descriptionHtml = showDescription ? `<p>${normalized.description}</p>` : "";
 
     return `
-      <div class="col-lg-3 col-md-4 col-sm-6">
+      <div class="col-6 col-sm-6 col-md-4 col-lg-3">
         <div class="product__item">
           <a href="product-details.html?id=${normalized.id}" class="product__item__pic" style="background-image:url('${image}')">
             <div class="label">${normalized.badge || "Yangi"}</div>
