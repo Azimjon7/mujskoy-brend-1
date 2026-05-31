@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mujskoy Brend | Buyurtma</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
+  <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+<body class="checkout-clean">
+  <div id="preloder"><div class="loader"></div></div>
+  <div class="offcanvas-menu-overlay"></div>
+  <div class="offcanvas-menu-wrapper">
+    <div class="offcanvas__close">+</div>
+    <div class="offcanvas__logo"><a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo" /></a></div>
+    <div id="mobile-menu-wrap"></div>
+  </div>
+
+  <header class="header header--dark">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-xl-3 col-lg-3 col-8">
+          <div class="header__logo header__logo--custom">
+            <a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo" /><span>Mujskoy Brend</span></a>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6">
+          <nav class="header__menu">
+            <ul>
+              <li><a href="index.html">Bosh sahifa</a></li>
+              <li><a href="shop.html">Do'kon</a></li>
+              <li><a href="shop-cart.html">Savat</a></li>
+              <li class="active"><a href="checkout.html">Buyurtma</a></li>
+              <li><a href="contact.html">Bog'lanish</a></li>
+              <li><a href="admin.html">Admin</a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="col-xl-3 col-lg-3 col-4 text-right">
+          <ul class="header__right__widget header__right__widget--simple">
+            <li>
+              <a href="shop-cart.html"><span class="icon_bag_alt"></span><div class="tip js-cart-count">0</div></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="canvas__open"><i class="fa fa-bars"></i></div>
+    </div>
+  </header>
+
+  <section class="breadcrumb-custom">
+    <div class="container">
+      <h2>Buyurtma rasmiylashtirish</h2>
+      <p>Ma'lumotlarni to'ldiring va buyurtmangizni tasdiqlang.</p>
+    </div>
+  </section>
+
+  <section class="checkout spad">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="checkout__form--custom">
+            <h5>Buyurtma ma'lumotlari</h5>
+
+            <div class="row">
+              <div class="col-md-6">
+                <label class="checkout-label" for="name">Ism familiya <span>*</span></label>
+                <input id="name" type="text" placeholder="Masalan: Azizjon G'ulomov" />
+              </div>
+              <div class="col-md-6">
+                <label class="checkout-label" for="phone">Telefon raqam <span>*</span></label>
+                <input id="phone" type="text" placeholder="+998 90 123 45 67" />
+              </div>
+            </div>
+
+            <label class="checkout-label" for="address">Yetkazib berish manzili <span>*</span></label>
+            <input id="address" type="text" placeholder="Shahar, tuman, ko'cha, uy" />
+
+            <label class="checkout-label" for="note">Qo'shimcha izoh</label>
+            <textarea id="note" placeholder="Masalan: qo'ng'iroq qilmasdan yetkazib bering"></textarea>
+
+            <div class="checkout-payment">
+              <h6>To'lov turi</h6>
+              <div class="checkout-radio-group">
+                <label class="checkout-radio">
+                  <input type="radio" name="paymentType" value="naqd" checked />
+                  <span>Naqd</span>
+                </label>
+                <label class="checkout-radio">
+                  <input type="radio" name="paymentType" value="karta" />
+                  <span>Karta</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="paymentScreenshotWrap" class="checkout-upload" style="display:none;">
+              <label class="checkout-label" for="paymentScreenshot">To'lov skrinshoti <span>*</span></label>
+              <input id="paymentScreenshot" type="file" accept="image/*" />
+              <p class="checkout-help">Karta tanlansa, skrinshot yuklash majburiy.</p>
+            </div>
+
+            <div class="checkout-actions">
+              <button class="site-btn" type="button" onclick="submitOrder()">Buyurtma berish</button>
+              <a class="site-btn site-btn--ghost" href="shop-cart.html">Savatga qaytish</a>
+            </div>
+            <div id="checkoutMessage" class="form-message"></div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="checkout__order--custom">
+            <h5>Buyurtma xulosasi</h5>
+            <div id="checkoutSummary"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.slicknav.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    let checkoutItems = [];
+    let checkoutTotal = 0;
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
+    }
+
+    function setCheckoutMessage(text, type) {
+      const msg = document.getElementById("checkoutMessage");
+      msg.innerHTML = '<span class="checkout-msg checkout-msg--' + type + '">' + text + "</span>";
+    }
+
+    function getSelectedPaymentType() {
+      const picked = document.querySelector('input[name="paymentType"]:checked');
+      return picked ? picked.value : "naqd";
+    }
+
+    function syncPaymentUI() {
+      const wrap = document.getElementById("paymentScreenshotWrap");
+      if (getSelectedPaymentType() === "karta") {
+        wrap.style.display = "block";
+      } else {
+        wrap.style.display = "none";
+        document.getElementById("paymentScreenshot").value = "";
+      }
+    }
+
+    function buildItemMeta(item) {
+      const parts = [];
+      if (item.size) parts.push("O'lcham: " + item.size);
+      if (item.color) parts.push("Rang: " + item.color);
+      if (!parts.length) return "";
+      return '<small class="checkout-item-meta">' + parts.join(" | ") + "</small>";
+    }
+
+    async function initCheckout() {
+      const summary = document.getElementById("checkoutSummary");
+      const cart = MBStore.getCart();
+
+      if (!cart.length) {
+        summary.innerHTML = '<p class="checkout-empty">Savatingiz bo\'sh. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
+        return;
+      }
+
+      const products =
+        window.MBHelpers && typeof window.MBHelpers.loadProducts === "function"
+          ? await window.MBHelpers.loadProducts({ forceRefresh: true })
+          : await fetch("data/products.json", { cache: "no-store" }).then((r) => r.json());
+      checkoutItems = cart.map((item) => {
+        const product = products.find((p) => String(p.id) === String(item.productId)) || {};
+        const price = Number(product.price || 0);
+        const qty = Math.max(1, Number(item.qty || 1));
+        return {
+          productId: item.productId,
+          name: product.name || "Mahsulot",
+          size: item.size || "",
+          color: item.color || "",
+          qty,
+          price,
+          lineTotal: price * qty,
+        };
+      });
+
+      checkoutTotal = checkoutItems.reduce((sum, item) => sum + item.lineTotal, 0);
+      const qtyTotal = checkoutItems.reduce((sum, item) => sum + item.qty, 0);
+
+      const itemsHtml = checkoutItems
+        .map(
+          (item, index) =>
+            '<div class="checkout-summary-row">' +
+            '<div>' +
+            '<p>' +
+            (index + 1) +
+            ". " +
+            item.name +
+            " x " +
+            item.qty +
+            "</p>" +
+            buildItemMeta(item) +
+            "</div>" +
+            "<strong>" +
+            formatMoney(item.lineTotal) +
+            "</strong>" +
+            "</div>"
+        )
+        .join("");
+
+      summary.innerHTML =
+        '<div class="checkout-summary-head"><span>Mahsulot</span><span>Narx</span></div>' +
+        '<div class="checkout-summary-list">' +
+        itemsHtml +
+        "</div>" +
+        '<div class="checkout-total-row"><span>Jami mahsulot</span><strong>' +
+        qtyTotal +
+        " ta</strong></div>" +
+        '<div class="checkout-total-row checkout-grand-total"><span>Umumiy summa</span><strong>' +
+        formatMoney(checkoutTotal) +
+        "</strong></div>";
+    }
+
+    async function submitOrder() {
+      if (!checkoutItems.length) {
+        setCheckoutMessage("Savatingiz bo'sh.", "error");
+        return;
+      }
+
+      const paymentType = getSelectedPaymentType();
+      const screenshotFile = document.getElementById("paymentScreenshot").files[0];
+
+      const payload = {
+        name: document.getElementById("name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        note: document.getElementById("note").value.trim(),
+        total: checkoutTotal,
+        items: checkoutItems,
+        paymentType,
+      };
+
+      if (!payload.name || !payload.phone || !payload.address) {
+        setCheckoutMessage("Ism, telefon va manzil majburiy.", "error");
+        return;
+      }
+
+      if (paymentType === "karta" && !screenshotFile) {
+        setCheckoutMessage("Karta to'lovi uchun skrinshot yuklang.", "error");
+        return;
+      }
+
+      const requestOptions = { method: "POST" };
+
+      if (paymentType === "karta") {
+        const formData = new FormData();
+        formData.append("name", payload.name);
+        formData.append("phone", payload.phone);
+        formData.append("address", payload.address);
+        formData.append("note", payload.note);
+        formData.append("total", String(payload.total));
+        formData.append("paymentType", paymentType);
+        formData.append("items", JSON.stringify(checkoutItems));
+        formData.append("itemsJson", JSON.stringify(checkoutItems));
+        checkoutItems.forEach((item, index) => {
+          Object.keys(item).forEach((key) => {
+            formData.append("items[" + index + "][" + key + "]", String(item[key] ?? ""));
+          });
+        });
+        if (screenshotFile) {
+          formData.append("paymentScreenshot", screenshotFile);
+        }
+        requestOptions.body = formData;
+      } else {
+        requestOptions.headers = { "Content-Type": "application/json" };
+        requestOptions.body = JSON.stringify({
+          ...payload,
+          paymentType: "naqd",
+          items: checkoutItems,
+        });
+      }
+
+      fetch("/api/orders", requestOptions)
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}));
+          return { ok: res.ok, data };
+        })
+        .then(({ ok, data }) => {
+          if (ok && data.success) {
+            MBStore.clearCart();
+            setCheckoutMessage("Buyurtmangiz qabul qilindi.", "success");
+            setTimeout(() => {
+              window.location.href = "index.html";
+            }, 1200);
+          } else {
+            const msg = data.message || "Buyurtma yuborilmadi.";
+            setCheckoutMessage(msg, "error");
+          }
+        })
+        .catch(() => {
+          setCheckoutMessage("Xatolik yuz berdi. Qayta urinib ko'ring.", "error");
+        });
+    }
+
+    document.querySelectorAll('input[name="paymentType"]').forEach((el) => {
+      el.addEventListener("change", syncPaymentUI);
+    });
+
+    syncPaymentUI();
+    initCheckout();
+  </script>
+</body>
+</html>
