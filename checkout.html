@@ -35,7 +35,7 @@
               <li><a href="shop-cart.html">Savat</a></li>
               <li class="active"><a href="checkout.html">Buyurtma</a></li>
               <li><a href="contact.html">Bog'lanish</a></li>
-              <li><a href="admin.html">Admin</a></li>
+              <li><a href="admin.html">Boshqaruv</a></li>
             </ul>
           </nav>
         </div>
@@ -102,6 +102,15 @@
               <p class="checkout-help">Karta tanlansa, skrinshot yuklash majburiy.</p>
             </div>
 
+            <div class="checkout-promo">
+              <label class="checkout-label" for="promoCode">Promokod</label>
+              <div class="checkout-promo-row">
+                <input id="promoCode" type="text" placeholder="Masalan: SALE10" />
+                <button class="site-btn site-btn--ghost" type="button" onclick="applyPromoCode()">Qo'llash</button>
+              </div>
+              <div id="promoMessage" class="form-message"></div>
+            </div>
+
             <div class="checkout-actions">
               <button class="site-btn" type="button" onclick="submitOrder()">Buyurtma berish</button>
               <a class="site-btn site-btn--ghost" href="shop-cart.html">Savatga qaytish</a>
@@ -128,7 +137,9 @@
   <script src="js/store.js"></script>
   <script>
     let checkoutItems = [];
+    let checkoutSubtotal = 0;
     let checkoutTotal = 0;
+    let appliedPromo = null;
 
     function formatMoney(value) {
       return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
@@ -162,37 +173,9 @@
       return '<small class="checkout-item-meta">' + parts.join(" | ") + "</small>";
     }
 
-    async function initCheckout() {
+    function renderCheckoutSummary() {
       const summary = document.getElementById("checkoutSummary");
-      const cart = MBStore.getCart();
-
-      if (!cart.length) {
-        summary.innerHTML = '<p class="checkout-empty">Savatingiz bo\'sh. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
-        return;
-      }
-
-      const products =
-        window.MBHelpers && typeof window.MBHelpers.loadProducts === "function"
-          ? await window.MBHelpers.loadProducts({ forceRefresh: true })
-          : await fetch("data/products.json", { cache: "no-store" }).then((r) => r.json());
-      checkoutItems = cart.map((item) => {
-        const product = products.find((p) => String(p.id) === String(item.productId)) || {};
-        const price = Number(product.price || 0);
-        const qty = Math.max(1, Number(item.qty || 1));
-        return {
-          productId: item.productId,
-          name: product.name || "Mahsulot",
-          size: item.size || "",
-          color: item.color || "",
-          qty,
-          price,
-          lineTotal: price * qty,
-        };
-      });
-
-      checkoutTotal = checkoutItems.reduce((sum, item) => sum + item.lineTotal, 0);
       const qtyTotal = checkoutItems.reduce((sum, item) => sum + item.qty, 0);
-
       const itemsHtml = checkoutItems
         .map(
           (item, index) =>
@@ -214,6 +197,10 @@
         )
         .join("");
 
+      const discountHtml = appliedPromo
+        ? '<div class="checkout-total-row"><span>Chegirma (' + appliedPromo.code + ')</span><strong>-' + formatMoney(appliedPromo.discountAmount) + "</strong></div>"
+        : "";
+
       summary.innerHTML =
         '<div class="checkout-summary-head"><span>Mahsulot</span><span>Narx</span></div>' +
         '<div class="checkout-summary-list">' +
@@ -222,9 +209,81 @@
         '<div class="checkout-total-row"><span>Jami mahsulot</span><strong>' +
         qtyTotal +
         " ta</strong></div>" +
+        '<div class="checkout-total-row"><span>Oraliq summa</span><strong>' +
+        formatMoney(checkoutSubtotal) +
+        "</strong></div>" +
+        discountHtml +
         '<div class="checkout-total-row checkout-grand-total"><span>Umumiy summa</span><strong>' +
         formatMoney(checkoutTotal) +
         "</strong></div>";
+    }
+
+    async function initCheckout() {
+      const summary = document.getElementById("checkoutSummary");
+      const cart = MBStore.getCart();
+
+      if (!cart.length) {
+        summary.innerHTML = '<p class="checkout-empty">Savatingiz bo\'sh. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
+        return;
+      }
+
+      const products =
+        window.MBHelpers && typeof window.MBHelpers.loadProducts === "function"
+          ? await window.MBHelpers.loadProducts({ forceRefresh: true })
+          : await fetch("data/products.json", { cache: "no-store" }).then((r) => r.json());
+      checkoutItems = cart.map((item) => {
+        const product = products.find((p) => String(p.id) === String(item.productId)) || {};
+        const price = Number(product.price || 0);
+        const qty = Math.max(1, Number(item.qty || 1));
+        const stock = Number(product.stock ?? 999);
+        const safeQty = Math.min(qty, Math.max(0, stock));
+        return {
+          productId: item.productId,
+          name: product.name || "Mahsulot",
+          size: item.size || "",
+          color: item.color || "",
+          qty: safeQty,
+          price,
+          lineTotal: price * safeQty,
+        };
+      }).filter((item) => item.qty > 0);
+
+      if (!checkoutItems.length) {
+        summary.innerHTML = '<p class="checkout-empty">Tanlangan mahsulot sotuvda mavjud emas. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
+        return;
+      }
+
+      checkoutSubtotal = checkoutItems.reduce((sum, item) => sum + item.lineTotal, 0);
+      checkoutTotal = checkoutSubtotal;
+      renderCheckoutSummary();
+    }
+
+    async function applyPromoCode() {
+      const code = document.getElementById("promoCode").value.trim();
+      const message = document.getElementById("promoMessage");
+      if (!code) {
+        message.innerHTML = '<span class="checkout-msg checkout-msg--error">Promokod kiriting.</span>';
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/promocodes/apply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code, subtotal: checkoutSubtotal }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "Promokod ishlamadi");
+        appliedPromo = data;
+        checkoutTotal = data.total;
+        message.innerHTML = '<span class="checkout-msg checkout-msg--success">Promokod qo\'llandi.</span>';
+        renderCheckoutSummary();
+      } catch (error) {
+        appliedPromo = null;
+        checkoutTotal = checkoutSubtotal;
+        message.innerHTML = '<span class="checkout-msg checkout-msg--error">' + (error.message || "Promokod ishlamadi") + "</span>";
+        renderCheckoutSummary();
+      }
     }
 
     async function submitOrder() {
@@ -242,6 +301,8 @@
         address: document.getElementById("address").value.trim(),
         note: document.getElementById("note").value.trim(),
         total: checkoutTotal,
+        subtotal: checkoutSubtotal,
+        promoCode: appliedPromo ? appliedPromo.code : "",
         items: checkoutItems,
         paymentType,
       };
@@ -265,6 +326,8 @@
         formData.append("address", payload.address);
         formData.append("note", payload.note);
         formData.append("total", String(payload.total));
+        formData.append("subtotal", String(payload.subtotal));
+        formData.append("promoCode", payload.promoCode);
         formData.append("paymentType", paymentType);
         formData.append("items", JSON.stringify(checkoutItems));
         formData.append("itemsJson", JSON.stringify(checkoutItems));
@@ -295,9 +358,11 @@
           if (ok && data.success) {
             MBStore.clearCart();
             setCheckoutMessage("Buyurtmangiz qabul qilindi.", "success");
-            setTimeout(() => {
-              window.location.href = "index.html";
-            }, 1200);
+            const order = data.order || {};
+            window.location.href =
+              "success.html?orderId=" + encodeURIComponent(order.id || "") +
+              "&date=" + encodeURIComponent(order.createdAt || "") +
+              "&total=" + encodeURIComponent(order.total || checkoutTotal);
           } else {
             const msg = data.message || "Buyurtma yuborilmadi.";
             setCheckoutMessage(msg, "error");

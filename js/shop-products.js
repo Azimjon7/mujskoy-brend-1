@@ -17,8 +17,28 @@
 
   async function load() {
     allProducts = await MBHelpers.loadProducts({ forceRefresh: true });
+    await renderCategoryFilters();
     applyInitialCategoryFromUrl();
     applyFilter();
+  }
+
+  async function renderCategoryFilters() {
+    const wrap = document.querySelector(".shop-toolbar__filters");
+    if (!wrap) return;
+
+    let categories = [];
+    try {
+      categories = await MBHelpers.fetchJson(MBHelpers.apiUrl("/api/categories"));
+    } catch (error) {
+      categories = [...new Set(allProducts.map((p) => p.category).filter(Boolean))];
+    }
+
+    const buttons = ['<button class="filter-btn active" data-category="">Barchasi</button>']
+      .concat((Array.isArray(categories) ? categories : []).map((category) => {
+        return `<button class="filter-btn" data-category="${category}">${category}</button>`;
+      }));
+    wrap.innerHTML = buttons.join("");
+    bindFilterButtons();
   }
 
   function render(items) {
@@ -33,6 +53,10 @@
         e.preventDefault();
         const p = allProducts.find((x) => String(x.id) === String(this.dataset.id));
         if (!p) return;
+        if (Number(p.stock ?? 999) <= 0) {
+          alert("Sotuvda mavjud emas");
+          return;
+        }
 
         MBStore.addToCart({
           productId: p.id,
@@ -54,7 +78,7 @@
       const pCategory = normalizedCategory(p.category);
       const categoryOk = !selectedCategory || pCategory === selectedCategory;
       const textOk =
-        !q || [p.name, p.description, p.category, p.subcategory].join(" ").toLowerCase().includes(q);
+        !q || [p.name, p.description, p.category, p.subcategory, (p.sizes || []).join(" "), (p.colors || []).join(" ")].join(" ").toLowerCase().includes(q);
       return categoryOk && textOk;
     });
 
@@ -74,13 +98,15 @@
     targetBtn.classList.add("active");
   }
 
-  document.querySelectorAll(".filter-btn").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
-      this.classList.add("active");
-      applyFilter();
+  function bindFilterButtons() {
+    document.querySelectorAll(".filter-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        document.querySelectorAll(".filter-btn").forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+        applyFilter();
+      });
     });
-  });
+  }
 
   document.getElementById("shop-search").addEventListener("input", applyFilter);
 

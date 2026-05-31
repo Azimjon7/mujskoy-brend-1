@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mujskoy Brend Admin</title>
+  <title>Mujskoy Brend Boshqaruv</title>
   <style>
     * {
       box-sizing: border-box;
@@ -11,10 +11,31 @@
       padding: 0;
     }
 
+    :root {
+      --ap-bg: radial-gradient(1100px 620px at 12% 2%, #e3efff 0%, transparent 55%),
+        radial-gradient(950px 540px at 92% 8%, #f5e8d6 0%, transparent 58%),
+        radial-gradient(950px 540px at 50% 100%, #e3f0e7 0%, transparent 56%),
+        #eef2f6;
+      --ap-surface: #ffffff;
+      --ap-surface-2: #f8fafc;
+      --ap-surface-3: #eef3f8;
+      --ap-border: #d5dde8;
+      --ap-border-strong: #c3cedc;
+      --ap-text: #1f2a37;
+      --ap-muted: #5f6b7c;
+      --ap-accent: #b98a54;
+      --ap-accent-2: #d7b07d;
+      --ap-danger: #b43a3a;
+      --ap-success: #237a4b;
+      --ap-warning: #a46b20;
+      --ap-shadow: 0 16px 44px rgba(41, 53, 73, 0.1);
+    }
+
     body {
+      min-height: 100vh;
       font-family: Arial, sans-serif;
-      background: #0b0b0b;
-      color: #fff;
+      background: var(--ap-bg);
+      color: var(--ap-text);
     }
 
     a {
@@ -32,27 +53,27 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: linear-gradient(135deg, #050505, #111111);
     }
 
     .login-card {
       width: 100%;
-      max-width: 420px;
-      background: #141414;
-      border: 1px solid rgba(212, 175, 55, 0.25);
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--ap-border);
       border-radius: 18px;
       padding: 32px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      box-shadow: var(--ap-shadow);
+      backdrop-filter: blur(8px);
     }
 
     .login-card h1 {
-      font-size: 32px;
+      font-size: 30px;
       margin-bottom: 10px;
-      color: #d4af37;
+      color: #9a6a36;
     }
 
     .login-card p {
-      color: #bdbdbd;
+      color: var(--ap-muted);
       margin-bottom: 24px;
       line-height: 1.5;
     }
@@ -61,11 +82,13 @@
       margin-bottom: 16px;
     }
 
-    .form-group label {
+    .form-group label,
+    .field-label {
       display: block;
       margin-bottom: 8px;
-      color: #ddd;
+      color: var(--ap-muted);
       font-size: 14px;
+      font-weight: 700;
     }
 
     input,
@@ -74,22 +97,24 @@
       width: 100%;
       padding: 14px 15px;
       border-radius: 12px;
-      border: 1px solid #333;
-      background: #0f0f0f;
-      color: #fff;
+      border: 1px solid var(--ap-border);
+      background: var(--ap-surface-2);
+      color: var(--ap-text);
       outline: none;
       font-size: 15px;
+      transition: 0.18s ease;
     }
 
     textarea {
-      min-height: 110px;
+      min-height: 120px;
       resize: vertical;
     }
 
     input:focus,
     textarea:focus,
     select:focus {
-      border-color: #d4af37;
+      border-color: var(--ap-accent);
+      box-shadow: 0 0 0 3px rgba(185, 138, 84, 0.14);
     }
 
     .btn {
@@ -97,10 +122,11 @@
       outline: none;
       cursor: pointer;
       border-radius: 12px;
-      padding: 13px 18px;
-      font-size: 15px;
-      font-weight: 700;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 800;
       transition: 0.2s ease;
+      min-height: 44px;
     }
 
     .btn:hover {
@@ -108,25 +134,21 @@
     }
 
     .btn-primary {
-      background: #d4af37;
-      color: #000;
+      background: linear-gradient(135deg, var(--ap-accent-2), var(--ap-accent));
+      color: #1b1713;
+      box-shadow: 0 10px 24px rgba(185, 138, 84, 0.25);
     }
 
-    .btn-dark {
-      background: #1b1b1b;
-      color: #fff;
-      border: 1px solid #333;
+    .btn-dark,
+    .btn-secondary {
+      background: var(--ap-surface-2);
+      color: var(--ap-text);
+      border: 1px solid var(--ap-border);
     }
 
     .btn-danger {
-      background: #a92727;
+      background: var(--ap-danger);
       color: #fff;
-    }
-
-    .btn-secondary {
-      background: #262626;
-      color: #fff;
-      border: 1px solid #444;
     }
 
     .login-card .btn {
@@ -135,43 +157,67 @@
     }
 
     .error-text {
-      color: #ff6b6b;
+      color: var(--ap-danger);
       margin-top: 12px;
       font-size: 14px;
+      line-height: 1.45;
     }
 
     .success-text {
-      color: #7dff9a;
+      color: var(--ap-success);
       margin-top: 12px;
       font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .toast {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 100;
+      max-width: min(360px, calc(100vw - 36px));
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #f1fbf5;
+      color: var(--ap-success);
+      border: 1px solid rgba(35, 122, 75, 0.22);
+      box-shadow: var(--ap-shadow);
+      font-weight: 800;
+    }
+
+    .toast--error {
+      background: #fff2f2;
+      color: var(--ap-danger);
+      border-color: rgba(180, 58, 58, 0.22);
     }
 
     .admin-shell {
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 250px 1fr;
+      grid-template-columns: 270px 1fr;
     }
 
     .sidebar {
-      background: #101010;
-      border-right: 1px solid #222;
+      background: rgba(255, 255, 255, 0.78);
+      border-right: 1px solid var(--ap-border);
       padding: 24px 18px;
+      backdrop-filter: blur(8px);
     }
 
     .brand {
       margin-bottom: 24px;
       padding-bottom: 18px;
-      border-bottom: 1px solid #222;
+      border-bottom: 1px solid var(--ap-border);
     }
 
     .brand h2 {
-      color: #d4af37;
+      color: #9a6a36;
       font-size: 24px;
       margin-bottom: 6px;
     }
 
     .brand p {
-      color: #999;
+      color: var(--ap-muted);
       font-size: 13px;
     }
 
@@ -186,24 +232,27 @@
       text-align: left;
       padding: 14px 16px;
       border-radius: 12px;
-      border: 1px solid #232323;
-      background: #151515;
-      color: #fff;
+      border: 1px solid var(--ap-border);
+      background: var(--ap-surface);
+      color: var(--ap-text);
       cursor: pointer;
       font-size: 15px;
+      font-weight: 800;
       transition: 0.2s ease;
     }
 
     .menu button:hover,
     .menu button.active {
-      background: #d4af37;
-      color: #000;
-      border-color: #d4af37;
+      background: #f3f7fb;
+      color: var(--ap-text);
+      border-color: #c6d4e5;
+      box-shadow: 0 8px 22px rgba(41, 53, 73, 0.08);
     }
 
     .main {
       padding: 28px;
-      background: #0b0b0b;
+      background: transparent;
+      min-width: 0;
     }
 
     .topbar {
@@ -216,32 +265,101 @@
     }
 
     .topbar h1 {
-      font-size: 28px;
+      font-size: 29px;
+      color: var(--ap-text);
     }
 
     .topbar p {
-      color: #aaa;
+      color: var(--ap-muted);
       margin-top: 6px;
+      line-height: 1.5;
     }
 
     .panel {
-      background: #141414;
-      border: 1px solid #222;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--ap-border);
       border-radius: 18px;
       padding: 22px;
       margin-bottom: 20px;
+      box-shadow: var(--ap-shadow);
     }
 
     .panel h3 {
       margin-bottom: 16px;
-      color: #d4af37;
+      color: #9a6a36;
       font-size: 22px;
+    }
+
+    .panel h4 {
+      margin: 18px 0 12px;
+      color: var(--ap-text);
+      font-size: 17px;
     }
 
     .grid-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      min-height: 118px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid var(--ap-border);
+      background: linear-gradient(180deg, #fff, #f8fbfe);
+    }
+
+    .stat-card span {
+      color: var(--ap-muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .stat-card strong {
+      color: var(--ap-text);
+      font-size: 26px;
+      line-height: 1.1;
+    }
+
+    .dashboard-recent {
+      margin-top: 20px;
+      border-top: 1px solid var(--ap-border);
+      padding-top: 18px;
+    }
+
+    .recent-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .recent-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--ap-border);
+      border-radius: 14px;
+      background: var(--ap-surface-2);
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(240px, 420px) 1fr;
+      gap: 14px;
+      align-items: end;
+      margin-bottom: 18px;
     }
 
     .product-list {
@@ -251,17 +369,18 @@
     }
 
     .product-card {
-      background: #111;
-      border: 1px solid #2b2b2b;
+      background: var(--ap-surface);
+      border: 1px solid var(--ap-border);
       border-radius: 16px;
       overflow: hidden;
+      box-shadow: 0 10px 26px rgba(41, 53, 73, 0.08);
     }
 
     .product-card img {
       width: 100%;
       height: 220px;
       object-fit: cover;
-      background: #0d0d0d;
+      background: var(--ap-surface-3);
     }
 
     .product-card-body {
@@ -269,27 +388,29 @@
     }
 
     .product-card h4 {
-      font-size: 20px;
+      font-size: 19px;
+      line-height: 1.35;
       margin-bottom: 8px;
+      color: var(--ap-text);
     }
 
     .meta {
-      color: #b7b7b7;
+      color: var(--ap-muted);
       font-size: 14px;
       line-height: 1.6;
       margin-bottom: 8px;
     }
 
     .price {
-      color: #d4af37;
-      font-size: 22px;
-      font-weight: 700;
+      color: #9a6a36;
+      font-size: 21px;
+      font-weight: 900;
       margin-bottom: 14px;
     }
 
     .old-price {
-      color: #888;
-      font-size: 16px;
+      color: #8a94a3;
+      font-size: 15px;
       text-decoration: line-through;
       margin-left: 8px;
     }
@@ -300,62 +421,316 @@
       flex-wrap: wrap;
     }
 
-    .orders-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .order-item {
-      background: #111;
-      border: 1px solid #262626;
-      border-radius: 14px;
-      padding: 16px;
-    }
-
-    .order-item strong {
-      color: #d4af37;
+    .actions .btn {
+      flex: 1 1 auto;
     }
 
     .empty {
-      color: #999;
+      color: var(--ap-muted);
       padding: 10px 0;
-    }
-
-    .preview-wrap {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .preview-wrap img {
-      width: 120px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid #333;
-      background: #0e0e0e;
-    }
-
-    .preview-item {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-start;
-    }
-
-    .preview-item .btn {
-      padding: 8px 10px;
-      border-radius: 10px;
-      font-size: 12px;
-      min-width: auto;
+      line-height: 1.5;
     }
 
     .small {
       font-size: 13px;
-      color: #999;
+      color: var(--ap-muted);
       line-height: 1.5;
+    }
+
+    .file-input-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .upload-box {
+      display: grid;
+      place-items: center;
+      min-height: 150px;
+      padding: 24px;
+      border: 1.5px dashed #c5b08c;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fffdf9, #f8fafc);
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s ease;
+    }
+
+    .upload-box:hover,
+    .upload-box.dragging {
+      border-color: var(--ap-accent);
+      box-shadow: 0 0 0 4px rgba(185, 138, 84, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .upload-box strong {
+      display: block;
+      color: var(--ap-text);
+      font-size: 17px;
+      margin-bottom: 8px;
+    }
+
+    .upload-box span {
+      color: var(--ap-muted);
+      font-size: 14px;
+    }
+
+    .preview-wrap {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .preview-item {
+      border: 1px solid var(--ap-border);
+      border-radius: 14px;
+      padding: 8px;
+      background: var(--ap-surface-2);
+    }
+
+    .preview-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid var(--ap-border);
+      background: var(--ap-surface-3);
+      margin-bottom: 8px;
+    }
+
+    .preview-item .btn {
+      width: 100%;
+      min-height: 36px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .orders-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .order-item {
+      background: var(--ap-surface);
+      border: 1px solid var(--ap-border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 26px rgba(41, 53, 73, 0.08);
+    }
+
+    .order-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .eyebrow {
+      display: block;
+      color: var(--ap-muted);
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+
+    .order-head strong {
+      color: #9a6a36;
+      word-break: break-word;
+    }
+
+    .order-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .order-field {
+      border: 1px solid var(--ap-border);
+      border-radius: 12px;
+      padding: 11px;
+      background: var(--ap-surface-2);
+      min-width: 0;
+    }
+
+    .order-field span {
+      display: block;
+      color: var(--ap-muted);
+      font-size: 12px;
+      margin-bottom: 5px;
+      font-weight: 800;
+    }
+
+    .order-field strong {
+      color: var(--ap-text);
+      font-size: 14px;
+      word-break: break-word;
+      line-height: 1.35;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .status-yangi {
+      color: #7a4f12;
+      background: #fff6db;
+      border-color: #f0d79e;
+    }
+
+    .status-tasdiqlandi {
+      color: #285c9a;
+      background: #eaf3ff;
+      border-color: #c5dafa;
+    }
+
+    .status-yuborildi {
+      color: #6a4a9a;
+      background: #f1ebff;
+      border-color: #dacbf8;
+    }
+
+    .status-yetkazildi {
+      color: #237a4b;
+      background: #e9f8ef;
+      border-color: #bfe5cd;
+    }
+
+    .status-bekor-qilindi {
+      color: var(--ap-danger);
+      background: #fff0f0;
+      border-color: #f1c2c2;
+    }
+
+    .order-items {
+      border-top: 1px solid var(--ap-border);
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+
+    .order-items strong {
+      color: var(--ap-text);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .order-items ul {
+      display: grid;
+      gap: 8px;
+      list-style: none;
+    }
+
+    .order-items li {
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--ap-surface-2);
+      border: 1px solid var(--ap-border);
+      color: var(--ap-muted);
+      line-height: 1.45;
+    }
+
+    .payment-shot {
+      margin-top: 14px;
+    }
+
+    .payment-shot strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .payment-shot img {
+      width: min(220px, 100%);
+      border-radius: 12px;
+      border: 1px solid var(--ap-border);
+      background: var(--ap-surface-2);
+    }
+
+    .status-control {
+      display: grid;
+      grid-template-columns: minmax(180px, 260px) auto;
+      gap: 10px;
+      align-items: end;
+      margin-top: 14px;
+      border-top: 1px solid var(--ap-border);
+      padding-top: 14px;
+    }
+
+    .category-tools {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .category-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .category-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--ap-border);
+      border-radius: 14px;
+      background: var(--ap-surface-2);
+      padding: 12px;
+    }
+
+    .category-row strong {
+      color: var(--ap-text);
+      word-break: break-word;
+    }
+
+    .section-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .section-heading-row h3 {
+      margin-bottom: 0;
+    }
+
+    .mini-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .rating-stars {
+      color: #b98a54;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 1100px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .order-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 900px) {
@@ -365,10 +740,12 @@
 
       .sidebar {
         border-right: none;
-        border-bottom: 1px solid #222;
+        border-bottom: 1px solid var(--ap-border);
       }
 
-      .grid-2 {
+      .grid-2,
+      .toolbar,
+      .category-tools {
         grid-template-columns: 1fr;
       }
 
@@ -377,7 +754,7 @@
       }
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 620px) {
       .login-page {
         padding: 14px;
       }
@@ -421,13 +798,20 @@
         font-size: 19px;
       }
 
+      .stats-grid,
+      .order-grid,
+      .status-control,
+      .recent-row {
+        grid-template-columns: 1fr;
+      }
+
       .product-list {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
       }
 
       .product-card img {
-        height: 110px;
+        height: 120px;
       }
 
       .product-card-body {
@@ -450,7 +834,7 @@
         margin-bottom: 4px;
       }
 
-      .product-card-body .meta:not(:first-of-type) {
+      .product-card-body .meta:nth-of-type(n + 3) {
         display: none;
       }
 
@@ -473,11 +857,7 @@
         padding: 7px 6px;
         font-size: 11px;
         border-radius: 8px;
-      }
-
-      .preview-wrap img {
-        width: 92px;
-        height: 92px;
+        min-height: 34px;
       }
 
       input,
@@ -487,173 +867,23 @@
         font-size: 14px;
       }
     }
-
-    @media (max-width: 390px) {
-      .product-list {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-      }
-
-      .product-card img {
-        height: 84px;
-      }
-
-      .product-card-body {
-        padding: 8px;
-      }
-
-      .product-card h4 {
-        font-size: 11px;
-      }
-
-      .price {
-        font-size: 12px;
-      }
-
-      .old-price {
-        font-size: 10px;
-      }
-
-      .actions .btn {
-        font-size: 10px;
-        padding: 6px 4px;
-      }
-    }
-
-    /* Light premium theme override (home page ranglariga mos) */
-    :root {
-      --ap-bg: radial-gradient(1100px 620px at 12% 2%, #e3efff 0%, transparent 55%),
-        radial-gradient(950px 540px at 92% 8%, #f5e8d6 0%, transparent 58%),
-        radial-gradient(950px 540px at 50% 100%, #e3f0e7 0%, transparent 56%),
-        #eef2f6;
-      --ap-surface: #ffffff;
-      --ap-surface-2: #f8fafc;
-      --ap-border: #d5dde8;
-      --ap-text: #1f2a37;
-      --ap-muted: #5f6b7c;
-      --ap-accent: #b98a54;
-    }
-
-    body {
-      background: var(--ap-bg);
-      color: var(--ap-text);
-    }
-
-    .login-page {
-      background: var(--ap-bg);
-    }
-
-    .login-card,
-    .panel,
-    .product-card,
-    .order-item {
-      background: var(--ap-surface);
-      border-color: var(--ap-border);
-      box-shadow: 0 14px 40px rgba(41, 53, 73, 0.08);
-    }
-
-    .login-card h1,
-    .panel h3,
-    .brand h2,
-    .price,
-    .order-item strong {
-      color: #9a6a36;
-    }
-
-    .login-card p,
-    .form-group label,
-    .brand p,
-    .topbar p,
-    .meta,
-    .empty,
-    .small {
-      color: var(--ap-muted);
-    }
-
-    input,
-    textarea,
-    select {
-      background: var(--ap-surface-2);
-      border-color: var(--ap-border);
-      color: var(--ap-text);
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--ap-accent);
-      box-shadow: 0 0 0 3px rgba(185, 138, 84, 0.14);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #d7b07d, #b98a54);
-      color: #1b1713;
-    }
-
-    .btn-dark,
-    .btn-secondary {
-      background: var(--ap-surface-2);
-      color: var(--ap-text);
-      border: 1px solid var(--ap-border);
-    }
-
-    .btn-danger {
-      background: #b43a3a;
-      color: #fff;
-    }
-
-    .sidebar {
-      background: rgba(255, 255, 255, 0.74);
-      border-right: 1px solid var(--ap-border);
-      backdrop-filter: blur(6px);
-    }
-
-    .brand {
-      border-bottom-color: var(--ap-border);
-    }
-
-    .menu button {
-      background: var(--ap-surface);
-      color: var(--ap-text);
-      border-color: var(--ap-border);
-    }
-
-    .menu button:hover,
-    .menu button.active {
-      background: #f3f7fb;
-      color: var(--ap-text);
-      border-color: #c6d4e5;
-    }
-
-    .main {
-      background: transparent;
-    }
-
-    .preview-wrap img {
-      border-color: var(--ap-border);
-      background: var(--ap-surface-2);
-    }
-
-    @media (max-width: 900px) {
-      .sidebar {
-        border-bottom: 1px solid var(--ap-border);
-      }
-    }
   </style>
 </head>
 <body>
+  <div id="toast" class="toast hidden"></div>
+
   <div id="loginPage" class="login-page">
     <div class="login-card">
-      <h1>Admin Login</h1>
-      <p>Mujskoy Brend boshqaruv paneliga kirish uchun login va parolni kiriting.</p>
+      <h1>Boshqaruvga kirish</h1>
+      <p>Mujskoy Brend boshqaruv paneliga kirish uchun ma'lumotlarni kiriting.</p>
 
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username">Foydalanuvchi nomi</label>
         <input id="username" type="text" placeholder="admin" />
       </div>
 
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Parol</label>
         <input id="password" type="password" placeholder="12345678" />
       </div>
 
@@ -666,13 +896,17 @@
     <aside class="sidebar">
       <div class="brand">
         <h2>Mujskoy Brend</h2>
-        <p>Admin boshqaruv paneli</p>
+        <p>Boshqaruv paneli</p>
       </div>
 
       <div class="menu">
-        <button id="menuAdd" class="active" onclick="openAddSection()">Mahsulot qoshish</button>
+        <button id="menuDashboard" class="active" onclick="showSection('dashboard')">Boshqaruv paneli</button>
+        <button id="menuAdd" onclick="openAddSection()">Mahsulot qo'shish</button>
         <button id="menuProducts" onclick="showSection('products')">Mahsulotlar</button>
         <button id="menuOrders" onclick="showSection('orders')">Buyurtmalar</button>
+        <button id="menuCategories" onclick="showSection('categories')">Kategoriyalar</button>
+        <button id="menuPromocodes" onclick="showSection('promocodes')">Promokodlar</button>
+        <button id="menuReviews" onclick="showSection('reviews')">Sharhlar</button>
         <button onclick="goToSite()">Saytga qaytish</button>
         <button onclick="logout()">Chiqish</button>
       </div>
@@ -681,18 +915,53 @@
     <main class="main">
       <div class="topbar">
         <div>
-          <h1 id="pageTitle">Mahsulot qooshish</h1>
-          <p id="pageDesc">Yangi mahsulotni qoshing va saytga chiqaring.</p>
+          <h1 id="pageTitle">Boshqaruv paneli</h1>
+          <p id="pageDesc">Bugungi holat, tushum va buyurtmalar nazorati.</p>
         </div>
       </div>
 
-      <section id="sectionAdd" class="panel">
-        <h3>Yangi mahsulot</h3>
+      <section id="sectionDashboard" class="panel">
+        <h3>📊 Boshqaruv paneli</h3>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Jami mahsulotlar</span>
+            <strong id="statProducts">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Jami buyurtmalar</span>
+            <strong id="statOrders">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Bugungi buyurtmalar</span>
+            <strong id="statTodayOrders">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Umumiy tushum</span>
+            <strong id="statRevenue">0 so'm</strong>
+          </div>
+          <div class="stat-card">
+            <span>Yetkazilgan buyurtmalar</span>
+            <strong id="statDeliveredOrders">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Bekor qilingan buyurtmalar</span>
+            <strong id="statCancelledOrders">0</strong>
+          </div>
+        </div>
+
+        <div class="dashboard-recent">
+          <h4>So'nggi buyurtmalar</h4>
+          <div id="dashboardRecent" class="recent-list"></div>
+        </div>
+      </section>
+
+      <section id="sectionAdd" class="panel hidden">
+        <h3 id="productFormTitle">Yangi mahsulot</h3>
 
         <div class="grid-2">
           <div class="form-group">
             <label for="productName">Mahsulot nomi</label>
-            <input id="productName" type="text" placeholder="Masalan: Premium futbolka" />
+            <input id="productName" type="text" placeholder="Masalan: Sifatli futbolka" />
           </div>
 
           <div class="form-group">
@@ -702,14 +971,7 @@
 
           <div class="form-group">
             <label for="productCategory">Kategoriya</label>
-            <select id="productCategory">
-              <option value="Futbolkalar">Futbolkalar</option>
-              <option value="Aksesuarlar">Aksesuarlar</option>
-              <option value="Ustki kiyimlar">Ustki kiyimlar</option>
-              <option value="Shimlar">Shimlar</option>
-              <option value="Oyoq kiyimlar">Oyoq kiyimlar</option>
-              <option value="Bosh kiyimlar">Bosh kiyimlar</option>
-            </select>
+            <select id="productCategory"></select>
           </div>
 
           <div class="form-group">
@@ -718,30 +980,49 @@
           </div>
 
           <div class="form-group">
-            <label for="productSizes">Size lar</label>
-            <input id="productSizes" type="text" placeholder="Masalan: 40-44 yoki S-4XL yoki 30-35">
-
+            <label for="productSizes">O'lchamlar</label>
+            <input id="productSizes" type="text" placeholder="Masalan: 40-44 yoki S-4XL yoki 30-35" />
           </div>
 
           <div class="form-group">
             <label for="productColors">Ranglar</label>
-            <input id="productColors" type="text" placeholder="Masalan: qora, oq, qizil">
+            <input id="productColors" type="text" placeholder="Masalan: qora, oq, qizil" />
+          </div>
 
+          <div class="form-group">
+            <label for="productStock">Ombordagi soni</label>
+            <input id="productStock" type="number" min="0" placeholder="999" />
+          </div>
+
+          <div class="form-group">
+            <label for="productLabel">Mahsulot belgisi</label>
+            <select id="productLabel">
+              <option value="">Belgilanmagan</option>
+              <option value="Yangi">Yangi</option>
+              <option value="Bestseller">Bestseller</option>
+              <option value="Chegirma">Chegirma</option>
+              <option value="Top mahsulot">Top mahsulot</option>
+            </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="productDesc">Qisqa description</label>
+          <label for="productDesc">Qisqa tavsif</label>
           <textarea id="productDesc" placeholder="Qisqa va chiroyli tavsif yozing"></textarea>
         </div>
 
         <div class="form-group">
-  <label for="productImageFile">Rasmlar yuklash (bir nechta)</label>
-  <input id="productImageFile" type="file" accept="image/*" multiple />
-  <input id="existingImages" type="hidden" value="" />
-  <div class="small">Bir nechta rasm tanlashingiz mumkin.</div>
-  <div id="imagePreviewWrap" class="preview-wrap"></div>
-</div>
+          <span class="field-label">Rasmlar</span>
+          <input id="productImageFile" class="file-input-hidden" type="file" accept="image/*" multiple />
+          <input id="existingImages" type="hidden" value="" />
+          <label id="uploadBox" class="upload-box" for="productImageFile">
+            <span>
+              <strong>Mahsulot rasmlarini yuklash uchun bosing</strong>
+              <span id="uploadCount">Bir nechta rasm tanlash mumkin.</span>
+            </span>
+          </label>
+          <div id="imagePreviewWrap" class="preview-wrap"></div>
+        </div>
 
         <div class="actions">
           <button id="saveBtn" class="btn btn-primary" onclick="addProduct()">Saqlash</button>
@@ -752,13 +1033,56 @@
       </section>
 
       <section id="sectionProducts" class="panel hidden">
-        <h3>Mening mahsulotlarim</h3>
+        <h3>Mahsulotlar</h3>
+        <div class="toolbar">
+          <div class="form-group">
+            <label for="productSearch">🔍 Mahsulot qidirish</label>
+            <input id="productSearch" type="search" placeholder="Mahsulot qidirish" />
+          </div>
+        </div>
         <div id="productsList" class="product-list"></div>
       </section>
 
       <section id="sectionOrders" class="panel hidden">
-        <h3>Buyurtmalar</h3>
+        <div class="section-heading-row">
+          <h3>Buyurtmalar</h3>
+          <button class="btn btn-primary" onclick="downloadOrdersExcel()">Excel yuklab olish</button>
+        </div>
         <div id="ordersList" class="orders-list"></div>
+      </section>
+
+      <section id="sectionCategories" class="panel hidden">
+        <h3>Kategoriyalar</h3>
+        <div class="category-tools">
+          <div class="form-group">
+            <label for="categoryName">Kategoriya qo'shish</label>
+            <input id="categoryName" type="text" placeholder="Masalan: Kostyumlar" />
+          </div>
+          <button class="btn btn-primary" onclick="addCategory()">Saqlash</button>
+        </div>
+        <h4>Kategoriyani tahrirlash yoki o'chirish</h4>
+        <div id="categoriesList" class="category-list"></div>
+      </section>
+
+      <section id="sectionPromocodes" class="panel hidden">
+        <h3>Promokodlar</h3>
+        <div class="category-tools">
+          <div class="form-group">
+            <label for="promoCodeInput">Promokod</label>
+            <input id="promoCodeInput" type="text" placeholder="Masalan: SALE10" />
+          </div>
+          <div class="form-group">
+            <label for="promoDiscountInput">Chegirma foizi</label>
+            <input id="promoDiscountInput" type="number" min="1" max="90" placeholder="10" />
+          </div>
+          <button class="btn btn-primary" onclick="addPromocode()">Saqlash</button>
+        </div>
+        <div id="promocodesList" class="category-list"></div>
+      </section>
+
+      <section id="sectionReviews" class="panel hidden">
+        <h3>Sharhlar</h3>
+        <div id="reviewsList" class="category-list"></div>
       </section>
     </main>
   </div>
@@ -766,33 +1090,146 @@
   <script>
     const ADMIN_USERNAME = "admin";
     const ADMIN_PASSWORD = "12345678";
+    const DEFAULT_CATEGORIES = [
+      "Futbolkalar",
+      "Aksesuarlar",
+      "Ustki kiyimlar",
+      "Shimlar",
+      "Oyoq kiyimlar",
+      "Bosh kiyimlar",
+    ];
+    const ORDER_STATUSES = ["Yangi", "Tasdiqlandi", "Yo'lda", "Yetkazildi", "Bekor qilindi"];
+
     let editingProductId = null;
     let cachedProducts = [];
+    let cachedOrders = [];
+    let cachedCategories = [...DEFAULT_CATEGORIES];
+    let cachedPromocodes = [];
+    let cachedReviews = [];
     let existingImageList = [];
     let newImageFiles = [];
+    let noticeTimer = null;
+
+    function formatPrice(value) {
+      const number = Math.round(Number(value || 0));
+      return String(number).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " so'm";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    function getToken() {
+      return localStorage.getItem("mb_admin_token") || "";
+    }
+
+    function clearSession() {
+      localStorage.removeItem("mb_admin_logged_in");
+      localStorage.removeItem("mb_admin_token");
+    }
+
+    function showLoginPage() {
+      document.getElementById("adminApp").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
+    }
+
+    function showAdminApp() {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("adminApp").classList.remove("hidden");
+      loadCategories();
+      showSection("dashboard");
+    }
+
+    async function readResponse(res) {
+      const raw = await res.text().catch(() => "");
+      try {
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return { message: raw };
+      }
+    }
+
+    async function apiFetch(url, options = {}) {
+      const headers = new Headers(options.headers || {});
+      const token = getToken();
+      if (token) headers.set("Authorization", "Bearer " + token);
+
+      const res = await fetch(url, { ...options, headers });
+      if (res.status === 401 || res.status === 403) {
+        clearSession();
+        showLoginPage();
+        throw new Error("Sessiya muddati tugadi. Qayta kiring.");
+      }
+      return res;
+    }
+
+    async function requestJson(url, options = {}) {
+      const res = await apiFetch(url, options);
+      const data = await readResponse(res);
+      if (!res.ok) {
+        throw new Error(data.message || "Xatolik yuz berdi");
+      }
+      return data;
+    }
+
+    function showNotice(text, type = "success") {
+      const toast = document.getElementById("toast");
+      toast.textContent = text;
+      toast.className = type === "error" ? "toast toast--error" : "toast";
+      toast.classList.remove("hidden");
+
+      clearTimeout(noticeTimer);
+      noticeTimer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 3000);
+    }
 
     function setActiveMenu(activeId) {
-      document.querySelectorAll(".menu button").forEach(btn => btn.classList.remove("active"));
+      document.querySelectorAll(".menu button").forEach((btn) => btn.classList.remove("active"));
       const activeBtn = document.getElementById(activeId);
       if (activeBtn) activeBtn.classList.add("active");
     }
 
+    function hideSections() {
+      ["sectionDashboard", "sectionAdd", "sectionProducts", "sectionOrders", "sectionCategories", "sectionPromocodes", "sectionReviews"].forEach((id) => {
+        document.getElementById(id).classList.add("hidden");
+      });
+    }
+
     function showSection(section) {
-      document.getElementById("sectionAdd").classList.add("hidden");
-      document.getElementById("sectionProducts").classList.add("hidden");
-      document.getElementById("sectionOrders").classList.add("hidden");
+      hideSections();
+
+      if (section === "dashboard") {
+        document.getElementById("sectionDashboard").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Boshqaruv paneli";
+        document.getElementById("pageDesc").innerText = "Bugungi holat, tushum va buyurtmalar nazorati.";
+        setActiveMenu("menuDashboard");
+        loadDashboard();
+      }
 
       if (section === "add") {
         document.getElementById("sectionAdd").classList.remove("hidden");
-        document.getElementById("pageTitle").innerText = "Mahsulot qoshish";
-        document.getElementById("pageDesc").innerText = "Yangi mahsulotni qoshing va saytga chiqaring.";
+        document.getElementById("pageTitle").innerText = editingProductId ? "Mahsulotni yangilash" : "Mahsulot qo'shish";
+        document.getElementById("pageDesc").innerText = editingProductId
+          ? "Mahsulot ma'lumotlarini yangilang."
+          : "Yangi mahsulotni qo'shing va saytga chiqaring.";
         setActiveMenu("menuAdd");
+        loadCategories();
       }
 
       if (section === "products") {
         document.getElementById("sectionProducts").classList.remove("hidden");
         document.getElementById("pageTitle").innerText = "Mahsulotlar";
-        document.getElementById("pageDesc").innerText = "Faqat ozingiz qoshgan mahsulotlar shu yerda chiqadi.";
+        document.getElementById("pageDesc").innerText = "Mahsulotlarni qidiring, yangilang yoki o'chiring.";
         setActiveMenu("menuProducts");
         loadProducts();
       }
@@ -800,388 +1237,949 @@
       if (section === "orders") {
         document.getElementById("sectionOrders").classList.remove("hidden");
         document.getElementById("pageTitle").innerText = "Buyurtmalar";
-        document.getElementById("pageDesc").innerText = "Saytdan tushgan buyurtmalar shu yerda korinadi.";
+        document.getElementById("pageDesc").innerText = "Buyurtmalarni ko'ring va statuslarni boshqaring.";
         setActiveMenu("menuOrders");
         loadOrders();
       }
+
+      if (section === "categories") {
+        document.getElementById("sectionCategories").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Kategoriyalar";
+        document.getElementById("pageDesc").innerText = "Kategoriyalarni qo'shing, yangilang yoki o'chiring.";
+        setActiveMenu("menuCategories");
+        loadCategories();
+      }
+
+      if (section === "promocodes") {
+        document.getElementById("sectionPromocodes").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Promokodlar";
+        document.getElementById("pageDesc").innerText = "Promokod va chegirmalarni boshqaring.";
+        setActiveMenu("menuPromocodes");
+        loadPromocodes();
+      }
+
+      if (section === "reviews") {
+        document.getElementById("sectionReviews").classList.remove("hidden");
+        document.getElementById("pageTitle").innerText = "Sharhlar";
+        document.getElementById("pageDesc").innerText = "Mijoz sharhlarini ko'ring yoki o'chiring.";
+        setActiveMenu("menuReviews");
+        loadReviews();
+      }
     }
 
-    function login() {
+    async function requestLogin(username, password) {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await readResponse(res);
+      if (!res.ok || !data.token) {
+        throw new Error(data.message || "Login yoki parol noto'g'ri");
+      }
+      return data.token;
+    }
+
+    async function login() {
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
       const message = document.getElementById("loginMessage");
+      message.innerText = "";
 
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      try {
+        const token = await requestLogin(username, password);
         localStorage.setItem("mb_admin_logged_in", "true");
-        document.getElementById("loginPage").classList.add("hidden");
-        document.getElementById("adminApp").classList.remove("hidden");
-        showSection("add");
-        message.innerText = "";
-      } else {
-        message.innerText = "Username yoki password xato.";
+        localStorage.setItem("mb_admin_token", token);
+        showAdminApp();
+      } catch (err) {
+        message.innerText = err.message || "Login yoki parol noto'g'ri";
       }
     }
 
     function logout() {
-      localStorage.removeItem("mb_admin_logged_in");
+      clearSession();
       location.reload();
     }
 
-function goToSite() {
-  window.location.href = "/index.html";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  const imageInput = document.getElementById("productImageFile");
-
-  if (imageInput) {
-    imageInput.addEventListener("change", function () {
-      const files = Array.from(this.files || []);
-      if (!files.length) return;
-      newImageFiles = [...newImageFiles, ...files];
-      syncSelectedFilesInput();
-      renderImagePreviews();
-    });
-  }
-});
-
-function syncSelectedFilesInput() {
-  const imageInput = document.getElementById("productImageFile");
-  const dt = new DataTransfer();
-  newImageFiles.forEach((file) => dt.items.add(file));
-  imageInput.files = dt.files;
-}
-
-function syncExistingImagesHidden() {
-  existingImageList = [...new Set(existingImageList.filter(Boolean))];
-  document.getElementById("existingImages").value = existingImageList.join(",");
-}
-
-function removeExistingImage(index) {
-  existingImageList.splice(index, 1);
-  syncExistingImagesHidden();
-  renderImagePreviews();
-}
-
-function removeNewImage(index) {
-  newImageFiles.splice(index, 1);
-  syncSelectedFilesInput();
-  renderImagePreviews();
-}
-
-function renderImagePreviews() {
-  const previewWrap = document.getElementById("imagePreviewWrap");
-  previewWrap.innerHTML = "";
-
-  existingImageList.forEach((imgPath, index) => {
-    const item = document.createElement("div");
-    item.className = "preview-item";
-
-    const img = document.createElement("img");
-    img.src = normalizeImage(imgPath);
-    img.alt = "preview";
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "btn btn-danger";
-    btn.textContent = "Remove";
-    btn.addEventListener("click", () => removeExistingImage(index));
-
-    item.appendChild(img);
-    item.appendChild(btn);
-    previewWrap.appendChild(item);
-  });
-
-  newImageFiles.forEach((file, index) => {
-    const item = document.createElement("div");
-    item.className = "preview-item";
-
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
-    img.alt = "preview";
-    img.onload = () => URL.revokeObjectURL(img.src);
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "btn btn-danger";
-    btn.textContent = "Remove";
-    btn.addEventListener("click", () => removeNewImage(index));
-
-    item.appendChild(img);
-    item.appendChild(btn);
-    previewWrap.appendChild(item);
-  });
-}
-
-function resetForm() {
-  editingProductId = null;
-  existingImageList = [];
-  newImageFiles = [];
-  document.getElementById("productName").value = "";
-  document.getElementById("productPrice").value = "";
-  document.getElementById("productCategory").value = "Futbolkalar";
-  document.getElementById("productOldPrice").value = "";
-  document.getElementById("productSizes").value = "";
-  document.getElementById("productColors").value = "";
-  document.getElementById("productDesc").value = "";
-  syncSelectedFilesInput();
-  syncExistingImagesHidden();
-  renderImagePreviews();
-  document.getElementById("addMessage").innerHTML = "";
-  document.getElementById("saveBtn").textContent = "Saqlash";
-  document.getElementById("cancelEditBtn").classList.add("hidden");
-}
-
-function cancelEdit() {
-  resetForm();
-}
-
-function openAddSection() {
-  resetForm();
-  showSection("add");
-}
-
-function startEdit(productId) {
-  const product = cachedProducts.find((p) => String(p.id) === String(productId));
-  if (!product) return;
-
-  editingProductId = product.id;
-  document.getElementById("productName").value = product.name || "";
-  document.getElementById("productPrice").value = product.price || "";
-  document.getElementById("productCategory").value = product.category || "Futbolkalar";
-  document.getElementById("productOldPrice").value = product.oldPrice || "";
-  document.getElementById("productSizes").value = product.sizes || "";
-  document.getElementById("productColors").value = product.colors || "";
-  document.getElementById("productDesc").value = product.desc || "";
-  existingImageList = [...new Set((Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean))];
-  newImageFiles = [];
-  syncExistingImagesHidden();
-  syncSelectedFilesInput();
-  renderImagePreviews();
-
-  document.getElementById("saveBtn").textContent = "Yangilash";
-  document.getElementById("cancelEditBtn").classList.remove("hidden");
-  document.getElementById("addMessage").innerHTML = '<div class="small">Tahrirlash rejimi yoqildi.</div>';
-  showSection("add");
-}
-
-async function addProduct() {
-  const name = document.getElementById("productName").value.trim();
-  const price = document.getElementById("productPrice").value.trim();
-  const category = document.getElementById("productCategory").value.trim();
-  const oldPrice = document.getElementById("productOldPrice").value.trim();
-  const sizes = document.getElementById("productSizes").value.trim();
-  const colors = document.getElementById("productColors").value.trim();
-  const desc = document.getElementById("productDesc").value.trim();
-
-  const imageFiles = [...newImageFiles];
-  const existingImages = existingImageList.join(",");
-
-  const addMessage = document.getElementById("addMessage");
-  const missing = [];
-
-  if (!name) missing.push("Mahsulot nomi");
-  if (!price) missing.push("Narx");
-  if (!category) missing.push("Kategoriya");
-  if (!desc) missing.push("Qisqa description");
-  if (!imageFiles.length && !existingImages) missing.push("Rasm");
-
-  if (missing.length) {
-    addMessage.innerHTML =
-      '<div class="error-text">To‘ldirilmagan joylar: ' + missing.join(", ") + "</div>";
-    return;
-  }
-
-  const existingList = existingImages
-    .split(",")
-    .map((v) => v.trim())
-    .filter(Boolean);
-
-  const buildFormData = (legacyOnly = false) => {
-    const fd = new FormData();
-    fd.append("name", name);
-    fd.append("price", price);
-    fd.append("category", category);
-    fd.append("oldPrice", oldPrice);
-    fd.append("sizes", sizes);
-    fd.append("colors", colors);
-    fd.append("desc", desc);
-
-    // Legacy fields (old server.js)
-    fd.append("existingImage", existingList[0] || "");
-    if (imageFiles[0]) {
-      fd.append("imageFile", imageFiles[0]);
+    function goToSite() {
+      window.location.href = "/index.html";
     }
 
-    // New fields (multi-image server.js)
-    if (!legacyOnly) {
-      fd.append("existingImages", existingImages);
-      imageFiles.forEach((file) => fd.append("imageFiles", file));
+    function normalizeImage(image) {
+      const value = String(image || "").trim();
+      return value || "img/placeholders/product.svg";
     }
 
-    return fd;
-  };
-
-  const makeRequest = async (method, endpoint, legacyOnly = false) => {
-    const res = await fetch(endpoint, { method, body: buildFormData(legacyOnly) });
-    const raw = await res.text().catch(() => "");
-    let data = {};
-    try {
-      data = raw ? JSON.parse(raw) : {};
-    } catch {
-      data = { message: raw };
-    }
-    return { res, data };
-  };
-
-  try {
-    let mode = editingProductId ? "PUT" : "POST";
-    let endpoint = editingProductId ? ("/api/products/" + editingProductId) : "/api/products";
-
-    let { res, data } = await makeRequest(mode, endpoint, false);
-
-    // Old backend may return HTML error page for unexpected file field; always retry once in legacy mode.
-    if (!res.ok) {
-      ({ res, data } = await makeRequest(mode, endpoint, true));
+    function normalizeStatus(status) {
+      const value = String(status || "").trim();
+      if (value === "Yuborildi") return "Yo'lda";
+      return ORDER_STATUSES.includes(value) ? value : "Yangi";
     }
 
-    // If stale edit id failed, fallback to create as new product.
-    if (!res.ok && mode === "PUT" && res.status === 404) {
-      ({ res, data } = await makeRequest("POST", "/api/products", false));
-      if (!res.ok) ({ res, data } = await makeRequest("POST", "/api/products", true));
-      mode = "POST";
+    function statusClass(status) {
+      const map = {
+        "Yangi": "status-yangi",
+        "Tasdiqlandi": "status-tasdiqlandi",
+        "Yo'lda": "status-yuborildi",
+        "Yetkazildi": "status-yetkazildi",
+        "Bekor qilindi": "status-bekor-qilindi",
+      };
+      return map[normalizeStatus(status)] || "status-yangi";
     }
 
-    if (!res.ok) {
-      throw new Error(data.message || "Mahsulot qo‘shishda xatolik bo‘ldi");
+    function formatDate(value) {
+      if (!value) return "-";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "-";
+      return new Intl.DateTimeFormat("uz-UZ", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
     }
 
-    addMessage.innerHTML =
-      `<div class="success-text">${mode === "PUT" ? "Mahsulot yangilandi." : "Mahsulot muvaffaqiyatli qo‘shildi."}</div>`;
-    resetForm();
-    loadProducts();
-    showSection("products");
-  } catch (err) {
-    const msg = String(err && err.message ? err.message : "Mahsulot qo‘shishda xatolik bo‘ldi");
-    const extra = msg.includes("MulterError") || msg.includes("Unexpected field")
-      ? " (Serverni qayta ishga tushiring: node server.js)"
-      : "";
-    addMessage.innerHTML = '<div class="error-text">' + msg + extra + "</div>";
-    console.error(err);
-  }
-}
-
-    function loadProducts() {
-      fetch("/api/products")
-        .then(res => res.json())
-        .then(products => {
-          cachedProducts = Array.isArray(products) ? products : [];
-          const list = document.getElementById("productsList");
-
-          if (!cachedProducts.length) {
-            list.innerHTML = '<div class="empty">Hozircha mahsulot yoq.</div>';
-            return;
-          }
-
-          let html = "";
-
-          cachedProducts.forEach(product => {
-            const images = (Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean);
-            const coverImage = normalizeImage(images[0] || "");
-            html += `
-              <div class="product-card">
-                <img src="${coverImage}" alt="${product.name || "Mahsulot"}">
-                <div class="product-card-body">
-                  <h4>${product.name || ""}</h4>
-                  <div class="meta">Kategoriya: ${product.category || "-"}</div>
-                  <div class="meta">Description: ${product.desc || "-"}</div>
-                  <div class="meta">Size: ${product.sizes || "-"}</div>
-                  <div class="meta">Rang: ${product.colors || "-"}</div>
-                  <div class="meta">Rasmlar: ${images.length}</div>
-                  <div class="price">${product.price || 0} som ${product.oldPrice ? `<span class="old-price">${product.oldPrice} som</span>` : ""}</div>
-                  <div class="actions">
-                    <button class="btn btn-secondary" onclick="startEdit('${product.id}')">O'zgartirish</button>
-                    <button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Ochirish</button>
-                  </div>
-                </div>
-              </div>
-            `;
-          });
-
-          list.innerHTML = html;
-        })
-        .catch(() => {
-          document.getElementById("productsList").innerHTML = '<div class="error-text">Mahsulotlarni yuklab bolmadi.</div>';
-        });
+    function isToday(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return false;
+      const now = new Date();
+      return date.getFullYear() === now.getFullYear()
+        && date.getMonth() === now.getMonth()
+        && date.getDate() === now.getDate();
     }
 
-    function deleteProduct(id) {
-      if (!confirm("Rostdan ham mahsulotni oвЂchirmoqchimisiz?")) return;
+    function getOrderTotal(order) {
+      const explicitTotal = Number(order.total || 0);
+      if (explicitTotal > 0) return explicitTotal;
 
-      fetch("/api/products/" + id, {
-        method: "DELETE"
-      })
-      .then(res => res.json())
-      .then(() => {
-        loadProducts();
-      })
-      .catch(() => {
-        alert("Ochirishda xatolik bo'ldi.");
+      return (Array.isArray(order.items) ? order.items : []).reduce((sum, item) => {
+        const lineTotal = Number(item.lineTotal || 0);
+        if (lineTotal > 0) return sum + lineTotal;
+        return sum + Number(item.price || 0) * Math.max(1, Number(item.qty || 1));
+      }, 0);
+    }
+
+    async function loadDashboard() {
+      const recent = document.getElementById("dashboardRecent");
+      recent.innerHTML = '<div class="empty">Ma\'lumotlar yuklanmoqda...</div>';
+
+      try {
+        const [products, orders] = await Promise.all([
+          loadProducts({ render: false }),
+          loadOrders({ render: false }),
+        ]);
+        renderDashboard(products, orders);
+      } catch (err) {
+        recent.innerHTML = '<div class="error-text">' + escapeHtml(err.message || "Ma'lumotlarni yuklab bo'lmadi") + "</div>";
+      }
+    }
+
+    function renderDashboard(products = cachedProducts, orders = cachedOrders) {
+      const activeRevenueOrders = orders.filter((order) => normalizeStatus(order.status) !== "Bekor qilindi");
+      const todayOrders = orders.filter((order) => isToday(order.createdAt));
+      const totalRevenue = activeRevenueOrders.reduce((sum, order) => sum + getOrderTotal(order), 0);
+
+      document.getElementById("statProducts").innerText = products.length;
+      document.getElementById("statOrders").innerText = orders.length;
+      document.getElementById("statTodayOrders").innerText = todayOrders.length;
+      document.getElementById("statRevenue").innerText = formatPrice(totalRevenue);
+      document.getElementById("statDeliveredOrders").innerText = orders.filter((order) => normalizeStatus(order.status) === "Yetkazildi").length;
+      document.getElementById("statCancelledOrders").innerText = orders.filter((order) => normalizeStatus(order.status) === "Bekor qilindi").length;
+
+      const recent = document.getElementById("dashboardRecent");
+      const latest = [...orders].slice(0, 5);
+      if (!latest.length) {
+        recent.innerHTML = '<div class="empty">Hozircha buyurtmalar yo\'q.</div>';
+        return;
+      }
+
+      recent.innerHTML = latest.map((order) => {
+        const status = normalizeStatus(order.status);
+        return `
+          <div class="recent-row">
+            <div>
+              <strong>${escapeHtml(order.name || "Mijoz")}</strong>
+              <div class="small">${escapeHtml(order.id || "-")} · ${escapeHtml(formatDate(order.createdAt))}</div>
+            </div>
+            <div>
+              <span class="status-badge ${statusClass(status)}">${escapeHtml(status)}</span>
+              <div class="small" style="margin-top:6px; text-align:right;">${formatPrice(getOrderTotal(order))}</div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function loadCategories() {
+      try {
+        const res = await fetch("/api/categories", { cache: "no-store" });
+        const data = await res.json();
+        cachedCategories = Array.isArray(data) && data.length ? data : [...DEFAULT_CATEGORIES];
+      } catch {
+        cachedCategories = [...DEFAULT_CATEGORIES];
+      }
+
+      renderCategoryOptions(document.getElementById("productCategory").value);
+      renderCategories();
+    }
+
+    function renderCategoryOptions(selectedValue = "") {
+      const select = document.getElementById("productCategory");
+      const selected = String(selectedValue || "").trim();
+      const list = [...new Set([...(cachedCategories || []), selected].map((item) => String(item || "").trim()).filter(Boolean))];
+      const finalList = list.length ? list : [...DEFAULT_CATEGORIES];
+      select.innerHTML = finalList.map((category) => {
+        const selectedAttr = category === selected ? " selected" : "";
+        return `<option value="${escapeAttr(category)}"${selectedAttr}>${escapeHtml(category)}</option>`;
+      }).join("");
+
+      if (!select.value && finalList.length) select.value = finalList[0];
+    }
+
+    function renderCategories() {
+      const list = document.getElementById("categoriesList");
+      if (!list) return;
+
+      if (!cachedCategories.length) {
+        list.innerHTML = '<div class="empty">Kategoriya yo\'q.</div>';
+        return;
+      }
+
+      list.innerHTML = cachedCategories.map((category) => `
+        <div class="category-row">
+          <input class="js-category-edit" data-original="${escapeAttr(category)}" value="${escapeAttr(category)}" />
+          <div class="mini-actions">
+            <button class="btn btn-secondary js-save-category" data-category="${escapeAttr(category)}">Yangilash</button>
+            <button class="btn btn-danger js-delete-category" data-category="${escapeAttr(category)}">O'chirish</button>
+          </div>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".js-save-category").forEach((btn) => {
+        btn.addEventListener("click", () => updateCategory(btn.dataset.category));
+      });
+
+      document.querySelectorAll(".js-delete-category").forEach((btn) => {
+        btn.addEventListener("click", () => deleteCategory(btn.dataset.category));
       });
     }
 
-    function loadOrders() {
-      fetch("/api/orders")
-        .then(res => res.json())
-        .then(orders => {
-          const list = document.getElementById("ordersList");
-
-          if (!orders.length) {
-            list.innerHTML = '<div class="empty">Hozircha buyurtmalar yoq.</div>';
-            return;
-          }
-
-          let html = "";
-
-          orders.forEach(order => {
-            html += `
-              <div class="order-item">
-                <div><strong>Ism:</strong> ${order.name || "-"}</div>
-                <div><strong>Telefon:</strong> ${order.phone || "-"}</div>
-                <div><strong>Manzil:</strong> ${order.address || "-"}</div>
-                <div><strong>Izoh:</strong> ${order.note || "-"}</div>
-                <div><strong>To'lov turi:</strong> ${order.paymentType === "karta" ? "Karta" : "Naqd"}</div>
-                <div><strong>Jami:</strong> ${order.total || 0} som</div>
-                ${order.paymentScreenshot ? `
-                  <div style="margin-top:10px;">
-                    <strong>To'lov skrinshoti:</strong><br>
-                    <a href="${order.paymentScreenshot}" target="_blank" style="display:inline-block; margin-top:6px;">
-                      <img src="${order.paymentScreenshot}" alt="payment screenshot" style="max-width:180px; border-radius:10px; border:1px solid #333;">
-                    </a>
-                  </div>
-                ` : ""}
-              </div>
-            `;
-          });
-
-          list.innerHTML = html;
-        })
-        .catch(() => {
-          document.getElementById("ordersList").innerHTML = '<div class="error-text">Buyurtmalarni yuklab bolmadi.</div>';
-        });
-    }
-function normalizeImage(image) {
-  if (!image) return "img/placeholders/product.svg";
-  return image;
-}
-    window.addEventListener("load", function() {
-      const loggedIn = localStorage.getItem("mb_admin_logged_in");
-
-      if (loggedIn === "true") {
-        document.getElementById("loginPage").classList.add("hidden");
-        document.getElementById("adminApp").classList.remove("hidden");
-        showSection("add");
+    async function addCategory() {
+      const input = document.getElementById("categoryName");
+      const name = input.value.trim();
+      if (!name) {
+        showNotice("Kategoriya nomini kiriting", "error");
+        return;
       }
+
+      try {
+        const data = await requestJson("/api/categories", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name }),
+        });
+        cachedCategories = Array.isArray(data.categories) ? data.categories : cachedCategories;
+        input.value = "";
+        renderCategoryOptions();
+        renderCategories();
+        showNotice("Kategoriya qo'shildi");
+      } catch (err) {
+        showNotice(err.message || "Kategoriya qo'shishda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function deleteCategory(category) {
+      if (!confirm("Kategoriyani o'chirishni tasdiqlaysizmi?")) return;
+
+      try {
+        const data = await requestJson("/api/categories/" + encodeURIComponent(category), {
+          method: "DELETE",
+        });
+        cachedCategories = Array.isArray(data.categories) ? data.categories : cachedCategories.filter((item) => item !== category);
+        renderCategoryOptions();
+        renderCategories();
+        showNotice("Kategoriya o'chirildi");
+      } catch (err) {
+        showNotice(err.message || "Kategoriya o'chirishda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function updateCategory(category) {
+      const input = Array.from(document.querySelectorAll(".js-category-edit"))
+        .find((item) => item.dataset.original === category);
+      const name = input ? input.value.trim() : "";
+      if (!name) {
+        showNotice("Kategoriya nomini kiriting", "error");
+        return;
+      }
+
+      try {
+        const data = await requestJson("/api/categories/" + encodeURIComponent(category), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name }),
+        });
+        cachedCategories = Array.isArray(data.categories) ? data.categories : cachedCategories;
+        renderCategoryOptions();
+        renderCategories();
+        showNotice("Kategoriya yangilandi");
+      } catch (err) {
+        showNotice(err.message || "Kategoriya yangilashda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function loadPromocodes() {
+      try {
+        const data = await requestJson("/api/promocodes");
+        cachedPromocodes = Array.isArray(data) ? data : [];
+        renderPromocodes();
+      } catch (err) {
+        document.getElementById("promocodesList").innerHTML = '<div class="error-text">' + escapeHtml(err.message || "Promokodlarni yuklab bo'lmadi") + "</div>";
+      }
+    }
+
+    function renderPromocodes() {
+      const list = document.getElementById("promocodesList");
+      if (!cachedPromocodes.length) {
+        list.innerHTML = '<div class="empty">Promokod yo\'q.</div>';
+        return;
+      }
+
+      list.innerHTML = cachedPromocodes.map((promo) => `
+        <div class="category-row">
+          <strong>${escapeHtml(promo.code)} · ${escapeHtml(promo.discountPercent)}%</strong>
+          <button class="btn btn-danger js-delete-promo" data-code="${escapeAttr(promo.code)}">O'chirish</button>
+        </div>
+      `).join("");
+
+      document.querySelectorAll(".js-delete-promo").forEach((btn) => {
+        btn.addEventListener("click", () => deletePromocode(btn.dataset.code));
+      });
+    }
+
+    async function addPromocode() {
+      const codeInput = document.getElementById("promoCodeInput");
+      const discountInput = document.getElementById("promoDiscountInput");
+      const code = codeInput.value.trim().toUpperCase();
+      const discountPercent = discountInput.value.trim();
+      if (!code || !discountPercent) {
+        showNotice("Promokod va chegirma foizini kiriting", "error");
+        return;
+      }
+
+      try {
+        const data = await requestJson("/api/promocodes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code, discountPercent }),
+        });
+        cachedPromocodes = Array.isArray(data.promocodes) ? data.promocodes : cachedPromocodes;
+        codeInput.value = "";
+        discountInput.value = "";
+        renderPromocodes();
+        showNotice("Promokod saqlandi");
+      } catch (err) {
+        showNotice(err.message || "Promokodni saqlashda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function deletePromocode(code) {
+      if (!confirm("Promokodni o'chirishni tasdiqlaysizmi?")) return;
+      try {
+        const data = await requestJson("/api/promocodes/" + encodeURIComponent(code), { method: "DELETE" });
+        cachedPromocodes = Array.isArray(data.promocodes) ? data.promocodes : cachedPromocodes.filter((item) => item.code !== code);
+        renderPromocodes();
+        showNotice("Promokod o'chirildi");
+      } catch (err) {
+        showNotice(err.message || "Promokodni o'chirishda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function loadReviews() {
+      try {
+        if (!cachedProducts.length) {
+          await loadProducts({ render: false });
+        }
+        const data = await requestJson("/api/reviews");
+        cachedReviews = Array.isArray(data) ? data : [];
+        renderReviews();
+      } catch (err) {
+        document.getElementById("reviewsList").innerHTML = '<div class="error-text">' + escapeHtml(err.message || "Sharhlarni yuklab bo'lmadi") + "</div>";
+      }
+    }
+
+    function stars(rating) {
+      const count = Math.max(1, Math.min(5, Number(rating || 5)));
+      return "★".repeat(count) + "☆".repeat(5 - count);
+    }
+
+    function renderReviews() {
+      const list = document.getElementById("reviewsList");
+      if (!cachedReviews.length) {
+        list.innerHTML = '<div class="empty">Sharh yo\'q.</div>';
+        return;
+      }
+
+      list.innerHTML = cachedReviews.map((review) => {
+        const product = cachedProducts.find((item) => String(item.id) === String(review.productId));
+        return `
+          <div class="category-row">
+            <div>
+              <strong>${escapeHtml(review.name || "Mijoz")}</strong>
+              <div class="rating-stars">${stars(review.rating)}</div>
+              <div class="small">${escapeHtml(product ? product.name : review.productId)}</div>
+              <div class="meta">${escapeHtml(review.review || "")}</div>
+            </div>
+            <button class="btn btn-danger js-delete-review" data-id="${escapeAttr(review.id)}">O'chirish</button>
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".js-delete-review").forEach((btn) => {
+        btn.addEventListener("click", () => deleteReview(btn.dataset.id));
+      });
+    }
+
+    async function deleteReview(id) {
+      if (!confirm("Sharhni o'chirishni tasdiqlaysizmi?")) return;
+      try {
+        await requestJson("/api/reviews/" + encodeURIComponent(id), { method: "DELETE" });
+        cachedReviews = cachedReviews.filter((review) => String(review.id) !== String(id));
+        renderReviews();
+        showNotice("Sharh o'chirildi");
+      } catch (err) {
+        showNotice(err.message || "Sharhni o'chirishda xatolik bo'ldi", "error");
+      }
+    }
+
+    function downloadOrdersExcel() {
+      const token = getToken();
+      const url = "/api/orders/export";
+      fetch(url, {
+        headers: token ? { Authorization: "Bearer " + token } : {},
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Excel faylni yuklab bo'lmadi");
+          return res.blob();
+        })
+        .then((blob) => {
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "buyurtmalar.xls";
+          document.body.appendChild(link);
+          link.click();
+          URL.revokeObjectURL(link.href);
+          link.remove();
+        })
+        .catch((err) => showNotice(err.message || "Excel faylni yuklab bo'lmadi", "error"));
+    }
+
+    function addNewFiles(files) {
+      const images = files.filter((file) => file && String(file.type || "").startsWith("image/"));
+      if (!images.length) return;
+      newImageFiles = [...newImageFiles, ...images];
+      syncSelectedFilesInput();
+      renderImagePreviews();
+    }
+
+    function syncSelectedFilesInput() {
+      const imageInput = document.getElementById("productImageFile");
+      if (!imageInput) return;
+
+      try {
+        const dt = new DataTransfer();
+        newImageFiles.forEach((file) => dt.items.add(file));
+        imageInput.files = dt.files;
+      } catch {}
+    }
+
+    function syncExistingImagesHidden() {
+      existingImageList = [...new Set(existingImageList.filter(Boolean))];
+      document.getElementById("existingImages").value = existingImageList.join(",");
+    }
+
+    function removeExistingImage(index) {
+      existingImageList.splice(index, 1);
+      syncExistingImagesHidden();
+      renderImagePreviews();
+    }
+
+    function removeNewImage(index) {
+      newImageFiles.splice(index, 1);
+      syncSelectedFilesInput();
+      renderImagePreviews();
+    }
+
+    function renderImagePreviews() {
+      const previewWrap = document.getElementById("imagePreviewWrap");
+      const uploadCount = document.getElementById("uploadCount");
+      previewWrap.innerHTML = "";
+
+      const totalImages = existingImageList.length + newImageFiles.length;
+      uploadCount.textContent = totalImages ? totalImages + " ta rasm tanlandi." : "Bir nechta rasm tanlash mumkin.";
+
+      existingImageList.forEach((imgPath, index) => {
+        const item = document.createElement("div");
+        item.className = "preview-item";
+
+        const img = document.createElement("img");
+        img.src = normalizeImage(imgPath);
+        img.alt = "rasm";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-danger";
+        btn.textContent = "O'chirish";
+        btn.addEventListener("click", () => removeExistingImage(index));
+
+        item.appendChild(img);
+        item.appendChild(btn);
+        previewWrap.appendChild(item);
+      });
+
+      newImageFiles.forEach((file, index) => {
+        const item = document.createElement("div");
+        item.className = "preview-item";
+
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);
+        img.alt = "rasm";
+        img.onload = () => URL.revokeObjectURL(img.src);
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-danger";
+        btn.textContent = "O'chirish";
+        btn.addEventListener("click", () => removeNewImage(index));
+
+        item.appendChild(img);
+        item.appendChild(btn);
+        previewWrap.appendChild(item);
+      });
+    }
+
+    function resetForm() {
+      editingProductId = null;
+      existingImageList = [];
+      newImageFiles = [];
+      document.getElementById("productName").value = "";
+      document.getElementById("productPrice").value = "";
+      document.getElementById("productOldPrice").value = "";
+      document.getElementById("productSizes").value = "";
+      document.getElementById("productColors").value = "";
+      document.getElementById("productStock").value = "999";
+      document.getElementById("productLabel").value = "";
+      document.getElementById("productDesc").value = "";
+      renderCategoryOptions(cachedCategories[0] || "Futbolkalar");
+      syncSelectedFilesInput();
+      syncExistingImagesHidden();
+      renderImagePreviews();
+      document.getElementById("addMessage").innerHTML = "";
+      document.getElementById("saveBtn").textContent = "Saqlash";
+      document.getElementById("productFormTitle").textContent = "Yangi mahsulot";
+      document.getElementById("cancelEditBtn").classList.add("hidden");
+    }
+
+    function cancelEdit() {
+      resetForm();
+    }
+
+    function openAddSection() {
+      resetForm();
+      showSection("add");
+    }
+
+    async function loadProducts(options = {}) {
+      const shouldRender = options.render !== false;
+      try {
+        const res = await fetch("/api/products", { cache: "no-store" });
+        const products = await res.json();
+        cachedProducts = Array.isArray(products) ? products : [];
+        if (shouldRender) renderProducts();
+        return cachedProducts;
+      } catch (err) {
+        if (shouldRender) {
+          document.getElementById("productsList").innerHTML = '<div class="error-text">Mahsulotlarni yuklab bo\'lmadi.</div>';
+        }
+        return cachedProducts;
+      }
+    }
+
+    function productMatchesSearch(product, query) {
+      if (!query) return true;
+      const text = [
+        product.name,
+        product.category,
+        product.desc,
+        product.description,
+        product.sizes,
+        product.colors,
+      ].join(" ").toLowerCase();
+      return text.includes(query);
+    }
+
+    function renderProducts() {
+      const list = document.getElementById("productsList");
+      const query = (document.getElementById("productSearch").value || "").trim().toLowerCase();
+      const products = cachedProducts.filter((product) => productMatchesSearch(product, query));
+
+      if (!cachedProducts.length) {
+        list.innerHTML = '<div class="empty">Hozircha mahsulot yo\'q.</div>';
+        return;
+      }
+
+      if (!products.length) {
+        list.innerHTML = '<div class="empty">Qidiruv bo\'yicha mahsulot topilmadi.</div>';
+        return;
+      }
+
+      list.innerHTML = products.map((product) => {
+        const images = (Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean);
+        const coverImage = normalizeImage(images[0] || "");
+        const desc = product.desc || product.description || "-";
+        return `
+          <div class="product-card">
+            <img src="${escapeAttr(coverImage)}" alt="${escapeAttr(product.name || "Mahsulot")}">
+            <div class="product-card-body">
+              <h4>${escapeHtml(product.name || "")}</h4>
+              <div class="meta">Kategoriya: ${escapeHtml(product.category || "-")}</div>
+              <div class="meta">Tavsif: ${escapeHtml(desc)}</div>
+              <div class="meta">O'lcham: ${escapeHtml(product.sizes || "-")}</div>
+              <div class="meta">Rang: ${escapeHtml(product.colors || "-")}</div>
+              <div class="meta">Ombor: ${Number(product.stock ?? 999) > 0 ? escapeHtml(product.stock ?? 999) + " ta" : "Sotuvda mavjud emas"}</div>
+              <div class="meta">Belgi: ${escapeHtml(product.label || product.badge || "-")}</div>
+              <div class="meta">Rasmlar: ${images.length}</div>
+              <div class="price">${formatPrice(product.price)} ${Number(product.oldPrice || 0) ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ""}</div>
+              <div class="actions">
+                <button class="btn btn-secondary js-edit-product" data-id="${escapeAttr(product.id)}">Yangilash</button>
+                <button class="btn btn-danger js-delete-product" data-id="${escapeAttr(product.id)}">O'chirish</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".js-edit-product").forEach((btn) => {
+        btn.addEventListener("click", () => startEdit(btn.dataset.id));
+      });
+
+      document.querySelectorAll(".js-delete-product").forEach((btn) => {
+        btn.addEventListener("click", () => deleteProduct(btn.dataset.id));
+      });
+    }
+
+    function startEdit(productId) {
+      const product = cachedProducts.find((p) => String(p.id) === String(productId));
+      if (!product) return;
+
+      editingProductId = product.id;
+      document.getElementById("productName").value = product.name || "";
+      document.getElementById("productPrice").value = product.price || "";
+      renderCategoryOptions(product.category || "Futbolkalar");
+      document.getElementById("productOldPrice").value = product.oldPrice || "";
+      document.getElementById("productSizes").value = product.sizes || "";
+      document.getElementById("productColors").value = product.colors || "";
+      document.getElementById("productStock").value = product.stock ?? 999;
+      document.getElementById("productLabel").value = product.label || product.badge || "";
+      document.getElementById("productDesc").value = product.desc || product.description || "";
+      existingImageList = [...new Set((Array.isArray(product.images) && product.images.length ? product.images : [product.image]).filter(Boolean))];
+      newImageFiles = [];
+      syncExistingImagesHidden();
+      syncSelectedFilesInput();
+      renderImagePreviews();
+
+      document.getElementById("saveBtn").textContent = "Yangilash";
+      document.getElementById("productFormTitle").textContent = "Mahsulotni yangilash";
+      document.getElementById("cancelEditBtn").classList.remove("hidden");
+      document.getElementById("addMessage").innerHTML = '<div class="small">Tahrirlash rejimi yoqildi.</div>';
+      showSection("add");
+    }
+
+    async function addProduct() {
+      const name = document.getElementById("productName").value.trim();
+      const price = document.getElementById("productPrice").value.trim();
+      const category = document.getElementById("productCategory").value.trim();
+      const oldPrice = document.getElementById("productOldPrice").value.trim();
+      const sizes = document.getElementById("productSizes").value.trim();
+      const colors = document.getElementById("productColors").value.trim();
+      const stock = document.getElementById("productStock").value.trim();
+      const label = document.getElementById("productLabel").value.trim();
+      const desc = document.getElementById("productDesc").value.trim();
+
+      const imageFiles = [...newImageFiles];
+      const existingImages = existingImageList.join(",");
+      const addMessage = document.getElementById("addMessage");
+      const missing = [];
+
+      if (!name) missing.push("Mahsulot nomi");
+      if (!price) missing.push("Narx");
+      if (!category) missing.push("Kategoriya");
+      if (!desc) missing.push("Qisqa tavsif");
+      if (!imageFiles.length && !existingImages) missing.push("Rasm");
+
+      if (missing.length) {
+        addMessage.innerHTML = '<div class="error-text">To\'ldirilmagan joylar: ' + missing.join(", ") + "</div>";
+        return;
+      }
+
+      const buildFormData = (legacyOnly = false) => {
+        const fd = new FormData();
+        fd.append("name", name);
+        fd.append("price", price);
+        fd.append("category", category);
+        fd.append("oldPrice", oldPrice);
+        fd.append("sizes", sizes);
+        fd.append("colors", colors);
+        fd.append("stock", stock || "999");
+        fd.append("label", label);
+        fd.append("desc", desc);
+        fd.append("existingImages", existingImages);
+        fd.append("existingImage", existingImageList[0] || "");
+
+        if (legacyOnly) {
+          if (imageFiles[0]) fd.append("imageFile", imageFiles[0]);
+        } else {
+          imageFiles.forEach((file) => fd.append("imageFiles", file));
+        }
+
+        return fd;
+      };
+
+      const makeRequest = async (method, endpoint, legacyOnly = false) => {
+        const res = await apiFetch(endpoint, { method, body: buildFormData(legacyOnly) });
+        const data = await readResponse(res);
+        return { res, data };
+      };
+
+      try {
+        let mode = editingProductId ? "PUT" : "POST";
+        const endpoint = editingProductId ? ("/api/products/" + editingProductId) : "/api/products";
+        let { res, data } = await makeRequest(mode, endpoint, false);
+
+        if (!res.ok) {
+          ({ res, data } = await makeRequest(mode, endpoint, true));
+        }
+
+        if (!res.ok) {
+          throw new Error(data.message || "Mahsulotni saqlashda xatolik bo'ldi");
+        }
+
+        const notice = mode === "PUT" ? "Mahsulot yangilandi" : "Mahsulot muvaffaqiyatli qo'shildi";
+        resetForm();
+        showNotice(notice);
+        await loadProducts();
+        await loadDashboard();
+        showSection("products");
+      } catch (err) {
+        const msg = String(err && err.message ? err.message : "Mahsulotni saqlashda xatolik bo'ldi");
+        addMessage.innerHTML = '<div class="error-text">' + escapeHtml(msg) + "</div>";
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm("Rostdan ham mahsulotni o'chirmoqchimisiz?")) return;
+
+      try {
+        await requestJson("/api/products/" + encodeURIComponent(id), { method: "DELETE" });
+        showNotice("Mahsulot o'chirildi");
+        await loadProducts();
+        await loadDashboard();
+      } catch (err) {
+        showNotice(err.message || "O'chirishda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function loadOrders(options = {}) {
+      const shouldRender = options.render !== false;
+      try {
+        const orders = await requestJson("/api/orders");
+        cachedOrders = Array.isArray(orders) ? orders : [];
+        if (shouldRender) renderOrders();
+        return cachedOrders;
+      } catch (err) {
+        if (shouldRender) {
+          document.getElementById("ordersList").innerHTML = '<div class="error-text">' + escapeHtml(err.message || "Buyurtmalarni yuklab bo'lmadi") + "</div>";
+        }
+        return cachedOrders;
+      }
+    }
+
+    function renderOrderItems(order) {
+      const items = Array.isArray(order.items) ? order.items : [];
+      if (!items.length) {
+        return '<div class="order-items"><strong>Mahsulotlar</strong><div class="empty">Mahsulotlar ko\'rsatilmagan.</div></div>';
+      }
+
+      const html = items.map((item) => {
+        const qty = Math.max(1, Number(item.qty || 1));
+        const total = Number(item.lineTotal || 0) || Number(item.price || 0) * qty;
+        const meta = [
+          item.size ? "O'lcham: " + item.size : "",
+          item.color ? "Rang: " + item.color : "",
+        ].filter(Boolean).join(" · ");
+
+        return `
+          <li>
+            <strong>${escapeHtml(item.name || "Mahsulot")}</strong>
+            <div>${qty} ta · ${formatPrice(total)}</div>
+            ${meta ? `<div>${escapeHtml(meta)}</div>` : ""}
+          </li>
+        `;
+      }).join("");
+
+      return '<div class="order-items"><strong>Mahsulotlar</strong><ul>' + html + "</ul></div>";
+    }
+
+    function renderOrders() {
+      const list = document.getElementById("ordersList");
+
+      if (!cachedOrders.length) {
+        list.innerHTML = '<div class="empty">Hozircha buyurtmalar yo\'q.</div>';
+        return;
+      }
+
+      list.innerHTML = cachedOrders.map((order, index) => {
+        const status = normalizeStatus(order.status);
+        const selectId = "orderStatus" + index;
+        const paymentType = String(order.paymentType || "naqd").toLowerCase() === "karta" ? "Karta" : "Naqd";
+        const screenshot = order.paymentScreenshot ? `
+          <div class="payment-shot">
+            <strong>To'lov skrinshoti</strong>
+            <a href="${escapeAttr(normalizeImage(order.paymentScreenshot))}" target="_blank">
+              <img src="${escapeAttr(normalizeImage(order.paymentScreenshot))}" alt="to'lov skrinshoti">
+            </a>
+          </div>
+        ` : "";
+
+        return `
+          <article class="order-item">
+            <div class="order-head">
+              <div>
+                <span class="eyebrow">Buyurtma ID</span>
+                <strong>${escapeHtml(order.id || "-")}</strong>
+              </div>
+              <span class="status-badge ${statusClass(status)}">${escapeHtml(status)}</span>
+            </div>
+
+            <div class="order-grid">
+              <div class="order-field"><span>Yaratilgan sana</span><strong>${escapeHtml(formatDate(order.createdAt))}</strong></div>
+              <div class="order-field"><span>Mijoz</span><strong>${escapeHtml(order.name || "-")}</strong></div>
+              <div class="order-field"><span>Telefon</span><strong>${escapeHtml(order.phone || "-")}</strong></div>
+              <div class="order-field"><span>Manzil</span><strong>${escapeHtml(order.address || "-")}</strong></div>
+              <div class="order-field"><span>To'lov turi</span><strong>${escapeHtml(paymentType)}</strong></div>
+              <div class="order-field"><span>Jami</span><strong>${formatPrice(getOrderTotal(order))}</strong></div>
+            </div>
+
+            ${order.note ? `<div class="meta">Izoh: ${escapeHtml(order.note)}</div>` : ""}
+            ${renderOrderItems(order)}
+            ${screenshot}
+
+            <div class="status-control">
+              <div class="form-group" style="margin-bottom:0;">
+                <label for="${selectId}">Status</label>
+                <select id="${selectId}">
+                  ${ORDER_STATUSES.map((item) => `<option value="${escapeAttr(item)}"${item === status ? " selected" : ""}>${escapeHtml(item)}</option>`).join("")}
+                </select>
+              </div>
+              <button class="btn btn-primary js-save-order-status" data-id="${escapeAttr(order.id)}" data-select="${selectId}">Statusni saqlash</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      document.querySelectorAll(".js-save-order-status").forEach((btn) => {
+        btn.addEventListener("click", () => saveOrderStatus(btn.dataset.id, btn.dataset.select));
+      });
+    }
+
+    async function saveOrderStatus(orderId, selectId) {
+      const select = document.getElementById(selectId);
+      if (!select) return;
+
+      try {
+        await requestJson("/api/orders/" + encodeURIComponent(orderId) + "/status", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: select.value }),
+        });
+        showNotice("Buyurtma statusi yangilandi");
+        await loadOrders();
+        await loadDashboard();
+      } catch (err) {
+        showNotice(err.message || "Statusni saqlashda xatolik bo'ldi", "error");
+      }
+    }
+
+    async function bootstrapAdminSession() {
+      const loggedIn = localStorage.getItem("mb_admin_logged_in");
+      const token = getToken();
+
+      if (loggedIn === "true" && token) {
+        showAdminApp();
+        return;
+      }
+
+      if (loggedIn === "true" && !token) {
+        try {
+          const freshToken = await requestLogin(ADMIN_USERNAME, ADMIN_PASSWORD);
+          localStorage.setItem("mb_admin_token", freshToken);
+          showAdminApp();
+          return;
+        } catch {
+          clearSession();
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const imageInput = document.getElementById("productImageFile");
+      const uploadBox = document.getElementById("uploadBox");
+      const productSearch = document.getElementById("productSearch");
+      const categoryInput = document.getElementById("categoryName");
+
+      if (imageInput) {
+        imageInput.addEventListener("change", function () {
+          addNewFiles(Array.from(this.files || []));
+        });
+      }
+
+      if (uploadBox) {
+        ["dragenter", "dragover"].forEach((eventName) => {
+          uploadBox.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            uploadBox.classList.add("dragging");
+          });
+        });
+
+        ["dragleave", "drop"].forEach((eventName) => {
+          uploadBox.addEventListener(eventName, function (event) {
+            event.preventDefault();
+            uploadBox.classList.remove("dragging");
+          });
+        });
+
+        uploadBox.addEventListener("drop", function (event) {
+          addNewFiles(Array.from(event.dataTransfer.files || []));
+        });
+      }
+
+      if (productSearch) {
+        productSearch.addEventListener("input", renderProducts);
+      }
+
+      if (categoryInput) {
+        categoryInput.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            addCategory();
+          }
+        });
+      }
+
+      renderCategoryOptions("Futbolkalar");
+      renderImagePreviews();
+      bootstrapAdminSession();
     });
   </script>
 </body>

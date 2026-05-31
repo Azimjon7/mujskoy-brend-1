@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mujskoy Brend | Buyurtma qabul qilindi</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+<body class="success-page">
+  <section class="success-section spad">
+    <div class="success-card">
+      <div class="success-mark">&#10003;</div>
+      <h1>Buyurtmangiz qabul qilindi</h1>
+      <p>Operatorlarimiz tez orada siz bilan bog'lanadi. Buyurtma holatini ID va telefon raqamingiz orqali kuzatishingiz mumkin.</p>
+
+      <div class="success-details">
+        <div class="success-detail"><span>Buyurtma ID</span><strong id="successOrderId">-</strong></div>
+        <div class="success-detail"><span>Sana</span><strong id="successDate">-</strong></div>
+        <div class="success-detail"><span>Summa</span><strong id="successTotal">0 so'm</strong></div>
+      </div>
+
+      <div class="success-actions">
+        <a id="trackLink" class="site-btn" href="track-order.html">Buyurtmani kuzatish</a>
+        <a class="site-btn site-btn--ghost" href="shop.html">Do'konga qaytish</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "-";
+      return new Intl.DateTimeFormat("uz-UZ", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId") || "-";
+    document.getElementById("successOrderId").textContent = orderId;
+    document.getElementById("successDate").textContent = formatDate(params.get("date"));
+    document.getElementById("successTotal").textContent = formatMoney(params.get("total"));
+    document.getElementById("trackLink").href = "track-order.html?orderId=" + encodeURIComponent(orderId);
+  </script>
+</body>
+</html>

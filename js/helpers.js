@@ -155,6 +155,8 @@ window.MBHelpers = {
       description: product.description || product.desc || "",
       sizes: this.toList(product.sizes),
       colors: this.toList(product.colors),
+      stock: Number(product.stock ?? 999),
+      label: product.label || product.badge || "Yangi",
     };
   },
   currency(value) {
@@ -165,22 +167,28 @@ window.MBHelpers = {
     const normalized = this.normalizeProduct(product);
     const showDescription = options.showDescription !== false;
     const image = normalized.images[0];
+    const stock = Number(normalized.stock ?? 999);
+    const inStock = stock > 0;
+    const label = inStock ? (normalized.label || "Yangi") : "Sotuvda mavjud emas";
     const oldPrice =
       Number(normalized.oldPrice) > 0 ? `<span class="product__oldprice">${this.currency(normalized.oldPrice)}</span>` : "";
     const descriptionHtml = showDescription ? `<p>${normalized.description}</p>` : "";
+    const action = inStock
+      ? `<a class="link-btn js-add-card" href="#" data-id="${normalized.id}">Savatga qo'shish</a>`
+      : `<span class="link-btn link-btn--disabled">Sotuvda mavjud emas</span>`;
 
     return `
       <div class="col-6 col-sm-6 col-md-4 col-lg-3">
-        <div class="product__item">
+        <div class="product__item ${inStock ? "" : "product__item--soldout"}">
           <a href="product-details.html?id=${normalized.id}" class="product__item__pic" style="background-image:url('${image}')">
-            <div class="label">${normalized.badge || "Yangi"}</div>
+            <div class="label">${label}</div>
           </a>
           <div class="product__item__text">
             <h6><a href="product-details.html?id=${normalized.id}">${normalized.name || "Mahsulot"}</a></h6>
             ${descriptionHtml}
             <div class="product__price">${this.currency(normalized.price)} ${oldPrice}</div>
             <div class="product__links">
-              <a class="link-btn js-add-card" href="#" data-id="${normalized.id}">Savatga qo'shish</a>
+              ${action}
             </div>
           </div>
         </div>

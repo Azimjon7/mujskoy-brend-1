@@ -38,6 +38,10 @@ function bindQuickAdd(products) {
       e.preventDefault();
       const p = products.find((x) => String(x.id) === String(this.dataset.id));
       if (!p) return;
+      if (Number(p.stock ?? 999) <= 0) {
+        alert("Sotuvda mavjud emas");
+        return;
+      }
 
       MBStore.addToCart({
         productId: p.id,

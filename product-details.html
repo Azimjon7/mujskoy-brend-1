@@ -600,6 +600,20 @@
       return Number(value).toLocaleString("uz-UZ") + " som";
     }
 
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderStars(rating) {
+      const count = Math.max(1, Math.min(5, Number(rating || 5)));
+      return "★".repeat(count) + "☆".repeat(5 - count);
+    }
+
     function makeChips(items, group) {
   const list = items.length ? items : ["Standart"];
   return `
@@ -638,7 +652,15 @@ function createChipList(items, group) {
     }
 
     function addToCart(product) {
+      if (Number(product.stock ?? 999) <= 0) {
+        document.getElementById("pdMessage").textContent = "Sotuvda mavjud emas.";
+        return;
+      }
       const qty = parseInt(document.getElementById("qtyInput").value) || 1;
+      if (Number(product.stock ?? 999) < qty) {
+        document.getElementById("pdMessage").textContent = "Omborda buncha mahsulot yo'q.";
+        return;
+      }
       const selectedSize = getActiveChipText("size");
       const selectedColor = getActiveChipText("color");
 
@@ -680,6 +702,9 @@ function createChipList(items, group) {
     function renderProduct(product) {
       const sizes = parseOptions(product.sizes, "size");
       const colors = parseOptions(product.colors);
+      const stock = Number(product.stock ?? 999);
+      const inStock = stock > 0;
+      const label = inStock ? (product.label || product.badge || product.category || "Mahsulot") : "Sotuvda mavjud emas";
       const productImages = Array.isArray(product.images) && product.images.length
         ? product.images
         : (product.image ? [product.image] : ["img/product/product-1.jpg"]);
@@ -699,11 +724,11 @@ function createChipList(items, group) {
 
           <div class="col-lg-6 mb-4">
             <div class="pd-info-box">
-              <div class="pd-badge">${product.category || "Mahsulot"}</div>
+              <div class="pd-badge">${escapeHtml(label)}</div>
 
-              <h1 class="pd-title">${product.name || ""}</h1>
+              <h1 class="pd-title">${escapeHtml(product.name || "")}</h1>
 
-              <p class="pd-desc">${product.desc || "Qisqa tavsif mavjud emas."}</p>
+              <p class="pd-desc">${escapeHtml(product.desc || product.description || "Qisqa tavsif mavjud emas.")}</p>
 
               <div class="pd-price-wrap">
                 <div class="pd-price">${formatPrice(product.price)}</div>
@@ -711,7 +736,7 @@ function createChipList(items, group) {
               </div>
 
               <div class="pd-options">
-                <div class="pd-label">Size</div>
+                <div class="pd-label">O'lcham</div>
                 ${createChipList(sizes, "size")}
               </div>
 
@@ -726,19 +751,42 @@ function createChipList(items, group) {
               </div>
 
               <div class="pd-meta">
-                <div><strong>Kategoriya:</strong> ${product.category || "-"}</div>
-                <div><strong>Kargo:</strong> 7+ kun ichida yetkazib berish</div>
-                <div><strong>Tolov:</strong> Buyurtma asosida</div>
+                <div><strong>Kategoriya:</strong> ${escapeHtml(product.category || "-")}</div>
+                <div><strong>Omborda:</strong> ${inStock ? stock + " ta" : "Sotuvda mavjud emas"}</div>
+                <div><strong>Yetkazish:</strong> 7+ kun ichida yetkazib berish</div>
+                <div><strong>To'lov:</strong> Buyurtma asosida</div>
               </div>
 
               <div class="pd-actions">
-                <button class="pd-btn pd-btn-primary" id="addToCartBtn">Savatga qoshish</button>
-                <button class="pd-btn pd-btn-dark" id="buyNowBtn">Hozir olish</button>
+                <button class="pd-btn pd-btn-primary" id="addToCartBtn" ${inStock ? "" : "disabled"}>${inStock ? "Savatga qo'shish" : "Sotuvda mavjud emas"}</button>
+                <button class="pd-btn pd-btn-dark" id="buyNowBtn" ${inStock ? "" : "disabled"}>Hozir olish</button>
               </div>
 
               <div id="pdMessage" class="pd-message"></div>
             </div>
           </div>
+        </div>
+
+        <div class="pd-reviews">
+          <h3>Sharhlar</h3>
+          <div id="reviewsList" class="pd-reviews-list"><div class="pd-message">Sharhlar yuklanmoqda...</div></div>
+          <form id="reviewForm" class="pd-review-form">
+            <div class="row">
+              <div class="col-md-4"><input id="reviewName" type="text" placeholder="Ismingiz"></div>
+              <div class="col-md-3">
+                <select id="reviewRating">
+                  <option value="5">5 yulduz</option>
+                  <option value="4">4 yulduz</option>
+                  <option value="3">3 yulduz</option>
+                  <option value="2">2 yulduz</option>
+                  <option value="1">1 yulduz</option>
+                </select>
+              </div>
+              <div class="col-md-5"><input id="reviewText" type="text" placeholder="Sharhingiz"></div>
+            </div>
+            <button class="pd-btn pd-btn-primary" type="submit">Sharh qoldirish</button>
+            <div id="reviewMessage" class="pd-message"></div>
+          </form>
         </div>
       `;
 
@@ -792,6 +840,64 @@ function createChipList(items, group) {
       document.getElementById("buyNowBtn").addEventListener("click", function () {
         buyNow(product);
       });
+
+      initReviews(product.id);
+    }
+
+    async function initReviews(productId) {
+      await loadReviews(productId);
+      const form = document.getElementById("reviewForm");
+      if (!form) return;
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        const message = document.getElementById("reviewMessage");
+        const payload = {
+          productId,
+          name: document.getElementById("reviewName").value.trim(),
+          rating: document.getElementById("reviewRating").value,
+          review: document.getElementById("reviewText").value.trim(),
+        };
+        if (!payload.name || !payload.review) {
+          message.textContent = "Ism va sharh yozing.";
+          return;
+        }
+        try {
+          const res = await fetch("/api/reviews", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(data.message || "Sharh yuborilmadi");
+          form.reset();
+          message.textContent = "Sharhingiz qabul qilindi.";
+          await loadReviews(productId);
+        } catch (error) {
+          message.textContent = error.message || "Xatolik yuz berdi.";
+        }
+      });
+    }
+
+    async function loadReviews(productId) {
+      const list = document.getElementById("reviewsList");
+      if (!list) return;
+      try {
+        const res = await fetch("/api/reviews?productId=" + encodeURIComponent(productId), { cache: "no-store" });
+        const reviews = await res.json();
+        if (!Array.isArray(reviews) || !reviews.length) {
+          list.innerHTML = "<div class=\"pd-message\">Hozircha sharh yo'q.</div>";
+          return;
+        }
+        list.innerHTML = reviews.map((item) => `
+          <div class="pd-review-card">
+            <div class="pd-review-stars">${renderStars(item.rating)}</div>
+            <strong>${escapeHtml(item.name || "Mijoz")}</strong>
+            <p>${escapeHtml(item.review || "")}</p>
+          </div>
+        `).join("");
+      } catch {
+        list.innerHTML = "<div class=\"pd-message\">Sharhlarni yuklab bo'lmadi.</div>";
+      }
     }
 
     function renderNotFound() {

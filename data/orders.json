@@ -19,7 +19,9 @@
     ],
     "paymentType": "naqd",
     "paymentScreenshot": "",
-    "createdAt": "2026-04-08T09:16:37.385Z"
+    "createdAt": "2026-04-08T09:16:37.385Z",
+    "status": "Yangi",
+    "updatedAt": "2026-05-31T10:12:05.364Z"
   },
   {
     "id": "ord_1775592414678",

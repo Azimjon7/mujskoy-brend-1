@@ -1,0 +1,12 @@
+[
+  {
+    "code": "SALE10",
+    "discountPercent": 10,
+    "createdAt": "2026-05-31T00:00:00.000Z"
+  },
+  {
+    "code": "SUMMER20",
+    "discountPercent": 20,
+    "createdAt": "2026-05-31T00:00:00.000Z"
+  }
+]

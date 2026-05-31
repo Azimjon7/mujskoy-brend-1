@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mujskoy Brend | Buyurtmani kuzatish</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/elegant-icons.css" type="text/css" />
+  <link rel="stylesheet" href="css/slicknav.min.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+<body class="track-page">
+  <div id="preloder"><div class="loader"></div></div>
+  <header class="header header--dark">
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <div class="col-xl-3 col-lg-3 col-8">
+          <div class="header__logo header__logo--custom">
+            <a href="index.html"><img src="img/mujskoy-logo.jpg" alt="logo" /><span>Mujskoy Brend</span></a>
+          </div>
+        </div>
+        <div class="col-xl-6 col-lg-6">
+          <nav class="header__menu">
+            <ul>
+              <li><a href="index.html">Bosh sahifa</a></li>
+              <li><a href="shop.html">Do'kon</a></li>
+              <li><a href="shop-cart.html">Savat</a></li>
+              <li class="active"><a href="track-order.html">Buyurtmani kuzatish</a></li>
+              <li><a href="contact.html">Bog'lanish</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="breadcrumb-custom">
+    <div class="container">
+      <h2>Buyurtmani kuzatish</h2>
+      <p>Buyurtma ID va telefon raqamingizni kiriting.</p>
+    </div>
+  </section>
+
+  <section class="track-section spad">
+    <div class="container">
+      <div class="track-card">
+        <div class="track-form">
+          <div>
+            <label for="orderId">Buyurtma ID</label>
+            <input id="orderId" type="text" placeholder="ord_..." />
+          </div>
+          <div>
+            <label for="phone">Telefon raqami</label>
+            <input id="phone" type="text" placeholder="+998 90 123 45 67" />
+          </div>
+          <button class="site-btn" type="button" onclick="trackOrder()">Kuzatish</button>
+        </div>
+        <div id="trackMessage" class="form-message"></div>
+        <div id="trackResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/jquery-3.3.1.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/jquery.slicknav.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const STATUS_STEPS = [
+      { status: "Yangi", label: "Buyurtma qabul qilindi" },
+      { status: "Tasdiqlandi", label: "Tasdiqlandi" },
+      { status: "Yo'lda", label: "Yo'lga chiqdi" },
+      { status: "Yetkazildi", label: "Yetkazildi" },
+    ];
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "-";
+      return new Intl.DateTimeFormat("uz-UZ", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(date);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderTimeline(status) {
+      const normalized = status === "Yuborildi" ? "Yo'lda" : status;
+      const activeIndex = normalized === "Bekor qilindi" ? -1 : STATUS_STEPS.findIndex((step) => step.status === normalized);
+      if (normalized === "Bekor qilindi") {
+        return '<div class="track-cancelled">Buyurtma bekor qilindi</div>';
+      }
+      return '<div class="track-timeline">' + STATUS_STEPS.map((step, index) => `
+        <div class="track-step ${index <= activeIndex ? "is-done" : ""}">
+          <span>&#10003;</span>
+          <strong>${step.label}</strong>
+        </div>
+      `).join("") + "</div>";
+    }
+
+    function renderOrder(order) {
+      const items = (Array.isArray(order.items) ? order.items : []).map((item) => `
+        <li>
+          <strong>${escapeHtml(item.name || "Mahsulot")}</strong>
+          <span>${Number(item.qty || 1)} ta &middot; ${formatMoney(item.lineTotal || Number(item.price || 0) * Number(item.qty || 1))}</span>
+        </li>
+      `).join("");
+
+      document.getElementById("trackResult").innerHTML = `
+        <div class="track-result">
+          <div class="track-status"><span>Holati</span><strong>${escapeHtml(order.status || "Yangi")}</strong></div>
+          ${renderTimeline(order.status || "Yangi")}
+          <div class="track-grid">
+            <div class="track-field"><span>Buyurtma vaqti</span><strong>${formatDate(order.createdAt)}</strong></div>
+            <div class="track-field"><span>Summa</span><strong>${formatMoney(order.total)}</strong></div>
+            <div class="track-field"><span>To'lov turi</span><strong>${order.paymentType === "karta" ? "Karta" : "Naqd"}</strong></div>
+          </div>
+          <h4>Mahsulotlar</h4>
+          <ul class="track-items">${items || "<li>Mahsulotlar ko'rsatilmagan</li>"}</ul>
+        </div>
+      `;
+    }
+
+    async function trackOrder() {
+      const orderId = document.getElementById("orderId").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const msg = document.getElementById("trackMessage");
+      msg.innerHTML = "";
+      document.getElementById("trackResult").innerHTML = "";
+
+      if (!orderId || !phone) {
+        msg.innerHTML = '<span class="checkout-msg checkout-msg--error">Buyurtma ID va telefon raqamini kiriting.</span>';
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/orders/track", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId, phone }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || "Buyurtma topilmadi");
+        renderOrder(data.order);
+      } catch (error) {
+        msg.innerHTML = '<span class="checkout-msg checkout-msg--error">' + (error.message || "Buyurtma topilmadi") + "</span>";
+      }
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("orderId")) document.getElementById("orderId").value = params.get("orderId");
+  </script>
+</body>
+</html>
