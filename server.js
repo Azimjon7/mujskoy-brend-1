@@ -27,6 +27,31 @@ const DEFAULT_CATEGORIES = [
 ];
 
 const ORDER_STATUSES = ["Yangi", "Tasdiqlandi", "Yo'lda", "Yetkazildi", "Bekor qilindi"];
+const ORDER_STATUS_KEYS = ["new", "confirmed", "shipped", "delivered", "cancelled"];
+const ORDER_STATUS_LABELS = {
+  new: "Yangi",
+  confirmed: "Tasdiqlandi",
+  shipped: "Yo'lda",
+  delivered: "Yetkazildi",
+  cancelled: "Bekor qilindi",
+};
+const ORDER_STATUS_ALIASES = {
+  yangi: "new",
+  new: "new",
+  tasdiqlandi: "confirmed",
+  confirmed: "confirmed",
+  "yo'lda": "shipped",
+  "yo`lda": "shipped",
+  "yo‘lda": "shipped",
+  "yo’lda": "shipped",
+  yolda: "shipped",
+  yuborildi: "shipped",
+  shipped: "shipped",
+  yetkazildi: "delivered",
+  delivered: "delivered",
+  "bekor qilindi": "cancelled",
+  cancelled: "cancelled",
+};
 const PRODUCT_LABELS = ["", "Yangi", "Bestseller", "Chegirma", "Top mahsulot"];
 const DEFAULT_PROMOCODES = [
   { code: "SALE10", discountPercent: 10, createdAt: new Date().toISOString() },
@@ -105,10 +130,25 @@ function clampNumber(value, min, max, fallback = min) {
   return Math.min(max, Math.max(min, number));
 }
 
-function normalizeOrderStatus(status) {
+function getOrderStatusKey(status) {
   const text = String(status || "").trim();
-  if (text === "Yuborildi") return "Yo'lda";
-  return ORDER_STATUSES.includes(text) ? text : "Yangi";
+  if (!text) return null;
+  if (ORDER_STATUS_KEYS.includes(text)) return text;
+  return ORDER_STATUS_ALIASES[text.toLowerCase()] || null;
+}
+
+function normalizeOrderStatusKey(status) {
+  return getOrderStatusKey(status) || "new";
+}
+
+function normalizeOrderStatus(status) {
+  return ORDER_STATUS_LABELS[normalizeOrderStatusKey(status)];
+}
+
+function normalizePhone(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+  if (digits.length > 9 && digits.startsWith("998")) return digits.slice(-9);
+  return digits;
 }
 
 function readCategories() {
@@ -168,6 +208,21 @@ function publicOrder(order) {
     status: normalizeOrderStatus(order.status),
     createdAt: order.createdAt,
     updatedAt: order.updatedAt || order.createdAt,
+  };
+}
+
+function customerOrder(order) {
+  return {
+    id: order.id,
+    name: order.name,
+    phone: order.phone,
+    address: order.address,
+    total: toNumber(order.total, 0),
+    paymentType: order.paymentType || "naqd",
+    status: normalizeOrderStatusKey(order.status),
+    createdAt: order.createdAt,
+    updatedAt: order.updatedAt || order.createdAt,
+    items: Array.isArray(order.items) ? order.items : [],
   };
 }
 
@@ -708,7 +763,7 @@ function buildOrderFromRequest(req, products) {
     items: enrichedItems,
     paymentType: paymentType === "karta" ? "karta" : "naqd",
     paymentScreenshot: req.file ? `uploads/${req.file.filename}` : "",
-    status: "Yangi",
+    status: "new",
     createdAt: new Date().toISOString(),
   };
 }
@@ -746,20 +801,35 @@ app.get("/api/orders/export", verifyAdmin, (req, res) => {
   res.send(Buffer.from("\ufeff" + html, "utf8"));
 });
 
-app.post("/api/orders/track", (req, res) => {
-  const orderId = sanitizeText(req.body.orderId || req.body.id, 80);
-  const phone = sanitizeText(req.body.phone, 60).replace(/\s+/g, "");
+function findOrderForTracking(orderIdValue, phoneValue) {
+  const orderId = sanitizeText(orderIdValue, 80);
+  const phone = normalizePhone(phoneValue);
+  if (!orderId || !phone) return null;
   const orders = readJson(ORDERS_FILE);
-  const order = orders.find((item) => {
-    const itemPhone = sanitizeText(item.phone, 60).replace(/\s+/g, "");
-    return String(item.id) === orderId && itemPhone.endsWith(phone.slice(-9));
+  return orders.find((item) => {
+    const itemPhone = normalizePhone(item.phone);
+    return String(item.id) === orderId && itemPhone === phone;
   });
+}
+
+app.get("/api/orders/track", (req, res) => {
+  const order = findOrderForTracking(req.query.orderId || req.query.id, req.query.phone);
 
   if (!order) {
     return res.status(404).json({ message: "Buyurtma topilmadi" });
   }
 
-  res.json({ success: true, order: publicOrder(order) });
+  res.json(customerOrder(order));
+});
+
+app.post("/api/orders/track", (req, res) => {
+  const order = findOrderForTracking(req.body.orderId || req.body.id, req.body.phone);
+
+  if (!order) {
+    return res.status(404).json({ message: "Buyurtma topilmadi" });
+  }
+
+  res.json({ success: true, order: customerOrder(order) });
 });
 
 app.patch("/api/orders/:id/status", verifyAdmin, (req, res) => {
@@ -770,8 +840,8 @@ app.patch("/api/orders/:id/status", verifyAdmin, (req, res) => {
     return res.status(404).json({ message: "Buyurtma topilmadi" });
   }
 
-  const status = normalizeOrderStatus(req.body.status);
-  if (status !== String(req.body.status || "").trim()) {
+  const status = getOrderStatusKey(req.body.status);
+  if (!status) {
     return res.status(400).json({ message: "Status noto'g'ri" });
   }
 
@@ -782,7 +852,7 @@ app.patch("/api/orders/:id/status", verifyAdmin, (req, res) => {
   };
   writeJson(ORDERS_FILE, orders);
 
-  res.json({ success: true, order: orders[index] });
+  res.json({ success: true, order: publicOrder(orders[index]) });
 });
 
 const orderUpload = upload.single("paymentScreenshot");
@@ -828,7 +898,14 @@ app.post("/api/orders", orderUpload, (req, res) => {
   writeJson(PRODUCTS_FILE, updatedProducts);
   sendTelegramOrder(order);
 
-  res.json({ success: true, order: publicOrder(order) });
+  res.json({
+    success: true,
+    id: order.id,
+    status: order.status,
+    phone: order.phone,
+    message: "Buyurtmangiz qabul qilindi. Buyurtma raqamingizni saqlab qo'ying.",
+    order: publicOrder(order),
+  });
 });
 
 app.use((err, req, res, next) => {

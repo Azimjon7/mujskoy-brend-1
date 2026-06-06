@@ -1,5 +1,58 @@
 [
   {
+    "id": "ord_1780222674731",
+    "name": "Azimjon Gulomov",
+    "phone": "902008747",
+    "address": "Andijan city 2-Mikrarion, apartment 49,",
+    "note": "assa",
+    "subtotal": 1110000,
+    "discountAmount": 111000,
+    "promoCode": "SALE10",
+    "total": 999000,
+    "items": [
+      {
+        "productId": "prd_1775680295547",
+        "name": "🧢 Trend kepka 😎",
+        "size": "Universal",
+        "color": "qora",
+        "qty": 1,
+        "price": 80000,
+        "lineTotal": 80000
+      },
+      {
+        "productId": "prd_1775681243067",
+        "name": "👟 Yoz uchun TOP тапочка 🔥",
+        "size": "36",
+        "color": "oq",
+        "qty": 1,
+        "price": 205000,
+        "lineTotal": 205000
+      },
+      {
+        "productId": "prd_1775681008960",
+        "name": "👟 AirMax Fire",
+        "size": "36",
+        "color": "qora",
+        "qty": 1,
+        "price": 445000,
+        "lineTotal": 445000
+      },
+      {
+        "productId": "prd_1775680656769",
+        "name": "Erkaklar uchun premium komplekt 🔥",
+        "size": "S",
+        "color": "Standart",
+        "qty": 1,
+        "price": 380000,
+        "lineTotal": 380000
+      }
+    ],
+    "paymentType": "naqd",
+    "paymentScreenshot": "",
+    "status": "Yangi",
+    "createdAt": "2026-05-31T10:17:54.733Z"
+  },
+  {
     "id": "ord_1775639797384",
     "name": "AZIMJON",
     "phone": "+998902008747",

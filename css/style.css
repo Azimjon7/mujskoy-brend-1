@@ -5481,6 +5481,38 @@ New commerce states
   font-size: 16px;
 }
 
+.track-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-weight: 800;
+  letter-spacing: 0;
+  border: 1px solid #d7c5aa;
+  background: #fff5df;
+  color: #9a6a21;
+}
+
+.track-badge--confirmed,
+.track-badge--shipped {
+  background: #eef5ff;
+  border-color: #bdd6f3;
+  color: #1c5e99;
+}
+
+.track-badge--delivered {
+  background: #eef9f0;
+  border-color: #bfe2c5;
+  color: #1d7a36;
+}
+
+.track-badge--cancelled {
+  background: #fff0ee;
+  border-color: #f2c2bc;
+  color: #9f2d22;
+}
+
 .success-actions {
   display: flex;
   justify-content: center;

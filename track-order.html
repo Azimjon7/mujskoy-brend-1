@@ -54,7 +54,7 @@
             <label for="phone">Telefon raqami</label>
             <input id="phone" type="text" placeholder="+998 90 123 45 67" />
           </div>
-          <button class="site-btn" type="button" onclick="trackOrder()">Kuzatish</button>
+          <button class="site-btn" type="button" onclick="trackOrder()">Buyurtmani tekshirish</button>
         </div>
         <div id="trackMessage" class="form-message"></div>
         <div id="trackResult"></div>
@@ -67,11 +67,37 @@
   <script src="js/jquery.slicknav.js"></script>
   <script src="js/main.js"></script>
   <script>
+    const STATUS_LABELS = {
+      new: "Yangi",
+      confirmed: "Tasdiqlandi",
+      shipped: "Yo'lda",
+      delivered: "Yetkazildi",
+      cancelled: "Bekor qilindi",
+    };
+
+    const STATUS_ALIASES = {
+      yangi: "new",
+      new: "new",
+      tasdiqlandi: "confirmed",
+      confirmed: "confirmed",
+      "yo'lda": "shipped",
+      "yo`lda": "shipped",
+      "yo‘lda": "shipped",
+      "yo’lda": "shipped",
+      yolda: "shipped",
+      yuborildi: "shipped",
+      shipped: "shipped",
+      yetkazildi: "delivered",
+      delivered: "delivered",
+      "bekor qilindi": "cancelled",
+      cancelled: "cancelled",
+    };
+
     const STATUS_STEPS = [
-      { status: "Yangi", label: "Buyurtma qabul qilindi" },
-      { status: "Tasdiqlandi", label: "Tasdiqlandi" },
-      { status: "Yo'lda", label: "Yo'lga chiqdi" },
-      { status: "Yetkazildi", label: "Yetkazildi" },
+      { status: "new", label: "Buyurtma qabul qilindi" },
+      { status: "confirmed", label: "Tasdiqlandi" },
+      { status: "shipped", label: "Yo'lga chiqdi" },
+      { status: "delivered", label: "Yetkazildi" },
     ];
 
     function formatMoney(value) {
@@ -99,11 +125,24 @@
         .replace(/'/g, "&#039;");
     }
 
+    function normalizeStatus(status) {
+      const value = String(status || "").trim();
+      return STATUS_ALIASES[value.toLowerCase()] || "new";
+    }
+
+    function statusLabel(status) {
+      return STATUS_LABELS[normalizeStatus(status)] || STATUS_LABELS.new;
+    }
+
+    function statusClass(status) {
+      return "track-badge--" + normalizeStatus(status);
+    }
+
     function renderTimeline(status) {
-      const normalized = status === "Yuborildi" ? "Yo'lda" : status;
-      const activeIndex = normalized === "Bekor qilindi" ? -1 : STATUS_STEPS.findIndex((step) => step.status === normalized);
-      if (normalized === "Bekor qilindi") {
-        return '<div class="track-cancelled">Buyurtma bekor qilindi</div>';
+      const normalized = normalizeStatus(status);
+      const activeIndex = normalized === "cancelled" ? -1 : STATUS_STEPS.findIndex((step) => step.status === normalized);
+      if (normalized === "cancelled") {
+        return '<div class="track-cancelled">Buyurtma bekor qilingan</div>';
       }
       return '<div class="track-timeline">' + STATUS_STEPS.map((step, index) => `
         <div class="track-step ${index <= activeIndex ? "is-done" : ""}">
@@ -123,8 +162,8 @@
 
       document.getElementById("trackResult").innerHTML = `
         <div class="track-result">
-          <div class="track-status"><span>Holati</span><strong>${escapeHtml(order.status || "Yangi")}</strong></div>
-          ${renderTimeline(order.status || "Yangi")}
+          <div class="track-status"><span>Holati</span><strong class="track-badge ${statusClass(order.status)}">${escapeHtml(statusLabel(order.status))}</strong></div>
+          ${renderTimeline(order.status || "new")}
           <div class="track-grid">
             <div class="track-field"><span>Buyurtma vaqti</span><strong>${formatDate(order.createdAt)}</strong></div>
             <div class="track-field"><span>Summa</span><strong>${formatMoney(order.total)}</strong></div>
@@ -149,14 +188,11 @@
       }
 
       try {
-        const res = await fetch("/api/orders/track", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId, phone }),
-        });
+        const params = new URLSearchParams({ orderId, phone });
+        const res = await fetch("/api/orders/track?" + params.toString(), { cache: "no-store" });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data.message || "Buyurtma topilmadi");
-        renderOrder(data.order);
+        renderOrder(data.order || data);
       } catch (error) {
         msg.innerHTML = '<span class="checkout-msg checkout-msg--error">' + (error.message || "Buyurtma topilmadi") + "</span>";
       }
