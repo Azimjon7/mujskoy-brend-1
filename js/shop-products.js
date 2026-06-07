@@ -82,6 +82,20 @@
       return categoryOk && textOk;
     });
 
+    // sorting
+    const sort = (document.getElementById('shop-sort') && document.getElementById('shop-sort').value) || '';
+    if (sort === 'price_asc') {
+      filtered.sort((a,b)=>Number(a.price||0)-Number(b.price||0));
+    } else if (sort === 'price_desc') {
+      filtered.sort((a,b)=>Number(b.price||0)-Number(a.price||0));
+    } else if (sort === 'newest') {
+      filtered.sort((a,b)=>{
+        const ta = new Date(a.createdAt || a.createdAt || 0).getTime()||0;
+        const tb = new Date(b.createdAt || b.createdAt || 0).getTime()||0;
+        return tb - ta;
+      });
+    }
+
     render(filtered);
   }
 
@@ -109,6 +123,8 @@
   }
 
   document.getElementById("shop-search").addEventListener("input", applyFilter);
+  const sortEl = document.getElementById('shop-sort');
+  if (sortEl) sortEl.addEventListener('change', applyFilter);
 
   load();
 })();

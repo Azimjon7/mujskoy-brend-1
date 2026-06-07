@@ -1,5 +1,13 @@
 [
   {
+    "id": "rev_1780731044485",
+    "productId": "prd_1775681573066",
+    "name": "Test User",
+    "rating": 5,
+    "review": "Autotest review",
+    "createdAt": "2026-06-06T07:30:44.486Z"
+  },
+  {
     "id": "rev_1780725356235",
     "productId": "prd_1775681573066",
     "name": "azimjon",

@@ -921,6 +921,28 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+const preferredPort = Number(process.env.PORT) || 5003;
+const candidatePorts = [...new Set([preferredPort, preferredPort + 1, 5004, 5005, 3000, 8080])];
+
+function startServer(index = 0) {
+  if (index >= candidatePorts.length) {
+    console.error("All candidate ports are busy. Iltimos, boshqa portni bo'shating yoki PORT muhit o'zgaruvchisiga sozlang.");
+    process.exit(1);
+  }
+
+  const port = candidatePorts[index];
+  const server = app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+  });
+
+  server.on("error", (err) => {
+    if (err.code === "EADDRINUSE") {
+      console.warn(`Port ${port} band, keyingi portga o‘tish...`);
+      startServer(index + 1);
+    } else {
+      throw err;
+    }
+  });
+}
+
+startServer();

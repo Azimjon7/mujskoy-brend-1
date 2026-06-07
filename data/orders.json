@@ -1,5 +1,58 @@
 [
   {
+    "id": "ord_1780735600993",
+    "name": "Azimjon Gulomov",
+    "phone": "(97) 336 13 83",
+    "address": "Sergili street",
+    "note": "aldama",
+    "subtotal": 175000,
+    "discountAmount": 17500,
+    "promoCode": "SALE10",
+    "total": 157500,
+    "items": [
+      {
+        "productId": "prd_1775680181383",
+        "name": "🔥 Erkaklar uchun yozgi tapochka 😎",
+        "size": "40",
+        "color": "qora",
+        "qty": 1,
+        "price": 175000,
+        "lineTotal": 175000
+      }
+    ],
+    "paymentType": "naqd",
+    "paymentScreenshot": "",
+    "status": "confirmed",
+    "createdAt": "2026-06-06T08:46:40.995Z",
+    "updatedAt": "2026-06-06T08:47:09.164Z"
+  },
+  {
+    "id": "ord_1780731044503",
+    "name": "Test Buyer",
+    "phone": "901234567",
+    "address": "Toshkent",
+    "note": "",
+    "subtotal": 199000,
+    "discountAmount": 0,
+    "promoCode": "",
+    "total": 199000,
+    "items": [
+      {
+        "productId": "prd_1775681573066",
+        "name": "🔥 Premium slim-fit erkaklar ko‘ylagi",
+        "size": "",
+        "color": "",
+        "qty": 1,
+        "price": 199000,
+        "lineTotal": 199000
+      }
+    ],
+    "paymentType": "naqd",
+    "paymentScreenshot": "",
+    "status": "new",
+    "createdAt": "2026-06-06T07:30:44.503Z"
+  },
+  {
     "id": "ord_1780222674731",
     "name": "Azimjon Gulomov",
     "phone": "902008747",

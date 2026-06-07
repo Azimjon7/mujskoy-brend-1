@@ -11,23 +11,13 @@
   <link rel="stylesheet" href="css/style.css" type="text/css">
 
   <style>
-    body {
-      background: #050505;
-      color: #fff;
-    }
-
-    .product-detail-wrap {
-      padding: 60px 0;
-    }
-
-    .pd-page-top {
-      margin-bottom: 18px;
-    }
+    .product-detail-wrap { padding: 60px 0; }
+    .pd-page-top { margin-bottom: 18px; }
 
     .pd-back-btn {
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      background: rgba(0, 0, 0, 0.55);
-      color: #d4af37;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
       border-radius: 999px;
       padding: 10px 16px;
       font-weight: 700;
@@ -39,260 +29,124 @@
       gap: 8px;
     }
 
-    .pd-back-btn:hover {
-      background: rgba(212, 175, 55, 0.18);
-      border-color: #d4af37;
-    }
+    .pd-back-btn:hover { background: #f3efe6; }
 
     .pd-image-box {
-      background: #0f0f0f;
-      border: 1px solid rgba(212, 175, 55, 0.15);
-      border-radius: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
       overflow: hidden;
       position: relative;
     }
 
-    .pd-image-box img {
+    .pd-image-box img { width: 100%; height: 640px; object-fit: cover; display: block; background: #fff; }
+
+    .pd-image-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 26px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.15s ease; z-index:2; }
+    .pd-image-nav.prev { left: 14px; }
+    .pd-image-nav.next { right: 14px; }
+
+    .pd-thumbs { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+    .pd-thumb { width:86px; height:86px; object-fit:cover; border-radius:12px; border:2px solid var(--border); cursor:pointer; background:#fff; }
+    .pd-thumb.active { border-color: var(--accent); }
+
+    .pd-info-box { background: var(--surface); border:1px solid var(--border); border-radius:18px; padding:28px; height:100%; display:flex; flex-direction:column; }
+
+    .pd-badge { display:inline-flex; align-items:center; padding:7px 12px; border-radius:999px; background:var(--accent); color:#fff; font-size:12px; margin-bottom:14px; font-weight:700; }
+
+    .pd-title { font-size:34px; line-height:1.22; font-weight:800; margin-bottom:10px; color:var(--text); }
+
+    .pd-rating-row { display:flex; align-items:center; gap:8px; color:var(--muted); font-size:14px; margin-bottom:16px; }
+    .pd-rating-stars { color:var(--accent); font-size:15px; }
+
+    .pd-price-wrap { display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:22px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+    .pd-price { font-size:36px; font-weight:800; color:var(--accent); }
+    .pd-old-price { font-size:20px; color:var(--muted); text-decoration:line-through; }
+
+    .pd-label { font-size:16px; font-weight:700; margin-bottom:14px; color:var(--text); }
+
+    .pd-options { margin-bottom:18px; }
+    .pd-option-list { display:flex; gap:12px; flex-wrap:wrap; }
+
+    .pd-chip { border:1px solid var(--border); background:#fff; color:var(--text); border-radius:999px; padding:9px 16px; cursor:pointer; transition:0.12s ease; font-weight:600; min-width:64px; text-align:center; }
+    .pd-chip:hover, .pd-chip.active { background:var(--accent); color:#000; border-color:var(--accent); }
+
+    .pd-qty-wrap { display:flex; align-items:center; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+    .pd-qty-input { width:110px; height:52px; border-radius:14px; border:1px solid var(--border); background:#fff; color:var(--text); padding:0 14px; font-size:18px; }
+
+    .pd-meta-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:2px 0 22px; }
+    .pd-info-card { min-height:76px; border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:12px 14px; }
+    .pd-info-card span { display:block; color:var(--muted); font-size:12px; font-weight:700; margin-bottom:6px; text-transform:uppercase; }
+    .pd-info-card strong { color:var(--text); display:block; font-size:15px; line-height:1.35; }
+
+    .pd-actions { display:flex; gap:14px; flex-wrap:wrap; margin-top:auto; }
+    .pd-btn { border:none; outline:none; border-radius:14px; padding:15px 24px; font-size:16px; font-weight:800; cursor:pointer; transition:0.15s ease; flex:1 1 180px; text-align:center; }
+    .pd-btn-primary { background:var(--accent); color:#000; }
+    .pd-btn-dark { background:#fff; color:var(--text); border:1px solid var(--border); }
+    .pd-btn:hover:not(:disabled){ transform:translateY(-1px); }
+
+    .pd-message { margin-top:18px; font-size:15px; color:var(--success); }
+    .pd-error { padding:80px 20px; text-align:center; font-size:24px; color:var(--text); }
+    .pd-error a { color:var(--accent); text-decoration:underline; }
+
+    .pd-section { margin-top:18px; border:1px solid var(--border); background:var(--surface); border-radius:18px; padding:22px; }
+    .pd-section-title { color:var(--text); font-size:22px; font-weight:800; margin-bottom:14px; }
+
+    .pd-about-card { max-width:920px; border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:16px 18px; }
+    .pd-about-text { color:var(--muted); font-size:15px; line-height:1.75; margin-bottom:0; white-space:pre-line; }
+
+    .pd-feature-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 16px; list-style:none; margin:0; padding:0; }
+    .pd-feature-list li { position:relative; color:var(--text); font-size:15px; line-height:1.55; padding-left:18px; }
+    .pd-feature-list li:before { content:""; position:absolute; left:0; top:0.68em; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px rgba(184,134,70,0.12); }
+
+    .pd-reviews { margin-top:18px; padding:22px; border:1px solid var(--border); background:var(--surface); border-radius:18px; }
+    .pd-reviews h3 { color:var(--text); font-size:22px; font-weight:800; margin-bottom:14px; }
+    .pd-review-card { border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:14px; }
+    .pd-review-card strong { color:var(--text); }
+    .pd-review-card p { color:var(--muted); line-height:1.6; }
+
+    .pd-review-form { border-top:1px solid var(--border); padding-top: 18px; margin-top: 18px; }
+    .pd-review-form input,
+    .pd-review-form select {
       width: 100%;
-      height: 720px;
-      object-fit: cover;
-      display: block;
-      background: #0c0c0c;
-    }
-
-    .pd-image-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      border: 1px solid rgba(212, 175, 55, 0.35);
-      background: rgba(0, 0, 0, 0.55);
-      color: #d4af37;
-      font-size: 26px;
-      line-height: 1;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: 0.2s ease;
-      z-index: 2;
-      user-select: none;
-    }
-
-    .pd-image-nav:hover {
-      background: rgba(212, 175, 55, 0.18);
-      border-color: #d4af37;
-    }
-
-    .pd-image-nav.prev {
-      left: 14px;
-    }
-
-    .pd-image-nav.next {
-      right: 14px;
-    }
-
-    .pd-thumbs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .pd-thumb {
-      width: 86px;
-      height: 86px;
-      object-fit: cover;
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--text);
       border-radius: 12px;
-      border: 2px solid #2e2e2e;
-      cursor: pointer;
-      background: #0c0c0c;
-      transition: 0.2s ease;
-    }
-
-    .pd-thumb.active {
-      border-color: #d4af37;
-    }
-
-    .pd-info-box {
-      background: #141414;
-      border: 1px solid rgba(212, 175, 55, 0.15);
-      border-radius: 24px;
-      padding: 34px;
-      height: 100%;
-    }
-
-    .pd-badge {
-      display: inline-block;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(212, 175, 55, 0.14);
-      color: #d4af37;
-      font-size: 13px;
-      margin-bottom: 18px;
-      font-weight: 700;
-    }
-
-    .pd-title {
-      font-size: 44px;
-      line-height: 1.15;
-      font-weight: 800;
+      padding: 12px 14px;
       margin-bottom: 12px;
-      color: #fff;
     }
-
-    .pd-desc {
-      color: #b8b8b8;
-      font-size: 19px;
-      line-height: 1.7;
-      margin-bottom: 26px;
+    .pd-review-form button {
+      min-width: 180px;
+      justify-content: center;
     }
-
-    .pd-price-wrap {
-      display: flex;
-      align-items: center;
+    .pd-review-form #reviewMessage {
+      margin-top: 14px;
+      color: var(--muted);
+    }
+    .pd-reviews-list {
+      display: grid;
       gap: 14px;
-      flex-wrap: wrap;
-      margin-bottom: 26px;
+      margin-bottom: 18px;
     }
-
-    .pd-price {
-      font-size: 42px;
-      font-weight: 800;
-      color: #d4af37;
+    .pd-review-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.96);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.04);
     }
-
-    .pd-old-price {
-      font-size: 28px;
-      color: #777;
-      text-decoration: line-through;
-    }
-
-    .pd-label {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 14px;
-      color: #fff;
-    }
-
-    .pd-options {
-      margin-bottom: 26px;
-    }
-
-    .pd-option-list {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .pd-chip {
-      border: 1px solid #3b3b3b;
-      background: #0f0f0f;
-      color: #fff;
-      border-radius: 999px;
-      padding: 11px 18px;
-      cursor: pointer;
-      transition: 0.2s ease;
-      font-weight: 600;
-      min-width: 64px;
-      text-align: center;
-    }
-
-    .pd-chip:hover,
-    .pd-chip.active {
-      background: #d4af37;
-      color: #000;
-      border-color: #d4af37;
-    }
-
-    .pd-qty-wrap {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 26px;
-      flex-wrap: wrap;
-    }
-
-    .pd-qty-input {
-      width: 110px;
-      height: 52px;
-      border-radius: 14px;
-      border: 1px solid #343434;
-      background: #0b0b0b;
-      color: #fff;
-      padding: 0 14px;
-      font-size: 18px;
-      outline: none;
-    }
-
-    .pd-meta {
-      margin-bottom: 28px;
-      padding-top: 10px;
-      border-top: 1px solid #242424;
-    }
-
-    .pd-meta div {
-      color: #bcbcbc;
-      margin-bottom: 10px;
-      font-size: 16px;
-    }
-
-    .pd-meta strong {
-      color: #fff;
-      min-width: 90px;
-      display: inline-block;
-    }
-
-    .pd-actions {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .pd-btn {
-      border: none;
-      outline: none;
-      border-radius: 14px;
-      padding: 15px 24px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .pd-btn-primary {
-      background: #d4af37;
-      color: #000;
-    }
-
-    .pd-btn-dark {
-      background: #1b1b1b;
-      color: #fff;
-      border: 1px solid #313131;
-    }
-
-    .pd-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .pd-message {
-      margin-top: 18px;
+    .pd-review-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
       font-size: 15px;
-      color: #7dff9a;
     }
-
-    .pd-error {
-      padding: 80px 20px;
-      text-align: center;
-      font-size: 24px;
-      color: #fff;
-    }
-
-    .pd-error a {
-      color: #d4af37;
-      text-decoration: underline;
+    .pd-review-stars {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: var(--accent);
+      font-size: 16px;
+      letter-spacing: 1px;
     }
 
     @media (max-width: 991px) {
@@ -307,11 +161,11 @@
       }
 
       .pd-title {
-        font-size: 34px;
+        font-size: 30px;
       }
 
       .pd-price {
-        font-size: 34px;
+        font-size: 31px;
       }
 
       .pd-old-price {
@@ -382,12 +236,9 @@
         overflow-wrap: anywhere;
       }
 
-      .pd-desc {
-        font-size: 14px;
-        line-height: 1.5;
-        margin-bottom: 14px;
-        white-space: pre-line;
-        overflow-wrap: anywhere;
+      .pd-rating-row {
+        font-size: 12px;
+        margin-bottom: 12px;
       }
 
       .pd-price-wrap {
@@ -405,6 +256,26 @@
 
       .pd-options {
         margin-bottom: 16px;
+      }
+
+      .pd-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-bottom: 16px;
+        order: 5;
+      }
+
+      .pd-control-panel {
+        order: 3;
+      }
+
+      .pd-actions {
+        order: 4;
+        margin-top: 0;
+      }
+
+      #pdMessage {
+        order: 6;
       }
 
       .pd-label {
@@ -459,6 +330,32 @@
         font-size: 13px;
         margin-top: 12px;
       }
+
+      .pd-section,
+      .pd-reviews {
+        padding: 16px;
+        border-radius: 14px;
+      }
+
+      .pd-section-title,
+      .pd-reviews h3 {
+        font-size: 18px;
+      }
+
+      .pd-about-card {
+        padding: 13px;
+      }
+
+      .pd-feature-list {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .pd-feature-list li,
+      .pd-about-text {
+        font-size: 13px;
+        line-height: 1.6;
+      }
     }
 
     @media (max-width: 479px) {
@@ -473,10 +370,6 @@
 
       .pd-title {
         font-size: 22px;
-      }
-
-      .pd-desc {
-        font-size: 13px;
       }
 
       .pd-price {
@@ -596,8 +489,8 @@
   // Bitta qiymat boвЂlsa
 
     function formatPrice(value) {
-      if (value === null || value === undefined || value === "") return "0 som";
-      return Number(value).toLocaleString("uz-UZ") + " som";
+      if (value === null || value === undefined || value === "") return "0 so'm";
+      return Number(value).toLocaleString("uz-UZ") + " so'm";
     }
 
     function escapeHtml(value) {
@@ -610,8 +503,86 @@
     }
 
     function renderStars(rating) {
-      const count = Math.max(1, Math.min(5, Number(rating || 5)));
+      const count = Math.max(1, Math.min(5, Math.round(Number(rating || 5))));
       return "★".repeat(count) + "☆".repeat(5 - count);
+    }
+
+    function cleanFeatureText(value) {
+      return String(value || "")
+        .replace(/^[\s\-–—*•●▪▫✔✓✅☑]+/g, "")
+        .replace(/^(âœ”ï¸|âœ”|â€¢|âœ¨|ðŸ’¯|ðŸ‘”|ðŸ‘•|ðŸ’¥)+/g, "")
+        .replace(/\s{2,}/g, " ")
+        .replace(/^[.:;,\s]+|[|;\s]+$/g, "")
+        .trim();
+    }
+
+    function descriptionFeatures(value) {
+      const raw = String(value || "").replace(/\r\n?/g, "\n").trim();
+      if (!raw) return [];
+
+      const hasFeatureSignal = /[✔✓✅☑•●▪▫]|\n|âœ|â€¢|\s[|;]\s/.test(raw);
+      if (!hasFeatureSignal) return [];
+
+      const normalized = raw
+        .replace(/[✔✓✅☑•●▪▫]/g, "\n")
+        .replace(/âœ”ï¸|âœ”|â€¢|âœ¨|ðŸ’¯|ðŸ‘”|ðŸ‘•|ðŸ’¥/g, "\n")
+        .replace(/\s+[|;]\s+/g, "\n")
+        .replace(/\n\s*[-–—*]+\s*/g, "\n");
+
+      const parts = normalized
+        .split(/\n+/)
+        .map(cleanFeatureText)
+        .filter(Boolean)
+        .filter((item) => {
+          const compactHeading = /[:?]\s*$/.test(item) && item.length <= 46;
+          const namedHeading = /^(mos keladi|qayerda kiyiladi|kombinatsiya|afzalliklari|xususiyatlari)\b/i.test(item);
+          return !compactHeading && !namedHeading;
+        });
+
+      return [...new Set(parts)].slice(0, 14);
+    }
+
+    function renderDescriptionContent(value) {
+      const raw = String(value || "").replace(/\r\n?/g, "\n").trim();
+      if (!raw) {
+        return '<p class="pd-about-text">Bu mahsulot haqida batafsil ma\'lumot tez orada qo\'shiladi.</p>';
+      }
+
+      const features = descriptionFeatures(raw);
+      if (features.length >= 2) {
+        return `
+          <ul class="pd-feature-list">
+            ${features.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
+          </ul>
+        `;
+      }
+
+      const compactText = raw
+        .split(/\n{2,}/)
+        .map((part) => cleanFeatureText(part).replace(/\n+/g, " "))
+        .filter(Boolean)
+        .join("\n\n");
+
+      return `<p class="pd-about-text">${escapeHtml(compactText)}</p>`;
+    }
+
+    function updateRatingRow(reviews) {
+      const row = document.getElementById("pdRatingRow");
+      if (!row) return;
+
+      if (!Array.isArray(reviews) || !reviews.length) {
+        row.hidden = true;
+        row.innerHTML = "";
+        return;
+      }
+
+      const total = reviews.reduce((sum, item) => sum + (Number(item.rating) || 0), 0);
+      const average = total / reviews.length;
+      row.hidden = false;
+      row.innerHTML = `
+        <span class="pd-rating-stars">${renderStars(average)}</span>
+        <span>${average.toFixed(1)} (${reviews.length} ta sharh)</span>
+      `;
     }
 
     function makeChips(items, group) {
@@ -654,12 +625,12 @@ function createChipList(items, group) {
     function addToCart(product) {
       if (Number(product.stock ?? 999) <= 0) {
         document.getElementById("pdMessage").textContent = "Sotuvda mavjud emas.";
-        return;
+        return false;
       }
       const qty = parseInt(document.getElementById("qtyInput").value) || 1;
       if (Number(product.stock ?? 999) < qty) {
         document.getElementById("pdMessage").textContent = "Omborda buncha mahsulot yo'q.";
-        return;
+        return false;
       }
       const selectedSize = getActiveChipText("size");
       const selectedColor = getActiveChipText("color");
@@ -692,19 +663,22 @@ function createChipList(items, group) {
       }
 
       document.getElementById("pdMessage").textContent = "Mahsulot savatga qo'shildi.";
+      return true;
     }
 
     function buyNow(product) {
-      addToCart(product);
-      window.location.href = "checkout.html";
+      if (addToCart(product)) {
+        window.location.href = "checkout.html";
+      }
     }
 
     function renderProduct(product) {
       const sizes = parseOptions(product.sizes, "size");
-      const colors = parseOptions(product.colors);
+      const colors = parseOptions(product.colors, "color");
       const stock = Number(product.stock ?? 999);
       const inStock = stock > 0;
       const label = inStock ? (product.label || product.badge || product.category || "Mahsulot") : "Sotuvda mavjud emas";
+      const description = product.desc || product.description || "";
       const productImages = Array.isArray(product.images) && product.images.length
         ? product.images
         : (product.image ? [product.image] : ["img/product/product-1.jpg"]);
@@ -728,33 +702,47 @@ function createChipList(items, group) {
 
               <h1 class="pd-title">${escapeHtml(product.name || "")}</h1>
 
-              <p class="pd-desc">${escapeHtml(product.desc || product.description || "Qisqa tavsif mavjud emas.")}</p>
+              <div id="pdRatingRow" class="pd-rating-row" hidden></div>
 
               <div class="pd-price-wrap">
                 <div class="pd-price">${formatPrice(product.price)}</div>
                 ${product.oldPrice ? `<div class="pd-old-price">${formatPrice(product.oldPrice)}</div>` : ""}
               </div>
 
-              <div class="pd-options">
-                <div class="pd-label">O'lcham</div>
-                ${createChipList(sizes, "size")}
+              <div class="pd-control-panel">
+                <div class="pd-options">
+                  <div class="pd-label">O'lcham</div>
+                  ${createChipList(sizes, "size")}
+                </div>
+
+                <div class="pd-options">
+                  <div class="pd-label">Rang</div>
+                  ${createChipList(colors, "color")}
+                </div>
+
+                <div class="pd-qty-wrap">
+                  <div class="pd-label" style="margin:0;">Soni</div>
+                  <input id="qtyInput" class="pd-qty-input" type="number" min="1" ${inStock ? `max="${stock}"` : ""} value="1">
+                </div>
               </div>
 
-              <div class="pd-options">
-                <div class="pd-label">Rang</div>
-                ${createChipList(colors, "color")}
-              </div>
-
-              <div class="pd-qty-wrap">
-                <div class="pd-label" style="margin:0;">Soni</div>
-                <input id="qtyInput" class="pd-qty-input" type="number" min="1" value="1">
-              </div>
-
-              <div class="pd-meta">
-                <div><strong>Kategoriya:</strong> ${escapeHtml(product.category || "-")}</div>
-                <div><strong>Omborda:</strong> ${inStock ? stock + " ta" : "Sotuvda mavjud emas"}</div>
-                <div><strong>Yetkazish:</strong> 7+ kun ichida yetkazib berish</div>
-                <div><strong>To'lov:</strong> Buyurtma asosida</div>
+              <div class="pd-meta-grid">
+                <div class="pd-info-card">
+                  <span>Kategoriya</span>
+                  <strong>${escapeHtml(product.category || "-")}</strong>
+                </div>
+                <div class="pd-info-card">
+                  <span>Omborda</span>
+                  <strong>${inStock ? stock + " ta" : "Sotuvda mavjud emas"}</strong>
+                </div>
+                <div class="pd-info-card">
+                  <span>Yetkazish</span>
+                  <strong>7+ kun ichida</strong>
+                </div>
+                <div class="pd-info-card">
+                  <span>To'lov</span>
+                  <strong>Buyurtma asosida</strong>
+                </div>
               </div>
 
               <div class="pd-actions">
@@ -766,6 +754,13 @@ function createChipList(items, group) {
             </div>
           </div>
         </div>
+
+        <section class="pd-section pd-about-section">
+          <h2 class="pd-section-title">Mahsulot haqida</h2>
+          <div class="pd-about-card">
+            ${renderDescriptionContent(description)}
+          </div>
+        </section>
 
         <div class="pd-reviews">
           <h3>Sharhlar</h3>
@@ -842,6 +837,7 @@ function createChipList(items, group) {
       });
 
       initReviews(product.id);
+      loadRelatedProducts(product);
     }
 
     async function initReviews(productId) {
@@ -885,9 +881,11 @@ function createChipList(items, group) {
         const res = await fetch("/api/reviews?productId=" + encodeURIComponent(productId), { cache: "no-store" });
         const reviews = await res.json();
         if (!Array.isArray(reviews) || !reviews.length) {
+          updateRatingRow([]);
           list.innerHTML = "<div class=\"pd-message\">Hozircha sharh yo'q.</div>";
           return;
         }
+        updateRatingRow(reviews);
         list.innerHTML = reviews.map((item) => `
           <div class="pd-review-card">
             <div class="pd-review-stars">${renderStars(item.rating)}</div>
@@ -896,8 +894,65 @@ function createChipList(items, group) {
           </div>
         `).join("");
       } catch {
+        updateRatingRow([]);
         list.innerHTML = "<div class=\"pd-message\">Sharhlarni yuklab bo'lmadi.</div>";
       }
+    }
+
+    async function loadRelatedProducts(product) {
+      const containerId = 'relatedProducts';
+      let container = document.getElementById(containerId);
+      if (!container) {
+        // append container after reviews
+        container = document.createElement('section');
+        container.id = containerId;
+        container.className = 'pd-section';
+        container.innerHTML = '<h2 class="pd-section-title">O\'xshash mahsulotlar</h2><div class="related-grid">Yuklanmoqda...</div>';
+        const app = document.getElementById('productDetailApp');
+        if (app) app.appendChild(container);
+      }
+
+      try {
+        const res = await fetch('data/products.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('data');
+        const products = await res.json();
+        const same = (products || []).filter(p => String(p.category || '') === String(product.category || '') && String(p.id) !== String(product.id));
+        let list = same.slice(0, 8);
+        if (list.length < 4) {
+          const others = (products || []).filter(p => String(p.id) !== String(product.id) && !list.find(x=>x.id===p.id));
+          list = list.concat(others.slice(0, Math.max(4 - list.length, 0)));
+        }
+        if (!list.length) {
+          container.querySelector('.related-grid').innerHTML = '<div class="pd-message">O\'xshash mahsulotlar topilmadi.</div>';
+          return;
+        }
+        renderRelatedProducts(container.querySelector('.related-grid'), list.slice(0,8));
+      } catch (err) {
+        const g = document.querySelector('#relatedProducts .related-grid');
+        if (g) g.innerHTML = '<div class="pd-message">O\'xshash mahsulotlarni yuklab bo\'lmadi.</div>';
+      }
+    }
+
+    function renderRelatedProducts(container, products) {
+      if (!container) return;
+      container.innerHTML = '<div class="related-grid-inner" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px"></div>';
+      const inner = container.querySelector('.related-grid-inner');
+      products.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.style.cursor = 'pointer';
+        card.innerHTML = `
+          <div style="border-radius:8px;overflow:hidden;"><img src="${p.image || (p.images && p.images[0]) || 'img/placeholders/placeholder.png'}" alt="${escapeHtml(p.name || '')}" style="width:100%;height:140px;object-fit:cover"></div>
+          <div style="padding:8px">
+            ${p.label ? `<div class="badge">${escapeHtml(p.label)}</div>` : ''}
+            <div style="font-weight:700;color:var(--text);margin:6px 0;min-height:38px">${escapeHtml(p.name || '')}</div>
+            <div style="color:var(--accent);font-weight:800">${formatPrice(p.price)}</div>
+            ${p.oldPrice ? `<div style="text-decoration:line-through;color:var(--muted)">${formatPrice(p.oldPrice)}</div>` : ''}
+          </div>
+        `;
+        card.addEventListener('click', function(){ window.location.href = 'product-details.html?id=' + encodeURIComponent(p.id); });
+        inner.appendChild(card);
+      });
     }
 
     function renderNotFound() {

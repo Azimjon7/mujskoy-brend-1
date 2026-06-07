@@ -14,6 +14,8 @@
     ],
     "sizes": "M-4XL",
     "colors": "yashil, qora, oq",
+    "stock": 9,
+    "label": "",
     "createdAt": "2026-04-08T20:52:53.067Z"
   },
   {
@@ -48,6 +50,8 @@
     ],
     "sizes": "36-45",
     "colors": "oq/purpule, oq/qora, qora/purpule, qora/orange",
+    "stock": 999,
+    "label": "",
     "createdAt": "2026-04-08T20:45:27.600Z"
   },
   {

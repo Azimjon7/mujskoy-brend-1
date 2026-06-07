@@ -262,10 +262,12 @@
     async function applyPromoCode() {
       const code = document.getElementById("promoCode").value.trim();
       const message = document.getElementById("promoMessage");
+      const applyBtn = document.querySelector('.checkout-promo .site-btn');
       if (!code) {
         message.innerHTML = '<span class="checkout-msg checkout-msg--error">Promokod kiriting.</span>';
         return;
       }
+      applyBtn.disabled = true; applyBtn.classList.add('is-loading'); applyBtn.textContent = 'Tekshirilmoqda...';
 
       try {
         const res = await fetch("/api/promocodes/apply", {
@@ -284,6 +286,8 @@
         checkoutTotal = checkoutSubtotal;
         message.innerHTML = '<span class="checkout-msg checkout-msg--error">' + (error.message || "Promokod ishlamadi") + "</span>";
         renderCheckoutSummary();
+      } finally {
+        applyBtn.disabled = false; applyBtn.classList.remove('is-loading'); applyBtn.textContent = 'Qo\'llash';
       }
     }
 
@@ -350,6 +354,8 @@
         });
       }
 
+      const submitBtn = document.querySelector('.checkout-actions .site-btn');
+      submitBtn.disabled = true; submitBtn.classList.add('is-loading'); const prevText = submitBtn.textContent; submitBtn.textContent = 'Yuborilmoqda...';
       fetch("/api/orders", requestOptions)
         .then(async (res) => {
           const data = await res.json().catch(() => ({}));
@@ -367,10 +373,12 @@
           } else {
             const msg = data.message || "Buyurtma yuborilmadi.";
             setCheckoutMessage(msg, "error");
+            submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); submitBtn.textContent = prevText;
           }
         })
         .catch(() => {
           setCheckoutMessage("Xatolik yuz berdi. Qayta urinib ko'ring.", "error");
+          submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); submitBtn.textContent = prevText;
         });
     }
 
