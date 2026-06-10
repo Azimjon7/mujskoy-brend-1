@@ -73,16 +73,17 @@
     const active = document.querySelector(".filter-btn.active");
     const selectedCategory = active ? normalizedCategory(active.dataset.category) : "";
     const q = (document.getElementById("shop-search").value || "").toLowerCase();
+    const availableOnly = Boolean(document.getElementById("shop-available") && document.getElementById("shop-available").checked);
 
     const filtered = allProducts.filter((p) => {
       const pCategory = normalizedCategory(p.category);
       const categoryOk = !selectedCategory || pCategory === selectedCategory;
       const textOk =
         !q || [p.name, p.description, p.category, p.subcategory, (p.sizes || []).join(" "), (p.colors || []).join(" ")].join(" ").toLowerCase().includes(q);
-      return categoryOk && textOk;
+      const stockOk = !availableOnly || Number(p.stock ?? 999) > 0;
+      return categoryOk && textOk && stockOk;
     });
 
-    // sorting
     const sort = (document.getElementById('shop-sort') && document.getElementById('shop-sort').value) || '';
     if (sort === 'price_asc') {
       filtered.sort((a,b)=>Number(a.price||0)-Number(b.price||0));
@@ -93,6 +94,13 @@
         const ta = new Date(a.createdAt || a.createdAt || 0).getTime()||0;
         const tb = new Date(b.createdAt || b.createdAt || 0).getTime()||0;
         return tb - ta;
+      });
+    } else if (sort === 'rating') {
+      filtered.sort((a,b)=>{
+        const rb = Number(b.rating || 0);
+        const ra = Number(a.rating || 0);
+        if (rb !== ra) return rb - ra;
+        return Number(b.reviewCount || 0) - Number(a.reviewCount || 0);
       });
     }
 
@@ -125,6 +133,8 @@
   document.getElementById("shop-search").addEventListener("input", applyFilter);
   const sortEl = document.getElementById('shop-sort');
   if (sortEl) sortEl.addEventListener('change', applyFilter);
+  const availableEl = document.getElementById('shop-available');
+  if (availableEl) availableEl.addEventListener('change', applyFilter);
 
   load();
 })();

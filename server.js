@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5003;
 
 const DATA_DIR = path.join(__dirname, "data");
 const UPLOADS_DIR = path.join(__dirname, "uploads");
+const REVIEW_UPLOADS_DIR = path.join(UPLOADS_DIR, "reviews");
 const PRODUCTS_FILE = path.join(DATA_DIR, "products.json");
 const ORDERS_FILE = path.join(DATA_DIR, "orders.json");
 const CATEGORIES_FILE = path.join(DATA_DIR, "categories.json");
@@ -58,6 +59,18 @@ const DEFAULT_PROMOCODES = [
   { code: "SUMMER20", discountPercent: 20, createdAt: new Date().toISOString() },
 ];
 const MAX_UPLOAD_SIZE = 10 * 1024 * 1024;
+const PUBLIC_ASSET_DIRS = ["css", "js", "img", "fonts", "uploads"];
+const PUBLIC_HTML_FILES = [
+  "index.html",
+  "shop.html",
+  "product-details.html",
+  "shop-cart.html",
+  "checkout.html",
+  "success.html",
+  "track-order.html",
+  "contact.html",
+  "admin.html",
+];
 
 app.use(express.json({ limit: "1000mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -69,7 +82,16 @@ app.use("/api", (req, res, next) => {
   next();
 });
 
-app.use(express.static(__dirname));
+PUBLIC_ASSET_DIRS.forEach((dirName) => {
+  app.use(
+    `/${dirName}`,
+    express.static(path.join(__dirname, dirName), {
+      dotfiles: "deny",
+      index: false,
+      maxAge: dirName === "uploads" ? 0 : "1h",
+    })
+  );
+});
 
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
@@ -258,6 +280,73 @@ function getProductImages(product) {
   return product.image ? [product.image] : [];
 }
 
+function readReviews() {
+  const reviews = readJson(REVIEWS_FILE);
+  return Array.isArray(reviews) ? reviews : [];
+}
+
+function normalizeReview(review) {
+  const images = Array.isArray(review.images)
+    ? review.images.filter((img) => String(img || "").startsWith("uploads/reviews/"))
+    : [];
+
+  return {
+    id: review.id,
+    productId: review.productId,
+    name: sanitizeText(review.name || "Mijoz", 80),
+    rating: clampNumber(review.rating, 1, 5, 5),
+    review: sanitizeMultiline(review.review || review.text, 800),
+    images,
+    createdAt: review.createdAt || new Date().toISOString(),
+  };
+}
+
+function getReviewStats() {
+  return readReviews().reduce((stats, rawReview) => {
+    const review = normalizeReview(rawReview);
+    const key = String(review.productId || "");
+    if (!key) return stats;
+    if (!stats[key]) stats[key] = { count: 0, total: 0 };
+    stats[key].count += 1;
+    stats[key].total += clampNumber(review.rating, 1, 5, 5);
+    return stats;
+  }, {});
+}
+
+function attachReviewStats(product, stats) {
+  const item = productWithDefaults(product);
+  const key = String(item.id || "");
+  const productStats = stats && stats[key] ? stats[key] : { count: 0, total: 0 };
+  const count = productStats.count || 0;
+
+  return {
+    ...item,
+    rating: count ? Number((productStats.total / count).toFixed(1)) : 0,
+    reviewCount: count,
+  };
+}
+
+function safeProductCard(product, stats) {
+  const item = attachReviewStats(product, stats);
+  const images = getProductImages(item);
+
+  return {
+    id: item.id,
+    name: item.name,
+    price: toNumber(item.price, 0),
+    oldPrice: toNumber(item.oldPrice, 0),
+    category: item.category || "",
+    image: images[0] || "",
+    images,
+    label: item.label || "",
+    badge: item.badge || item.label || "",
+    stock: item.stock,
+    rating: item.rating,
+    reviewCount: item.reviewCount,
+    createdAt: item.createdAt || "",
+  };
+}
+
 function deleteUploadFiles(paths) {
   paths.forEach((img) => {
     if (!String(img).startsWith("uploads/")) return;
@@ -270,6 +359,16 @@ function deleteUploadFiles(paths) {
 }
 
 ensureDir(UPLOADS_DIR);
+ensureDir(REVIEW_UPLOADS_DIR);
+
+function imageFileFilter(req, file, cb) {
+  const ext = path.extname(file.originalname || "").toLowerCase();
+  const allowedExt = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
+  if (!String(file.mimetype || "").startsWith("image/") || !allowedExt.has(ext)) {
+    return cb(new Error("Faqat rasm fayllarini yuklash mumkin"));
+  }
+  cb(null, true);
+}
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -284,16 +383,55 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: MAX_UPLOAD_SIZE, files: 12 },
-  fileFilter(req, file, cb) {
-    const ext = path.extname(file.originalname || "").toLowerCase();
-    const allowedExt = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
-    if (!String(file.mimetype || "").startsWith("image/") || !allowedExt.has(ext)) {
-      return cb(new Error("Faqat rasm fayllarini yuklash mumkin"));
-    }
-    cb(null, true);
-  },
+  fileFilter: imageFileFilter,
 });
 const productUpload = upload.any();
+
+const reviewStorage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, REVIEW_UPLOADS_DIR);
+  },
+  filename(req, file, cb) {
+    const ext = path.extname(file.originalname || "").toLowerCase() || ".jpg";
+    cb(null, `rev_${Date.now()}_${Math.round(Math.random() * 1e6)}${ext}`);
+  },
+});
+
+const reviewUpload = multer({
+  storage: reviewStorage,
+  limits: { fileSize: MAX_UPLOAD_SIZE, files: 5 },
+  fileFilter: imageFileFilter,
+});
+const reviewImagesUpload = reviewUpload.fields([
+  { name: "images", maxCount: 5 },
+  { name: "reviewImages", maxCount: 5 },
+]);
+
+function collectReviewUploadedPaths(files) {
+  if (!files) return [];
+  const list = [];
+  const allowed = new Set(["images", "reviewImages"]);
+
+  if (Array.isArray(files)) {
+    files.forEach((f) => {
+      if (f && f.filename && allowed.has(String(f.fieldname || ""))) {
+        list.push(`uploads/reviews/${f.filename}`);
+      }
+    });
+    return list.slice(0, 5);
+  }
+
+  Object.keys(files).forEach((key) => {
+    if (!allowed.has(String(key || ""))) return;
+    const group = files[key];
+    if (!Array.isArray(group)) return;
+    group.forEach((f) => {
+      if (f && f.filename) list.push(`uploads/reviews/${f.filename}`);
+    });
+  });
+
+  return list.slice(0, 5);
+}
 
 function normalizeProduct(body, uploadedFiles) {
   const existingImages = parseList(body.existingImages || body.existingImage);
@@ -376,7 +514,8 @@ function verifyAdmin(req, res, next) {
 
 app.get("/api/products", (req, res) => {
   const products = readJson(PRODUCTS_FILE);
-  res.json(products.map(productWithDefaults));
+  const stats = getReviewStats();
+  res.json(products.map((product) => attachReviewStats(product, stats)));
 });
 
 app.get("/api/categories", (req, res) => {
@@ -449,6 +588,85 @@ app.put("/api/categories/:name", verifyAdmin, (req, res) => {
   res.json({ success: true, categories });
 });
 
+app.get("/api/products/:id/related", (req, res) => {
+  const products = readJson(PRODUCTS_FILE);
+  const current = products.find((p) => String(p.id) === String(req.params.id));
+
+  if (!current) {
+    return res.status(404).json({ message: "Mahsulot topilmadi" });
+  }
+
+  const stats = getReviewStats();
+  const currentCategory = String(current.category || "").trim().toLowerCase();
+  const sameCategory = products.filter((product) => {
+    return String(product.id) !== String(current.id)
+      && String(product.category || "").trim().toLowerCase() === currentCategory;
+  });
+  const otherProducts = products.filter((product) => {
+    return String(product.id) !== String(current.id)
+      && !sameCategory.some((item) => String(item.id) === String(product.id));
+  });
+
+  const related = [...sameCategory, ...otherProducts]
+    .slice(0, 8)
+    .map((product) => safeProductCard(product, stats));
+
+  res.json(related);
+});
+
+app.get("/api/products/:id/reviews", (req, res) => {
+  const products = readJson(PRODUCTS_FILE);
+  const productExists = products.some((product) => String(product.id) === String(req.params.id));
+  if (!productExists) {
+    return res.status(404).json({ message: "Mahsulot topilmadi" });
+  }
+
+  const reviews = readReviews()
+    .map(normalizeReview)
+    .filter((review) => String(review.productId) === String(req.params.id));
+
+  res.json(reviews);
+});
+
+function createReview(req, res, productIdValue) {
+  const uploadedImages = collectReviewUploadedPaths(req.files);
+  const productId = sanitizeText(productIdValue || req.body.productId, 80);
+  const name = sanitizeText(req.body.name, 80);
+  const rating = clampNumber(req.body.rating, 1, 5, 5);
+  const reviewText = sanitizeMultiline(req.body.review || req.body.text, 800);
+
+  if (!productId || !name || !reviewText) {
+    deleteUploadFiles(uploadedImages);
+    return res.status(400).json({ message: "Sharh uchun ma'lumot yetarli emas" });
+  }
+
+  const products = readJson(PRODUCTS_FILE);
+  const productExists = products.some((product) => String(product.id) === productId);
+  if (!productExists) {
+    deleteUploadFiles(uploadedImages);
+    return res.status(404).json({ message: "Mahsulot topilmadi" });
+  }
+
+  const reviews = readReviews();
+  const item = {
+    id: `rev_${Date.now()}`,
+    productId,
+    name,
+    rating,
+    review: reviewText,
+    images: uploadedImages,
+    createdAt: new Date().toISOString(),
+  };
+
+  reviews.unshift(item);
+  writeJson(REVIEWS_FILE, reviews);
+  res.json({ success: true, review: item });
+}
+
+app.post("/api/products/:id/reviews", reviewImagesUpload, (req, res) => {
+  createReview(req, res, req.params.id);
+});
+
 app.get("/api/products/:id", (req, res) => {
   const products = readJson(PRODUCTS_FILE);
   const product = products.find((p) => String(p.id) === String(req.params.id));
@@ -457,7 +675,8 @@ app.get("/api/products/:id", (req, res) => {
     return res.status(404).json({ message: "Mahsulot topilmadi" });
   }
 
-  res.json(productWithDefaults(product));
+  const stats = getReviewStats();
+  res.json(attachReviewStats(product, stats));
 });
 
 app.post("/api/products", verifyAdmin, productUpload, (req, res) => {
@@ -578,50 +797,24 @@ app.post("/api/promocodes/apply", (req, res) => {
 
 app.get("/api/reviews", (req, res) => {
   const productId = String(req.query.productId || "").trim();
-  const reviews = readJson(REVIEWS_FILE);
-  const list = (Array.isArray(reviews) ? reviews : []).filter((review) => {
+  const list = readReviews().map(normalizeReview).filter((review) => {
     return !productId || String(review.productId) === productId;
   });
   res.json(list);
 });
 
-app.post("/api/reviews", (req, res) => {
-  const productId = sanitizeText(req.body.productId, 80);
-  const name = sanitizeText(req.body.name, 80);
-  const rating = clampNumber(req.body.rating, 1, 5, 5);
-  const review = sanitizeMultiline(req.body.review, 800);
-
-  if (!productId || !name || !review) {
-    return res.status(400).json({ message: "Sharh uchun ma'lumot yetarli emas" });
-  }
-
-  const products = readJson(PRODUCTS_FILE);
-  const productExists = products.some((product) => String(product.id) === productId);
-  if (!productExists) {
-    return res.status(404).json({ message: "Mahsulot topilmadi" });
-  }
-
-  const reviews = readJson(REVIEWS_FILE);
-  const item = {
-    id: `rev_${Date.now()}`,
-    productId,
-    name,
-    rating,
-    review,
-    createdAt: new Date().toISOString(),
-  };
-
-  reviews.unshift(item);
-  writeJson(REVIEWS_FILE, reviews);
-  res.json({ success: true, review: item });
+app.post("/api/reviews", reviewImagesUpload, (req, res) => {
+  createReview(req, res, req.body.productId);
 });
 
 app.delete("/api/reviews/:id", verifyAdmin, (req, res) => {
-  const reviews = readJson(REVIEWS_FILE);
+  const reviews = readReviews();
+  const target = reviews.find((review) => String(review.id) === String(req.params.id));
   const filtered = reviews.filter((review) => String(review.id) !== String(req.params.id));
   if (filtered.length === reviews.length) {
     return res.status(404).json({ message: "Sharh topilmadi" });
   }
+  deleteUploadFiles(normalizeReview(target || {}).images);
   writeJson(REVIEWS_FILE, filtered);
   res.json({ success: true });
 });
@@ -917,8 +1110,21 @@ app.use((err, req, res, next) => {
   return res.status(400).send(message);
 });
 
+function sendPublicHtml(fileName, res) {
+  if (!PUBLIC_HTML_FILES.includes(fileName)) {
+    return res.status(404).send("Sahifa topilmadi");
+  }
+  return res.sendFile(path.join(__dirname, fileName));
+}
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
+  sendPublicHtml("index.html", res);
+});
+
+PUBLIC_HTML_FILES.forEach((fileName) => {
+  app.get(`/${fileName}`, (req, res) => {
+    sendPublicHtml(fileName, res);
+  });
 });
 
 const preferredPort = Number(process.env.PORT) || 5003;

@@ -11,12 +11,16 @@ Created: Colorib
 
 (function ($) {
 
+    function hidePreloader() {
+        $(".loader").fadeOut();
+        $("#preloder").delay(200).fadeOut("slow");
+    }
+
     /*------------------
         Preloader
     --------------------*/
     $(window).on('load', function () {
-        $(".loader").fadeOut();
-        $("#preloder").delay(200).fadeOut("slow");
+        hidePreloader();
 
         /*------------------
             Product filter
@@ -30,6 +34,12 @@ Created: Colorib
             var mixer = mixitup(containerEl);
         }
     });
+
+    $(function () {
+        setTimeout(hidePreloader, 250);
+    });
+
+    setTimeout(hidePreloader, 1200);
 
     /*------------------
         Background Set
@@ -83,35 +93,39 @@ Created: Colorib
     /*--------------------------
         Banner Slider
     ----------------------------*/
-    $(".banner__slider").owlCarousel({
-        loop: true,
-        margin: 0,
-        items: 1,
-        dots: true,
-        smartSpeed: 1200,
-        autoHeight: false,
-        autoplay: true
-    });
+    if ($.fn.owlCarousel && $(".banner__slider").length) {
+        $(".banner__slider").owlCarousel({
+            loop: true,
+            margin: 0,
+            items: 1,
+            dots: true,
+            smartSpeed: 1200,
+            autoHeight: false,
+            autoplay: true
+        });
+    }
 
     /*--------------------------
         Product Details Slider
     ----------------------------*/
-    $(".product__details__pic__slider").owlCarousel({
-        loop: false,
-        margin: 0,
-        items: 1,
-        dots: false,
-        nav: true,
-        navText: ["<i class='arrow_carrot-left'></i>","<i class='arrow_carrot-right'></i>"],
-        smartSpeed: 1200,
-        autoHeight: false,
-        autoplay: false,
-        mouseDrag: false,
-        startPosition: 'URLHash'
-    }).on('changed.owl.carousel', function(event) {
-        var indexNum = event.item.index + 1;
-        product_thumbs(indexNum);
-    });
+    if ($.fn.owlCarousel && $(".product__details__pic__slider").length) {
+        $(".product__details__pic__slider").owlCarousel({
+            loop: false,
+            margin: 0,
+            items: 1,
+            dots: false,
+            nav: true,
+            navText: ["<i class='arrow_carrot-left'></i>","<i class='arrow_carrot-right'></i>"],
+            smartSpeed: 1200,
+            autoHeight: false,
+            autoplay: false,
+            mouseDrag: false,
+            startPosition: 'URLHash'
+        }).on('changed.owl.carousel', function(event) {
+            var indexNum = event.item.index + 1;
+            product_thumbs(indexNum);
+        });
+    }
 
     function product_thumbs (num) {
         var thumbs = document.querySelectorAll('.product__thumb a');
@@ -127,20 +141,24 @@ Created: Colorib
     /*------------------
 		Magnific
     --------------------*/
-    $('.image-popup').magnificPopup({
-        type: 'image'
-    });
+    if ($.fn.magnificPopup && $('.image-popup').length) {
+        $('.image-popup').magnificPopup({
+            type: 'image'
+        });
+    }
 
 
-    $(".nice-scroll").niceScroll({
-        cursorborder:"",
-        cursorcolor:"#dddddd",
-        boxzoom:false,
-        cursorwidth: 5,
-        background: 'rgba(0, 0, 0, 0.2)',
-        cursorborderradius:50,
-        horizrailenabled: false
-    });
+    if ($.fn.niceScroll && $(".nice-scroll").length) {
+        $(".nice-scroll").niceScroll({
+            cursorborder:"",
+            cursorcolor:"#dddddd",
+            boxzoom:false,
+            cursorwidth: 5,
+            background: 'rgba(0, 0, 0, 0.2)',
+            cursorborderradius:50,
+            horizrailenabled: false
+        });
+    }
 
     /*------------------
         CountDown
@@ -166,9 +184,11 @@ Created: Colorib
 
     /* var timerdate = "2020/12/30" */
 
-	$("#countdown-time").countdown(timerdate, function(event) {
-        $(this).html(event.strftime("<div class='countdown__item'><span>%D</span> <p>Day</p> </div>" + "<div class='countdown__item'><span>%H</span> <p>Hour</p> </div>" + "<div class='countdown__item'><span>%M</span> <p>Min</p> </div>" + "<div class='countdown__item'><span>%S</span> <p>Sec</p> </div>"));
-    });
+    if ($.fn.countdown && $("#countdown-time").length) {
+        $("#countdown-time").countdown(timerdate, function(event) {
+            $(this).html(event.strftime("<div class='countdown__item'><span>%D</span> <p>Day</p> </div>" + "<div class='countdown__item'><span>%H</span> <p>Hour</p> </div>" + "<div class='countdown__item'><span>%M</span> <p>Min</p> </div>" + "<div class='countdown__item'><span>%S</span> <p>Sec</p> </div>"));
+        });
+    }
 
     /*-------------------
 		Range Slider
@@ -178,18 +198,20 @@ Created: Colorib
     maxamount = $("#maxamount"),
     minPrice = rangeSlider.data('min'),
     maxPrice = rangeSlider.data('max');
-    rangeSlider.slider({
-    range: true,
-    min: minPrice,
-    max: maxPrice,
-    values: [minPrice, maxPrice],
-    slide: function (event, ui) {
-        minamount.val('$' + ui.values[0]);
-        maxamount.val('$' + ui.values[1]);
-        }
-    });
-    minamount.val('$' + rangeSlider.slider("values", 0));
-    maxamount.val('$' + rangeSlider.slider("values", 1));
+    if ($.fn.slider && rangeSlider.length) {
+        rangeSlider.slider({
+        range: true,
+        min: minPrice,
+        max: maxPrice,
+        values: [minPrice, maxPrice],
+        slide: function (event, ui) {
+            minamount.val('$' + ui.values[0]);
+            maxamount.val('$' + ui.values[1]);
+            }
+        });
+        minamount.val('$' + rangeSlider.slider("values", 0));
+        maxamount.val('$' + rangeSlider.slider("values", 1));
+    }
 
     /*------------------
 		Single Product

@@ -67,6 +67,14 @@ window.MBHelpers = {
     }
     return [];
   },
+  escapeHtml(value) {
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  },
   isGithubPages() {
     return /\.github\.io$/i.test(window.location.hostname);
   },
@@ -98,18 +106,7 @@ window.MBHelpers = {
     if (!forceRefresh && this._productsPromise) return this._productsPromise;
 
     const loadTask = (async () => {
-      const sources = [];
-      const apiProductsUrl = this.apiUrl("/api/products");
-
-      if (window.MB_API_BASE || !this.isGithubPages()) {
-        sources.push(apiProductsUrl);
-      } else {
-        sources.push(apiProductsUrl, "data/products.json");
-      }
-
-      if (!sources.includes("data/products.json")) {
-        sources.push("data/products.json");
-      }
+      const sources = [this.apiUrl("/api/products")];
 
       for (const url of sources) {
         try {
@@ -157,6 +154,8 @@ window.MBHelpers = {
       colors: this.toList(product.colors),
       stock: Number(product.stock ?? 999),
       label: product.label || product.badge || "Yangi",
+      rating: Number(product.rating || 0),
+      reviewCount: Number(product.reviewCount || 0),
     };
   },
   currency(value) {
@@ -170,9 +169,18 @@ window.MBHelpers = {
     const stock = Number(normalized.stock ?? 999);
     const inStock = stock > 0;
     const label = inStock ? (normalized.label || "Yangi") : "Sotuvda mavjud emas";
+    const oldPriceValue = Number(normalized.oldPrice || 0);
+    const priceValue = Number(normalized.price || 0);
+    const discount =
+      oldPriceValue > priceValue && priceValue > 0
+        ? `<span class="product-discount">-${Math.round(((oldPriceValue - priceValue) / oldPriceValue) * 100)}%</span>`
+        : "";
     const oldPrice =
-      Number(normalized.oldPrice) > 0 ? `<span class="product__oldprice">${this.currency(normalized.oldPrice)}</span>` : "";
-    const descriptionHtml = showDescription ? `<p>${normalized.description}</p>` : "";
+      oldPriceValue > 0 ? `<span class="product__oldprice">${this.currency(normalized.oldPrice)}</span>` : "";
+    const ratingHtml = normalized.reviewCount
+      ? `<div class="product-rating"><span>&#9733;</span> ${normalized.rating.toFixed(1)} (${normalized.reviewCount})</div>`
+      : `<div class="product-rating product-rating--empty">Sharh yo'q</div>`;
+    const descriptionHtml = showDescription ? `<p>${this.escapeHtml(normalized.description)}</p>` : "";
     const action = inStock
       ? `<a class="link-btn js-add-card" href="#" data-id="${normalized.id}">Savatga qo'shish</a>`
       : `<span class="link-btn link-btn--disabled">Sotuvda mavjud emas</span>`;
@@ -180,13 +188,14 @@ window.MBHelpers = {
     return `
       <div class="col-6 col-sm-6 col-md-4 col-lg-3">
         <div class="product__item ${inStock ? "" : "product__item--soldout"}">
-          <a href="product-details.html?id=${normalized.id}" class="product__item__pic" style="background-image:url('${image}')">
-            <div class="label">${label}</div>
+          <a href="product-details.html?id=${encodeURIComponent(normalized.id)}" class="product__item__pic" style="background-image:url('${image}')">
+            <div class="label">${this.escapeHtml(label)}</div>
           </a>
           <div class="product__item__text">
-            <h6><a href="product-details.html?id=${normalized.id}">${normalized.name || "Mahsulot"}</a></h6>
+            <h6><a href="product-details.html?id=${encodeURIComponent(normalized.id)}">${this.escapeHtml(normalized.name || "Mahsulot")}</a></h6>
             ${descriptionHtml}
-            <div class="product__price">${this.currency(normalized.price)} ${oldPrice}</div>
+            ${ratingHtml}
+            <div class="product__price">${this.currency(normalized.price)} ${oldPrice} ${discount}</div>
             <div class="product__links">
               ${action}
             </div>

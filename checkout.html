@@ -42,9 +42,7 @@
         </div>
         <div class="col-xl-3 col-lg-3 col-4 text-right">
           <ul class="header__right__widget header__right__widget--simple">
-            <li>
-              <a href="shop-cart.html"><span class="icon_bag_alt"></span><div class="tip js-cart-count">0</div></a>
-            </li>
+            <li><a href="shop-cart.html"><span class="icon_bag_alt"></span><div class="tip js-cart-count">0</div></a></li>
           </ul>
         </div>
       </div>
@@ -65,7 +63,6 @@
         <div class="col-lg-8">
           <div class="checkout__form--custom">
             <h5>Buyurtma ma'lumotlari</h5>
-
             <div class="row">
               <div class="col-md-6">
                 <label class="checkout-label" for="name">Ism familiya <span>*</span></label>
@@ -86,14 +83,8 @@
             <div class="checkout-payment">
               <h6>To'lov turi</h6>
               <div class="checkout-radio-group">
-                <label class="checkout-radio">
-                  <input type="radio" name="paymentType" value="naqd" checked />
-                  <span>Naqd</span>
-                </label>
-                <label class="checkout-radio">
-                  <input type="radio" name="paymentType" value="karta" />
-                  <span>Karta</span>
-                </label>
+                <label class="checkout-radio"><input type="radio" name="paymentType" value="naqd" checked><span>Naqd</span></label>
+                <label class="checkout-radio"><input type="radio" name="paymentType" value="karta"><span>Karta</span></label>
               </div>
             </div>
 
@@ -107,13 +98,13 @@
               <label class="checkout-label" for="promoCode">Promokod</label>
               <div class="checkout-promo-row">
                 <input id="promoCode" type="text" placeholder="Masalan: SALE10" />
-                <button class="site-btn site-btn--ghost" type="button" onclick="applyPromoCode()">Qo'llash</button>
+                <button id="applyPromoBtn" class="site-btn site-btn--ghost" type="button">Qo'llash</button>
               </div>
               <div id="promoMessage" class="form-message"></div>
             </div>
 
             <div class="checkout-actions">
-              <button class="site-btn" type="button" onclick="submitOrder()">Buyurtma berish</button>
+              <button id="submitOrderBtn" class="site-btn" type="button">Buyurtma berish</button>
               <a class="site-btn site-btn--ghost" href="shop-cart.html">Savatga qaytish</a>
             </div>
             <div id="checkoutMessage" class="form-message"></div>
@@ -136,258 +127,6 @@
   <script src="js/main.js"></script>
   <script src="js/helpers.js"></script>
   <script src="js/store.js"></script>
-  <script>
-    let checkoutItems = [];
-    let checkoutSubtotal = 0;
-    let checkoutTotal = 0;
-    let appliedPromo = null;
-
-    function formatMoney(value) {
-      return Number(value || 0).toLocaleString("uz-UZ") + " so'm";
-    }
-
-    function setCheckoutMessage(text, type) {
-      const msg = document.getElementById("checkoutMessage");
-      msg.innerHTML = '<span class="checkout-msg checkout-msg--' + type + '">' + text + "</span>";
-    }
-
-    function getSelectedPaymentType() {
-      const picked = document.querySelector('input[name="paymentType"]:checked');
-      return picked ? picked.value : "naqd";
-    }
-
-    function syncPaymentUI() {
-      const wrap = document.getElementById("paymentScreenshotWrap");
-      if (getSelectedPaymentType() === "karta") {
-        wrap.style.display = "block";
-      } else {
-        wrap.style.display = "none";
-        document.getElementById("paymentScreenshot").value = "";
-      }
-    }
-
-    function buildItemMeta(item) {
-      const parts = [];
-      if (item.size) parts.push("O'lcham: " + item.size);
-      if (item.color) parts.push("Rang: " + item.color);
-      if (!parts.length) return "";
-      return '<small class="checkout-item-meta">' + parts.join(" | ") + "</small>";
-    }
-
-    function renderCheckoutSummary() {
-      const summary = document.getElementById("checkoutSummary");
-      const qtyTotal = checkoutItems.reduce((sum, item) => sum + item.qty, 0);
-      const itemsHtml = checkoutItems
-        .map(
-          (item, index) =>
-            '<div class="checkout-summary-row">' +
-            '<div>' +
-            '<p>' +
-            (index + 1) +
-            ". " +
-            item.name +
-            " x " +
-            item.qty +
-            "</p>" +
-            buildItemMeta(item) +
-            "</div>" +
-            "<strong>" +
-            formatMoney(item.lineTotal) +
-            "</strong>" +
-            "</div>"
-        )
-        .join("");
-
-      const discountHtml = appliedPromo
-        ? '<div class="checkout-total-row"><span>Chegirma (' + appliedPromo.code + ')</span><strong>-' + formatMoney(appliedPromo.discountAmount) + "</strong></div>"
-        : "";
-
-      summary.innerHTML =
-        '<div class="checkout-summary-head"><span>Mahsulot</span><span>Narx</span></div>' +
-        '<div class="checkout-summary-list">' +
-        itemsHtml +
-        "</div>" +
-        '<div class="checkout-total-row"><span>Jami mahsulot</span><strong>' +
-        qtyTotal +
-        " ta</strong></div>" +
-        '<div class="checkout-total-row"><span>Oraliq summa</span><strong>' +
-        formatMoney(checkoutSubtotal) +
-        "</strong></div>" +
-        discountHtml +
-        '<div class="checkout-total-row checkout-grand-total"><span>Umumiy summa</span><strong>' +
-        formatMoney(checkoutTotal) +
-        "</strong></div>";
-    }
-
-    async function initCheckout() {
-      const summary = document.getElementById("checkoutSummary");
-      const cart = MBStore.getCart();
-
-      if (!cart.length) {
-        summary.innerHTML = '<p class="checkout-empty">Savatingiz bo\'sh. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
-        return;
-      }
-
-      const products =
-        window.MBHelpers && typeof window.MBHelpers.loadProducts === "function"
-          ? await window.MBHelpers.loadProducts({ forceRefresh: true })
-          : await fetch("data/products.json", { cache: "no-store" }).then((r) => r.json());
-      checkoutItems = cart.map((item) => {
-        const product = products.find((p) => String(p.id) === String(item.productId)) || {};
-        const price = Number(product.price || 0);
-        const qty = Math.max(1, Number(item.qty || 1));
-        const stock = Number(product.stock ?? 999);
-        const safeQty = Math.min(qty, Math.max(0, stock));
-        return {
-          productId: item.productId,
-          name: product.name || "Mahsulot",
-          size: item.size || "",
-          color: item.color || "",
-          qty: safeQty,
-          price,
-          lineTotal: price * safeQty,
-        };
-      }).filter((item) => item.qty > 0);
-
-      if (!checkoutItems.length) {
-        summary.innerHTML = '<p class="checkout-empty">Tanlangan mahsulot sotuvda mavjud emas. <a class="checkout-empty__link" href="shop.html">Do\'konga o\'tish</a></p>';
-        return;
-      }
-
-      checkoutSubtotal = checkoutItems.reduce((sum, item) => sum + item.lineTotal, 0);
-      checkoutTotal = checkoutSubtotal;
-      renderCheckoutSummary();
-    }
-
-    async function applyPromoCode() {
-      const code = document.getElementById("promoCode").value.trim();
-      const message = document.getElementById("promoMessage");
-      const applyBtn = document.querySelector('.checkout-promo .site-btn');
-      if (!code) {
-        message.innerHTML = '<span class="checkout-msg checkout-msg--error">Promokod kiriting.</span>';
-        return;
-      }
-      applyBtn.disabled = true; applyBtn.classList.add('is-loading'); applyBtn.textContent = 'Tekshirilmoqda...';
-
-      try {
-        const res = await fetch("/api/promocodes/apply", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code, subtotal: checkoutSubtotal }),
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.message || "Promokod ishlamadi");
-        appliedPromo = data;
-        checkoutTotal = data.total;
-        message.innerHTML = '<span class="checkout-msg checkout-msg--success">Promokod qo\'llandi.</span>';
-        renderCheckoutSummary();
-      } catch (error) {
-        appliedPromo = null;
-        checkoutTotal = checkoutSubtotal;
-        message.innerHTML = '<span class="checkout-msg checkout-msg--error">' + (error.message || "Promokod ishlamadi") + "</span>";
-        renderCheckoutSummary();
-      } finally {
-        applyBtn.disabled = false; applyBtn.classList.remove('is-loading'); applyBtn.textContent = 'Qo\'llash';
-      }
-    }
-
-    async function submitOrder() {
-      if (!checkoutItems.length) {
-        setCheckoutMessage("Savatingiz bo'sh.", "error");
-        return;
-      }
-
-      const paymentType = getSelectedPaymentType();
-      const screenshotFile = document.getElementById("paymentScreenshot").files[0];
-
-      const payload = {
-        name: document.getElementById("name").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        address: document.getElementById("address").value.trim(),
-        note: document.getElementById("note").value.trim(),
-        total: checkoutTotal,
-        subtotal: checkoutSubtotal,
-        promoCode: appliedPromo ? appliedPromo.code : "",
-        items: checkoutItems,
-        paymentType,
-      };
-
-      if (!payload.name || !payload.phone || !payload.address) {
-        setCheckoutMessage("Ism, telefon va manzil majburiy.", "error");
-        return;
-      }
-
-      if (paymentType === "karta" && !screenshotFile) {
-        setCheckoutMessage("Karta to'lovi uchun skrinshot yuklang.", "error");
-        return;
-      }
-
-      const requestOptions = { method: "POST" };
-
-      if (paymentType === "karta") {
-        const formData = new FormData();
-        formData.append("name", payload.name);
-        formData.append("phone", payload.phone);
-        formData.append("address", payload.address);
-        formData.append("note", payload.note);
-        formData.append("total", String(payload.total));
-        formData.append("subtotal", String(payload.subtotal));
-        formData.append("promoCode", payload.promoCode);
-        formData.append("paymentType", paymentType);
-        formData.append("items", JSON.stringify(checkoutItems));
-        formData.append("itemsJson", JSON.stringify(checkoutItems));
-        checkoutItems.forEach((item, index) => {
-          Object.keys(item).forEach((key) => {
-            formData.append("items[" + index + "][" + key + "]", String(item[key] ?? ""));
-          });
-        });
-        if (screenshotFile) {
-          formData.append("paymentScreenshot", screenshotFile);
-        }
-        requestOptions.body = formData;
-      } else {
-        requestOptions.headers = { "Content-Type": "application/json" };
-        requestOptions.body = JSON.stringify({
-          ...payload,
-          paymentType: "naqd",
-          items: checkoutItems,
-        });
-      }
-
-      const submitBtn = document.querySelector('.checkout-actions .site-btn');
-      submitBtn.disabled = true; submitBtn.classList.add('is-loading'); const prevText = submitBtn.textContent; submitBtn.textContent = 'Yuborilmoqda...';
-      fetch("/api/orders", requestOptions)
-        .then(async (res) => {
-          const data = await res.json().catch(() => ({}));
-          return { ok: res.ok, data };
-        })
-        .then(({ ok, data }) => {
-          if (ok && data.success) {
-            MBStore.clearCart();
-            setCheckoutMessage("Buyurtmangiz qabul qilindi.", "success");
-            const order = data.order || {};
-            window.location.href =
-              "success.html?orderId=" + encodeURIComponent(order.id || "") +
-              "&date=" + encodeURIComponent(order.createdAt || "") +
-              "&total=" + encodeURIComponent(order.total || checkoutTotal);
-          } else {
-            const msg = data.message || "Buyurtma yuborilmadi.";
-            setCheckoutMessage(msg, "error");
-            submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); submitBtn.textContent = prevText;
-          }
-        })
-        .catch(() => {
-          setCheckoutMessage("Xatolik yuz berdi. Qayta urinib ko'ring.", "error");
-          submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); submitBtn.textContent = prevText;
-        });
-    }
-
-    document.querySelectorAll('input[name="paymentType"]').forEach((el) => {
-      el.addEventListener("change", syncPaymentUI);
-    });
-
-    syncPaymentUI();
-    initCheckout();
-  </script>
+  <script src="js/checkout.js"></script>
 </body>
 </html>

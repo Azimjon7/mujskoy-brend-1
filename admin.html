@@ -745,6 +745,22 @@
       letter-spacing: 1px;
     }
 
+    .review-image-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .review-image-list img {
+      width: 58px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid var(--ap-border);
+      background: var(--ap-surface-2);
+    }
+
     @media (max-width: 1100px) {
       .stats-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1645,6 +1661,12 @@
 
       list.innerHTML = cachedReviews.map((review) => {
         const product = cachedProducts.find((item) => String(item.id) === String(review.productId));
+        const images = Array.isArray(review.images) ? review.images : [];
+        const imageHtml = images.length ? `
+          <div class="review-image-list">
+            ${images.map((image) => `<a href="${escapeAttr(image)}" target="_blank"><img src="${escapeAttr(image)}" alt="sharh rasmi"></a>`).join("")}
+          </div>
+        ` : "";
         return `
           <div class="category-row">
             <div>
@@ -1652,6 +1674,7 @@
               <div class="rating-stars">${stars(review.rating)}</div>
               <div class="small">${escapeHtml(product ? product.name : review.productId)}</div>
               <div class="meta">${escapeHtml(review.review || "")}</div>
+              ${imageHtml}
             </div>
             <button class="btn btn-danger js-delete-review" data-id="${escapeAttr(review.id)}">O'chirish</button>
           </div>
